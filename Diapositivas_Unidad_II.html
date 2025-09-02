@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sistema de Gestión de la Calidad - UNIDAD II</title>
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow: hidden;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .ribbon {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border-bottom: 3px solid #3498db;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .ribbon-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 30px;
+        }
+
+        .ribbon-section h4 {
+            color: #ecf0f1;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .ribbon-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .ribbon-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 40px;
+            white-space: nowrap;
+        }
+
+        .ribbon-btn:hover {
+            background: linear-gradient(135deg, #2980b9, #1f4e79);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        .ribbon-btn:disabled {
+            background: #7f8c8d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .ribbon-btn.large {
+            padding: 14px 20px;
+            font-size: 1em;
+            min-height: 50px;
+        }
+
+        .ribbon-btn.success { background: linear-gradient(135deg, #27ae60, #229954); }
+        .ribbon-btn.warning { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .ribbon-btn.purple { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+
+        .logo-section {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 10px;
+            padding: 18px;
+            margin-right: 25px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .logo-text {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 4px;
+        }
+
+        .course-name {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        .progress-section {
+            margin-left: auto;
+            text-align: center;
+            color: white;
+        }
+
+        .slide-counter {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar-container {
+            width: 220px;
+            height: 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #e74c3c);
+            transition: width 0.3s ease;
+            border-radius: 5px;
+        }
+
+        .separator {
+            width: 2px;
+            height: 60px;
+            background: rgba(255,255,255,0.2);
+            margin: 0 25px;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: calc(100vh - 150px);
+            margin-top: 100px;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            padding: 20px 40px;
+            background: white;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.6s ease;
+            overflow-y: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .slide.active {
+            display: block;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide-header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 35px 45px;
+            margin: -20px -40px 30px -40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 15px 15px 0 0;
+        }
+
+        .slide-title {
+            font-size: 2.8em;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .slide-subtitle {
+            font-size: 1.4em;
+            opacity: 0.9;
+            font-weight: 300;
+            color: #ecf0f1;
+        }
+
+        .slide-content {
+            padding: 20px 0;
+        }
+
+        .slide-content h3 {
+            font-size: 1.8em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .slide-content h4 {
+            font-size: 1.4em;
+            color: #34495e;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .slide-content p {
+            font-size: 1.1em;
+            line-height: 1.7;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .slide-content li {
+            font-size: 1.05em;
+            line-height: 1.6;
+            margin-bottom: 8px;
+            color: #34495e;
+        }
+
+        .mini-map {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.8);
+            padding: 15px 30px;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            height: 60px;
+        }
+
+        .mini-map-title {
+            color: white;
+            font-weight: 600;
+            font-size: 1em;
+            margin-right: 15px;
+        }
+
+        .slide-indicators {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .slide-indicator {
+            min-width: 35px;
+            height: 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85em;
+            font-weight: bold;
+            color: white;
+        }
+
+        .slide-indicator.completed { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+        .slide-indicator.current { 
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            transform: scale(1.15);
+        }
+        .slide-indicator.upcoming { background: linear-gradient(135deg, #95a5a6, #7f8c8d); }
+
+        .card {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            border: 2px solid #3498db;
+            border-left: 6px solid #3498db;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.2);
+        }
+
+        .card h4 {
+            color: #2c3e50;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .objective {
+            background: linear-gradient(135deg, #e8f8f5, #d4edda);
+            border: 3px solid #28a745;
+            border-left: 8px solid #28a745;
+            padding: 30px;
+            margin: 25px 0;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .objective h3 {
+            color: #155724;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .objective p {
+            color: #0f5132;
+            font-size: 1.15em;
+            line-height: 1.8;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin: 25px 0;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .stat:hover {
+            transform: scale(1.05);
+        }
+
+        .stat .value {
+            font-size: 2.2em;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .stat .label {
+            font-size: 1.1em;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        .unit-map {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .unit-chip {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 20px 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.05em;
+            font-weight: 600;
+            text-align: left;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .unit-chip:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .unit-chip .code {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-right: 12px;
+            font-weight: 700;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .button:hover {
+            background: linear-gradient(135deg, #2980b9, #1f4e79);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+        .badge {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            display: inline-block;
+            margin: 5px;
+        }
+
+        /* Improved Ishikawa Diagram */
+        .ishikawa-container {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 25px 0;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .ishikawa-diagram {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            margin: 20px 0;
+        }
+
+        .ishikawa-bone {
+            stroke: #2c3e50;
+            stroke-width: 4;
+            fill: none;
+        }
+
+        .ishikawa-branch {
+            stroke: #34495e;
+            stroke-width: 3;
+            fill: none;
+        }
+
+        .ishikawa-label {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: absolute;
+            transform: translate(-50%, -50%);
+        }
+
+        .ishikawa-effect {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.2em;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* Improved Pareto Diagram */
+        .pareto-container {
+            background: linear-gradient(135deg, #fff5f5, #fed7d7);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 25px 0;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .pareto-diagram {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            margin: 20px 0;
+        }
+
+        .pareto-bar {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .pareto-bar:hover {
+            opacity: 0.8;
+            transform: scaleY(1.05);
+            transform-origin: bottom;
+        }
+
+        .pareto-line {
+            stroke: #2c3e50;
+            stroke-width: 4;
+            fill: none;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .pareto-point {
+            fill: #2c3e50;
+            stroke: white;
+            stroke-width: 2;
+            r: 6;
+        }
+
+        .pareto-label {
+            font-size: 14px;
+            font-weight: 600;
+            fill: #2c3e50;
+            text-anchor: middle;
+        }
+
+        .pareto-value {
+            font-size: 12px;
+            font-weight: 500;
+            fill: #34495e;
+            text-anchor: middle;
+        }
+
+        .hint {
+            position: relative;
+            cursor: help;
+            color: #3498db;
+            font-weight: 600;
+            border-bottom: 2px dotted #3498db;
+        }
+
+        .hint[data-tip]:hover::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2c3e50;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            white-space: nowrap;
+            z-index: 1000;
+            font-size: 0.9em;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        @media (max-width: 1024px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .slide-title {
+                font-size: 2.2em;
+            }
+            
+            .slide-content h3 {
+                font-size: 1.5em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .ribbon { 
+                height: 80px; 
+                padding: 0 10px; 
+            }
+            
+            .slide { 
+                padding: 15px 20px; 
+            }
+            
+            .slide-header {
+                padding: 25px 30px;
+                margin: -15px -20px 20px -20px;
+            }
+            
+            .slide-title {
+                font-size: 2em;
+            }
+            
+            .presentation-container {
+                padding: 0 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="ribbon">
+    <div class="logo-section">
+        <div class="logo-text">Universidad del SABES</div>
+        <div class="course-name">Gestión de la Calidad</div>
+    </div>
+    
+    <div class="separator"></div>
+    
+    <div class="ribbon-section">
+        <h4>Navegación</h4>
+        <div class="ribbon-group">
+            <button class="ribbon-btn large" id="prevBtn" onclick="changeSlide(-1)">← Anterior</button>
+            <button class="ribbon-btn large success" onclick="goToSlide(0)">🏠 Inicio</button>
+            <button class="ribbon-btn large" id="nextBtn" onclick="changeSlide(1)">Siguiente →</button>
+        </div>
+    </div>
+    
+    <div class="separator"></div>
+    
+    <div class="ribbon-section">
+        <h4>Reproducción</h4>
+        <div class="ribbon-group">
+            <button class="ribbon-btn success" onclick="startAutoPlay()">▶ Play</button>
+            <button class="ribbon-btn warning" onclick="pauseAutoPlay()">⏸ Pausa</button>
+            <button class="ribbon-btn" onclick="resetPresentation()">🔄 Reset</button>
+        </div>
+    </div>
+    
+    <div class="separator"></div>
+    
+    <div class="ribbon-section">
+        <h4>Vista</h4>
+        <div class="ribbon-group">
+            <button class="ribbon-btn purple" onclick="toggleFullscreen()">🖥 Pantalla Completa</button>
+            <button class="ribbon-btn" onclick="showHelp()">❓ Ayuda</button>
+        </div>
+    </div>
+    
+    <div class="progress-section">
+        <div class="slide-counter" id="slideCounter">1 / 11</div>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+    </div>
+</div>
+
+<div class="mini-map" id="miniMap">
+    <div class="mini-map-title">Progreso:</div>
+    <div class="slide-indicators" id="slideIndicators"></div>
+</div>
+
+<div class="presentation-container">
+    <!-- Slide 1: Portada -->
+    <section class="slide">
+        <div class="slide-header">
+            <h2 class="slide-title">UNIDAD II</h2>
+            <div class="slide-subtitle">Modelos de gestión de la calidad y mejora continua</div>
+        </div>
+        <div class="slide-content">
+            <div class="objective">
+                <h3>🎯 Objetivo de aprendizaje</h3>
+                <p>Selecciona y organiza las herramientas de mejora continua (círculos de calidad, ciclo PDCA y Kaizen), aplicando técnicas de resolución de problemas y metodologías de calidad (Seis Sigma y modelos de excelencia) para mejorar procesos y garantizar la eficiencia en la gestión de la calidad.</p>
+            </div>
+            
+            <div class="unit-map" id="unitMap2">
+                <button class="unit-chip" data-code="2.1" type="button">
+                    <span class="code">2.1</span> Círculos de calidad
+                </button>
+                <button class="unit-chip" data-code="2.2" type="button">
+                    <span class="code">2.2</span> Ciclo PDCA
+                </button>
+                <button class="unit-chip" data-code="2.3" type="button">
+                    <span class="code">2.3</span> Kaizen
+                </button>
+                <button class="unit-chip" data-code="2.4" type="button">
+                    <span class="code">2.4</span> Seis Sigma
+                </button>
+                <button class="unit-chip" data-code="2.5" type="button">
+                    <span class="code">2.5</span> Modelos de Excelencia
+                </button>
+                <button class="unit-chip" data-code="2.6" type="button">
+                    <span class="code">2.6</span> Premio Nacional de Calidad
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 2: Círculos de calidad -->
+    <section class="slide">
+        <div class="slide-header">
+            <h2 class="slide-title">2.1 Círculos de la calidad</h2>
+        </div>
+        <div class="slide-content">
+            <div class="card">
+                <p><strong>Definición:</strong> Grupos pequeños que se reúnen voluntariamente para identificar, analizar y resolver problemas de su área usando herramientas de calidad (<span class="hint" data-tip="Pareto ordena causas por impacto; Ishikawa agrupa causas por categorías (6M).">Pareto/Ishikawa</span>).</p>
+            </div>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h4>📋 Características</h4>
+                    <ul>
+                        <li>5–10 personas; reuniones periódicas</li>
+                        <li>Foco en su proceso específico</li>
+                        <li>Uso de datos y 7 herramientas básicas</li>
+                        <li>Participación voluntaria</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>✅ Beneficios</h4>
+                    <ul>
+                        <li>Mejora continua y seguridad</li>
+                        <li>Mayor compromiso del personal</li>
+                        <li>Cultura organizacional sólida</li>
+                        <li>Reducción de costos operativos</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="ishikawa-container">
+                <h4>🐟 Diagrama de Ishikawa (Espina de Pescado) - Las 6M</h4>
+                <div class="ishikawa-diagram">
+                    <svg width="100%" height="100%" viewBox="0 0 900 400">
+                        <!-- Main spine -->
+                        <line class="ishikawa-bone" x1="50" y1="200" x2="750" y2="200"/>
+                        <polygon fill="#2c3e50" points="750,200 720,180 720,220"/>
+                        
+                        <!-- Top branches -->
+                        <line class="ishikawa-branch" x1="200" y1="200" x2="150" y2="120"/>
+                        <line class="ishikawa-branch" x1="350" y1="200" x2="300" y2="120"/>
+                        <line class="ishikawa-branch" x1="500" y1="200" x2="450" y2="120"/>
+                        
+                        <!-- Bottom branches -->
+                        <line class="ishikawa-branch" x1="200" y1="200" x2="150" y2="280"/>
+                        <line class="ishikawa-branch" x1="350" y1="200" x2="300" y2="280"/>
+                        <line class="ishikawa-branch" x1="500" y1="200" x2="450" y2="280"/>
+                        
+                        <!-- Sub-branches -->
+                        <line class="ishikawa-branch" x1="175" y1="160" x2="160" y2="140" stroke-width="2"/>
+                        <line class="ishikawa-branch" x1="175" y1="160" x2="140" y2="150" stroke-width="2"/>
+                        <line class="ishikawa-branch" x1="325" y1="160" x2="310" y2="140" stroke-width="2"/>
+                        <line class="ishikawa-branch" x1="325" y1="160" x2="290" y2="150" stroke-width="2"/>
+                        <line class="ishikawa-branch" x1="475" y1="160" x2="460" y2="140" stroke-width="2"/>
+                        <line class="ishikawa-branch" x1="475" y1="160" x2="440" y2="150" stroke-width="2"/>
+                        
+                        <!-- Labels -->
+                        <g class="ishikawa-label" style="transform: translate(150px, 90px)">
+                            <rect x="-40" y="-15" width="80" height="30" rx="8" fill="url(#grad1)"/>
+                            <text x="0" y="5" text-anchor="middle" font-size="14" font-weight="600" fill="white">Método</text>
+                        </g>
+                        
+                        <g class="ishikawa-label" style="transform: translate(300px, 90px)">
+                            <rect x="-40" y="-15" width="80" height="30" rx="8" fill="url(#grad2)"/>
+                            <text x="0" y="5" text-anchor="middle" font-size="14" font-weight="600" fill="white">Máquina</text>
+                        </g>
+                        
+                        <g class="ishikawa-label" style="transform: translate(450px, 90px)">
+                            <rect x="-40" y="-15" width="80" height="30" rx="8" fill="url(#grad3)"/>
+                            <text x="0" y="5" text-anchor="middle" font-size="14" font-weight="600" fill="white">Material</text>
+                        </g>
+                        
+                        <g class="ishikawa-label" style="transform: translate(150px, 310px)">
+                            <rect x="-50" y="-15" width="100" height="30" rx="8" fill="url(#grad4)"/>
+                            <text x="0" y="5" text-anchor="middle" font-size="14" font-weight="600" fill="white">Mano de obra</text>
+                        </g>
+                        
+                        <g class="ishikawa-label" style="transform: translate(300px, 310px)">
+                            <rect x="-40" y="-15" width="80" height="30" rx="8" fill="url(#grad5)"/>
+                            <text x="0" y="5" text-anchor="middle" font-size="14" font-weight="600" fill="white">Medición</text>
+                        </g>
+                        
+                        <g class="ishikawa-label" style="transform: translate(450px, 310px)">
+                            <rect x="-60" y="-15" width="120" height="30" rx="8" fill="url(#grad6)"/>
+                            <text x="0" y="5" text-anchor="middle" font-size="14" font-weight="600" fill="white">Medio ambiente</text>
+                        </g>
+                        
+                        <div class="ishikawa-effect">Problema/Efecto</div>
+                        
+                        <defs>
+                            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#3498db"/>
+                                <stop offset="100%" style="stop-color:#2980b9"/>
+                            </linearGradient>
+                            <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#e74c3c"/>
+                                <stop offset="100%" style="stop-color:#c0392b"/>
+                            </linearGradient>
+                            <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#f39c12"/>
+                                <stop offset="100%" style="stop-color:#e67e22"/>
+                            </linearGradient>
+                            <linearGradient id="grad4" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#27ae60"/>
+                                <stop offset="100%" style="stop-color:#229954"/>
+                            </linearGradient>
+                            <linearGradient id="grad5" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#9b59b6"/>
+                                <stop offset="100%" style="stop-color:#8e44ad"/>
+                            </linearGradient>
+                            <linearGradient id="grad6" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#1abc9c"/>
+                                <stop offset="100%" style="stop-color:#16a085"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <div class="ishikawa-effect">🎯 Problema/Efecto</div>
+                </div>
+            </div>
+
+            <div class="pareto-container">
+                <h4>📊 Diagrama de Pareto (Regla 80/20)</h4>
+                <div class="pareto-diagram">
+                    <svg width="100%" height="100%" viewBox="0 0 900 350">
+                        <!-- Axes -->
+                        <line stroke="#34495e" stroke-width="3" x1="80" y1="280" x2="800" y2="280"/>
+                        <line stroke="#34495e" stroke-width="3" x1="80" y1="280" x2="80" y2="50"/>
+                        
+                        <!-- Right axis for percentage -->
+                        <line stroke="#34495e" stroke-width="2" x1="800" y1="280" x2="800" y2="50"/>
+                        
+                        <!-- Bars -->
+                        <rect class="pareto-bar" fill="url(#barGrad1)" x="120" y="120" width="80" height="160"/>
+                        <rect class="pareto-bar" fill="url(#barGrad2)" x="220" y="80" width="80" height="200"/>
+                        <rect class="pareto-bar" fill="url(#barGrad3)" x="320" y="140" width="80" height="140"/>
+                        <rect class="pareto-bar" fill="url(#barGrad4)" x="420" y="180" width="80" height="100"/>
+                        <rect class="pareto-bar" fill="url(#barGrad5)" x="520" y="200" width="80" height="80"/>
+                        <rect class="pareto-bar" fill="url(#barGrad6)" x="620" y="220" width="80" height="60"/>
+                        <rect class="pareto-bar" fill="url(#barGrad7)" x="720" y="240" width="80" height="40"/>
+                        
+                        <!-- Cumulative line -->
+                        <polyline class="pareto-line" points="160,120 260,85 360,75 460,68 560,62 660,58 760,55"/>
+                        
+                        <!-- Data points -->
+                        <circle class="pareto-point" cx="160" cy="120"/>
+                        <circle class="pareto-point" cx="260" cy="85"/>
+                        <circle class="pareto-point" cx="360" cy="75"/>
+                        <circle class="pareto-point" cx="460" cy="68"/>
+                        <circle class="pareto-point" cx="560" cy="62"/>
+                        <circle class="pareto-point" cx="660" cy="58"/>
+                        <circle class="pareto-point" cx="760" cy="55"/>
+                        
+                        <!-- Labels -->
+                        <text class="pareto-label" x="160" y="300">Defecto A</text>
+                        <text class="pareto-label" x="260" y="300">Defecto B</text>
+                        <text class="pareto-label" x="360" y="300">Defecto C</text>
+                        <text class="pareto-label" x="460" y="300">Defecto D</text>
+                        <text class="pareto-label" x="560" y="300">Defecto E</text>
+                        <text class="pareto-label" x="660" y="300">Defecto F</text>
+                        <text class="pareto-label" x="760" y="300">Otros</text>
+                        
+                        <!-- Values on bars -->
+                        <text class="pareto-value" x="160" y="110" fill="white">160</text>
+                        <text class="pareto-value" x="260" y="70" fill="white">200</text>
+                        <text class="pareto-value" x="360" y="130" fill="white">140</text>
+                        <text class="pareto-value" x="460" y="170" fill="white">100</text>
+                        <text class="pareto-value" x="560" y="190" fill="white">80</text>
+                        <text class="pareto-value" x="660" y="210" fill="white">60</text>
+                        <text class="pareto-value" x="760" y="230" fill="white">40</text>
+                        
+                        <!-- Percentage labels -->
+                        <text class="pareto-value" x="820" y="125" fill="#2c3e50">40%</text>
+                        <text class="pareto-value" x="820" y="90" fill="#2c3e50">67%</text>
+                        <text class="pareto-value" x="820" y="80" fill="#2c3e50">80%</text>
+                        <text class="pareto-value" x="820" y="70" fill="#2c3e50">90%</text>
+                        <text class="pareto-value" x="820" y="60" fill="#2c3e50">95%</text>
+                        
+                        <!-- Axis labels -->
+                        <text class="pareto-label" x="450" y="340" fill="#2c3e50">Categorías de Problemas</text>
+                        <text class="pareto-label" x="40" y="170" fill="#2c3e50" transform="rotate(-90, 40, 170)">Frecuencia</text>
+                        <text class="pareto-label" x="820" y="170" fill="#2c3e50" transform="rotate(90, 820, 170)">% Acumulado</text>
+                        
+                        <defs>
+                            <linearGradient id="barGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#e74c3c"/>
+                                <stop offset="100%" style="stop-color:#c0392b"/>
+                            </linearGradient>
+                            <linearGradient id="barGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#f39c12"/>
+                                <stop offset="100%" style="stop-color:#e67e22"/>
+                            </linearGradient>
+                            <linearGradient id="barGrad3" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#3498db"/>
+                                <stop offset="100%" style="stop-color:#2980b9"/>
+                            </linearGradient>
+                            <linearGradient id="barGrad4" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#27ae60"/>
+                                <stop offset="100%" style="stop-color:#229954"/>
+                            </linearGradient>
+                            <linearGradient id="barGrad5" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#9b59b6"/>
+                                <stop offset="100%" style="stop-color:#8e44ad"/>
+                            </linearGradient>
+                            <linearGradient id="barGrad6" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#1abc9c"/>
+                                <stop offset="100%" style="stop-color:#16a085"/>
+                            </linearGradient>
+                            <linearGradient id="barGrad7" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#95a5a6"/>
+                                <stop offset="100%" style="stop-color:#7f8c8d"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <p><strong>Interpretación:</strong> El 80% de los problemas son causados por el 20% de las causas. Enfócate en los defectos A, B y C para máximo impacto.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 3: Ciclo PDCA -->
+    <section class="slide">
+        <div class="slide-header">
+            <h2 class="slide-title">2.2 Ciclo PDCA (Plan–Do–Check–Act)</h2>
+        </div>
+        <div class="slide-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h4>📋 Resumen del Ciclo</h4>
+                    <ul>
+                        <li><strong>Plan:</strong> Establecer metas, indicadores y plan de acción</li>
+                        <li><strong>Do:</strong> Implementar piloto o prueba</li>
+                        <li><strong>Check:</strong> Evaluación y medición de resultados</li>
+                        <li><strong>Act:</strong> Estandarizar o ajustar según resultados</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🔗 Relación con ISO 9001</h4>
+                    <p>PDCA es la base fundamental del Sistema de Gestión de Calidad con enfoque a procesos y gestión de riesgos.</p>
+                    <div class="badge">Proceso + Riesgos</div>
+                </div>
+            </div>
+            
+            <!-- PDCA Visual Cycle -->
+            <div class="card">
+                <h4>🔄 Ciclo Visual PDCA</h4>
+                <div style="text-align: center; padding: 30px;">
+                    <svg width="400" height="400" viewBox="0 0 400 400">
+                        <!-- Circle background -->
+                        <circle cx="200" cy="200" r="180" fill="none" stroke="#ecf0f1" stroke-width="8"/>
+                        
+                        <!-- Plan quarter -->
+                        <path d="M 200 200 L 200 20 A 180 180 0 0 1 380 200 Z" fill="url(#planGrad)" stroke="white" stroke-width="4"/>
+                        <text x="290" y="110" text-anchor="middle" font-size="24" font-weight="bold" fill="white">PLAN</text>
+                        <text x="290" y="130" text-anchor="middle" font-size="12" fill="white">Planificar</text>
+                        
+                        <!-- Do quarter -->
+                        <path d="M 200 200 L 380 200 A 180 180 0 0 1 200 380 Z" fill="url(#doGrad)" stroke="white" stroke-width="4"/>
+                        <text x="290" y="290" text-anchor="middle" font-size="24" font-weight="bold" fill="white">DO</text>
+                        <text x="290" y="310" text-anchor="middle" font-size="12" fill="white">Hacer</text>
+                        
+                        <!-- Check quarter -->
+                        <path d="M 200 200 L 200 380 A 180 180 0 0 1 20 200 Z" fill="url(#checkGrad)" stroke="white" stroke-width="4"/>
+                        <text x="110" y="290" text-anchor="middle" font-size="24" font-weight="bold" fill="white">CHECK</text>
+                        <text x="110" y="310" text-anchor="middle" font-size="12" fill="white">Verificar</text>
+                        
+                        <!-- Act quarter -->
+                        <path d="M 200 200 L 20 200 A 180 180 0 0 1 200 20 Z" fill="url(#actGrad)" stroke="white" stroke-width="4"/>
+                        <text x="110" y="110" text-anchor="middle" font-size="24" font-weight="bold" fill="white">ACT</text>
+                        <text x="110" y="130" text-anchor="middle" font-size="12" fill="white">Actuar</text>
+                        
+                        <!-- Center circle -->
+                        <circle cx="200" cy="200" r="60" fill="url(#centerGrad)" stroke="white" stroke-width="4"/>
+                        <text x="200" y="195" text-anchor="middle" font-size="16" font-weight="bold" fill="white">MEJORA</text>
+                        <text x="200" y="210" text-anchor="middle" font-size="16" font-weight="bold" fill="white">CONTINUA</text>
+                        
+                        <!-- Arrows -->
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#2c3e50"/>
+                            </marker>
+                            
+                            <linearGradient id="planGrad">
+                                <stop offset="0%" style="stop-color:#3498db"/>
+                                <stop offset="100%" style="stop-color:#2980b9"/>
+                            </linearGradient>
+                            <linearGradient id="doGrad">
+                                <stop offset="0%" style="stop-color:#e74c3c"/>
+                                <stop offset="100%" style="stop-color:#c0392b"/>
+                            </linearGradient>
+                            <linearGradient id="checkGrad">
+                                <stop offset="0%" style="stop-color:#f39c12"/>
+                                <stop offset="100%" style="stop-color:#e67e22"/>
+                            </linearGradient>
+                            <linearGradient id="actGrad">
+                                <stop offset="0%" style="stop-color:#27ae60"/>
+                                <stop offset="100%" style="stop-color:#229954"/>
+                            </linearGradient>
+                            <linearGradient id="centerGrad">
+                                <stop offset="0%" style="stop-color:#9b59b6"/>
+                                <stop offset="100%" style="stop-color:#8e44ad"/>
+                            </linearGradient>
+                        </defs>
+                        
+                        <!-- Rotation arrows -->
+                        <path d="M 350 120 A 140 140 0 0 1 350 280" fill="none" stroke="#2c3e50" stroke-width="6" marker-end="url(#arrowhead)"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h4>❓ Mini-quiz</h4>
+                <p><strong>¿En qué fase se estandariza la mejora?</strong></p>
+                <button class="button" onclick="checkQuiz('q1u2','Act')">Act (Actuar)</button>
+                <button class="button" onclick="checkQuiz('q1u2','Plan')">Plan (Planificar)</button>
+                <span class="badge" id="q1u2" style="display:none"></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Continue with remaining slides... -->
+    <!-- Slide 4: Kaizen -->
+    <section class="slide">
+        <div class="slide-header">
+            <h2 class="slide-title">2.3 Kaizen (mejora continua)</h2>
+        </div>
+        <div class="slide-content">
+            <div class="card">
+                <h4>🏯 Filosofía Kaizen</h4>
+                <p><strong>Mejoras pequeñas y constantes por todos.</strong> <span class="hint" data-tip="Gemba: ir al lugar real para observar hechos.">Gemba</span> y <span class="hint" data-tip="5S: orden y limpieza para estabilidad de procesos.">5S</span> como bases fundamentales.</p>
+            </div>
+            
+            <div class="grid-3">
+                <div class="stat">
+                    <div class="value">5S</div>
+                    <div class="label">Orden visual</div>
+                </div>
+                <div class="stat">
+                    <div class="value">Gemba</div>
+                    <div class="label">Ir a la fuente</div>
+                </div>
+                <div class="stat">
+                    <div class="value">Blitz</div>
+                    <div class="label">Taller rápido</div>
+                </div>
+            </div>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h4>🗑️ Muda (desperdicios)</h4>
+                    <ul>
+                        <li><strong>Sobreproducción:</strong> Producir más de lo necesario</li>
+                        <li><strong>Esperas:</strong> Tiempos muertos</li>
+                        <li><strong>Transporte:</strong> Movimiento innecesario de materiales</li>
+                        <li><strong>Proceso extra:</strong> Pasos que no agregan valor</li>
+                        <li><strong>Inventario:</strong> Exceso de stock</li>
+                        <li><strong>Movimiento:</strong> Desplazamiento innecesario de personas</li>
+                        <li><strong>Defectos:</strong> Errores y retrabajos</li>
+                        <li><strong>Talento no usado:</strong> No aprovechar habilidades</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📊 Medir el Kaizen</h4>
+                    <ul>
+                        <li><strong>KPI antes/después:</strong> Tiempo de ciclo, retrabajo, calidad</li>
+                        <li><strong>PDCA:</strong> Para estandarizar mejoras</li>
+                        <li><strong>Tasa de implementación:</strong> % de sugerencias aplicadas</li>
+                        <li><strong>Participación:</strong> Número de empleados involucrados</li>
+                        <li><strong>Ahorros:</strong> Cuantificar beneficios económicos</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 5: Seis Sigma -->
+    <section class="slide">
+        <div class="slide-header">
+            <h2 class="slide-title">2.4 Seis Sigma (DMAIC)</h2>
+        </div>
+        <div class="slide-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h4>🎯 Concepto</h4>
+                    <p>Metodología basada en datos para reducir variación y defectos hasta alcanzar ~3.4 partes por millón (ppm).</p>
+                    <div class="badge">Datos + Estadística</div>
+                </div>
+                <div class="card">
+                    <h4>🔄 DMAIC</h4>
+                    <ol>
+                        <li><strong>Definir</strong> - Problema y objetivo</li>
+                        <li><strong>Medir</strong> - Datos actuales</li>
+                        <li><strong>Analizar</strong> - Causas raíz</li>
+                        <li><strong>Mejorar</strong> - Implementar soluciones</li>
+                        <li><strong>Controlar</strong> - Sostener mejoras</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="card">
+                <h4>🔍 Proceso Visual DMAIC</h4>
+                <div style="text-align: center; padding: 20px;">
+                    <svg width="100%" height="200" viewBox="0 0 1000 200">
+                        <!-- Background process flow -->
+                        <rect x="50" y="80" width="900" height="40" fill="url(#processFlow)" rx="20"/>
+                        
+                        <!-- DMAIC phases -->
+                        <g class="dmaic-phase" transform="translate(120,100)">
+                            <circle r="35" fill="url(#defineGrad)" stroke="white" stroke-width="4"/>
+                            <text text-anchor="middle" font-size="20" font-weight="bold" fill="white" y="5">D</text>
+                            <text text-anchor="middle" font-size="12" fill="#2c3e50" y="65">Definir</text>
+                        </g>
+                        
+                        <g class="dmaic-phase" transform="translate(280,100)">
+                            <circle r="35" fill="url(#measureGrad)" stroke="white" stroke-width="4"/>
+                            <text text-anchor="middle" font-size="20" font-weight="bold" fill="white" y="5">M</text>
+                            <text text-anchor="middle" font-size="12" fill="#2c3e50" y="65">Medir</text>
+                        </g>
+                        
+                        <g class="dmaic-phase" transform="translate(440,100)">
+                            <circle r="35" fill="url(#analyzeGrad)" stroke="white" stroke-width="4"/>
+                            <text text-anchor="middle" font-size="20" font-weight="bold" fill="white" y="5">A</text>
+                            <text text-anchor="middle" font-size="12" fill="#2c3e50" y="65">Analizar</text>
+                        </g>
+                        
+                        <g class="dmaic-phase" transform="translate(600,100)">
+                            <circle r="35" fill="url(#improveGrad)" stroke="white" stroke-width="4"/>
+                            <text text-anchor="middle" font-size="20" font-weight="bold" fill="white" y="5">I</text>
+                            <text text-anchor="middle" font-size="12" fill="#2c3e50" y="65">Mejorar</text>
+                        </g>
+                        
+                        <g class="dmaic-phase" transform="translate(760,100)">
+                            <circle r="35" fill="url(#controlGrad)" stroke="white" stroke-width="4"/>
+                            <text text-anchor="middle" font-size="20" font-weight="bold" fill="white" y="5">C</text>
+                            <text text-anchor="middle" font-size="12" fill="#2c3e50" y="65">Controlar</text>
+                        </g>
+                        
+                        <!-- Connection arrows -->
+                        <defs>
+                            <linearGradient id="processFlow">
+                                <stop offset="0%" style="stop-color:#ecf0f1"/>
+                                <stop offset="100%" style="stop-color:#bdc3c7"/>
+                            </linearGradient>
+                            <linearGradient id="defineGrad">
+                                <stop offset="0%" style="stop-color:#3498db"/>
+                                <stop offset="100%" style="stop-color:#2980b9"/>
+                            </linearGradient>
+                            <linearGradient id="measureGrad">
+                                <stop offset="0%" style="stop-color:#e74c3c"/>
+                                <stop offset="100%" style="stop-color:#c0392b"/>
+                            </linearGradient>
+                            <linearGradient id="analyzeGrad">
+                                <stop offset="0%" style="stop-color:#f39c12"/>
+                                <stop offset="100%" style="stop-color:#e67e22"/>
+                            </linearGradient>
+                            <linearGradient id="improveGrad">
+                                <stop offset="0%" style="stop-color:#27ae60"/>
+                                <stop offset="100%" style="stop-color:#229954"/>
+                            </linearGradient>
+                            <linearGradient id="controlGrad">
+                                <stop offset="0%" style="stop-color:#9b59b6"/>
+                                <stop offset="100%" style="stop-color:#8e44ad"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="grid-3">
+                <div class="card">
+                    <h4>📋 Definir</h4>
+                    <ul>
+                        <li>CTQ (Critical to Quality)</li>
+                        <li>VOC (Voice of Customer)</li>
+                        <li>Alcance del proyecto</li>
+                        <li>SIPOC inicial</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📏 Medir</h4>
+                    <ul>
+                        <li>Mapeo detallado del proceso</li>
+                        <li>Línea base de datos</li>
+                        <li>Plan de medición</li>
+                        <li>Capacidad del proceso</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🔍 Analizar</h4>
+                    <ul>
+                        <li>Ishikawa, 5 porqués</li>
+                        <li>Hipótesis de causas</li>
+                        <li>Validación estadística</li>
+                        <li>Análisis de variación</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h4>🛠️ Mejorar</h4>
+                    <ul>
+                        <li>Diseño de experimentos</li>
+                        <li>Pilotos controlados</li>
+                        <li>Rediseño de flujo</li>
+                        <li>Medición de impacto</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📊 Controlar</h4>
+                    <ul>
+                        <li>Estandarización</li>
+                        <li>Control estadístico (SPC)</li>
+                        <li>Tableros de control</li>
+                        <li>Auditorías regulares</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 6: Modelos de Excelencia -->
+    <section class="slide">
+        <div class="slide-header">
+            <h2 class="slide-title">2.5 Modelos de Excelencia</h2>
+            <div class="slide-subtitle">Baldrige / EFQM / Iberoamericano</div>
+        </div>
+        <div class="slide-content">
+            <div class="grid-3">
+                <div class="card">
+                    <h4>🏆 Baldrige (USA)</h4>
+                    <ul>
+                        <li><strong>Liderazgo</strong> - Visión y valores</li>
+                        <li><strong>Estrategia</strong> - Planificación</li>
+                        <li><strong>Clientes</strong> - Enfoque y satisfacción</li>
+                        <li><strong>Medición</strong> - Análisis y gestión del conocimiento</li>
+                        <li><strong>Personal</strong> - Desarrollo del talento</li>
+                        <li><strong>Operaciones</strong> - Eficiencia de procesos</li>
+                        <li><strong>Resultados</strong> - Desempeño organizacional</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🇪🇺 EFQM (Europa)</h4>
+                    <p><strong>Metodología RADAR:</strong></p>
+                    <ul>
+                        <li><strong>R</strong>esultados - ¿Qué se logra?</li>
+                        <li><strong>A</strong>proaches - ¿Cómo se hace?</li>
+                        <li><strong>D</strong>eployment - ¿Dónde se aplica?</li>
+                        <li><strong>A</strong>ssessment - ¿Cómo se evalúa?</li>
+                        <li><strong>R</strong>efinement - ¿Cómo se mejora?</li>
+                    </ul>
+                    <div class="badge">Enfoque Integral</div>
+                </div>
+                <div class="card">
+                    <h4>🌎 Iberoamericano</h4>
+                    <p><strong>Adaptación regional con evaluación REDER:</strong></p>
+                    <ul>
+                        <li><strong>R</strong>esultados</li>
+                        <li><strong>E</strong>nfoque</li>
+                        <li><strong>D</strong>espliege</li>
+                        <li><strong>E</strong>valuación</li>
+                        <li><strong>R</strong>evisión</li>
+                    </ul>
+                    <div class="badge">Contexto Latino</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h4>🔗 Características Comunes</h4>
+                <div class="grid-2">
+                    <ul>
+                        <li>Enfoque holístico de la organización</li>
+                        <li>Medición y benchmarking</li>
+                        <li>Mejora continua sistemática</li>
+                        <li>Liderazgo como motor del cambio</li>
+                    </ul>
+                    <ul>
+                        <li>Orientación a resultados sostenibles</li>
+                        <li>Participación de todos los stakeholders</li>
+                        <li>Gestión basada en datos y hechos</li>
+                        <li>Innovación y aprendizaje organizacional</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 7: Premio Nacional de Calidad -->
+    <section class="slide">
+        <div class="slide-header">
+            <h2 class="slide-title">2.6 Premio Nacional de Calidad (México)</h2>
+        </div>
+        <div class="slide-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h4>🏅 ¿Qué es?</h4>
+                    <p>Reconocimiento gubernamental a organizaciones sobresalientes en calidad y competitividad, basado en el <strong>Modelo Mexicano para la Competitividad</strong>.</p>
+                    <div class="badge">Excelencia Nacional</div>
+                </div>
+                <div class="card">
+                    <h4>📋 Componentes del Modelo</h4>
+                    <ul>
+                        <li><strong>Liderazgo</strong> - Dirección estratégica</li>
+                        <li><strong>Cliente</strong> - Satisfacción y lealtad</li>
+                        <li><strong>Responsabilidad social</strong> - Compromiso comunitario</li>
+                        <li><strong>Procesos</strong> - Eficiencia operacional</li>
+                        <li><strong>Capital humano</strong> - Desarrollo de personas</li>
+                        <li><strong>Innovación</strong> - Creatividad y mejora</li>
+                        <li><strong>Resultados</strong> - Impacto organizacional</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h4>🎯 Beneficios de Participar</h4>
+                <div class="grid-3">
+                    <div style="text-align: center; padding: 20px;">
+                        <h3 style="color: #3498db;">📈</h3>
+                        <h5>Mejora Continua</h5>
+                        <p>Evaluación externa objetiva que identifica áreas de mejora</p>
+                    </div>
+                    <div style="text-align: center; padding: 20px;">
+                        <h3 style="color: #e74c3c;">🏆</h3>
+                        <h5>Reconocimiento</h5>
+                        <p>Prestigio nacional e internacional por excelencia</p>
+                    </div>
+                    <div style="text-align: center; padding: 20px;">
+                        <h3 style="color: #27ae60;">💼</h3>
+                        <h5>Competitividad</h5>
+                        <p>Fortalecimiento de la posición en el mercado</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 8: Recursos y actividades -->
+    <section class="slide">
+        <div class="slide-header">
+            <h2 class="slide-title">📚 Recursos y actividades</h2>
+        </div>
+        <div class="slide-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h4>📖 Lecturas Recomendadas</h4>
+                    <ul>
+                        <li><strong>ASQ – DMAIC:</strong> <a href="https://asq.org/quality-resources/dmaic" target="_blank">asq.org</a></li>
+                        <li><strong>NIST – Baldrige:</strong> <a href="https://www.nist.gov/baldrige" target="_blank">nist.gov/baldrige</a></li>
+                        <li><strong>EFQM Model:</strong> <a href="https://efqm.org/the-efqm-model/" target="_blank">efqm.org</a></li>
+                        <li><strong>FUNDIBEQ:</strong> <a href="https://fundibeq.org/" target="_blank">fundibeq.org</a></li>
+                        <li><strong>JUSE – Quality Circles:</strong> <a href="https://www.juse.or.jp/english/qc/" target="_blank">juse.or.jp</a></li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🛠️ Actividades Prácticas</h4>
+                    <ul>
+                        <li><strong>PDCA:</strong> Definir meta SMART + indicador + piloto</li>
+                        <li><strong>Kaizen:</strong> Identificar un desperdicio y proponer cambio de bajo costo</li>
+                        <li><strong>Six Sigma:</strong> Elaborar CTQ + SIPOC para un proceso</li>
+                        <li><strong>Círculos de Calidad:</strong> Formar equipo y usar herramienta básica</li>
+                        <li><strong>Benchmarking:</strong> Comparar con organizaciones modelo</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h4>🔧 Herramientas Digitales Recomendadas</h4>
+                <div class="grid-3">
+                    <div>
+                        <h5>📊 Para Análisis</h5>
+                        <ul>
+                            <li>Minitab / StatGraphics</li>
+                            <li>Excel con análisis avanzado</li>
+                            <li>Tableau / Power BI</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5>🔄 Para Procesos</h5>
+                        <ul>
+                            <li>Lucidchart / Visio</li>
+                            <li>Bizagi / ProcessMaker</li>
+                            <li>Miro / Mural</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5>📈 Para Seguimiento</h5>
+                        <ul>
+                            <li>Monday.com</li>
+                            <li>Asana / Trello</li>
+                            <li>Kanban boards</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 9: Evaluación rápida -->
+    <section class="slide">
+        <div class="slide-header">
+            <h2 class="slide-title">✅ Evaluación rápida</h2>
+            <div class="slide-subtitle">Verifica tu comprensión</div>
+        </div>
+        <div class="slide-content">
+            <div class="card">
+                <h4>❓ 1) ¿Cuál es el orden correcto de DMAIC?</h4>
+                <p>
+                    <button class="button" onclick="checkQuiz('q2u2','DMAIC')">Definir–Medir–Analizar–Mejorar–Controlar</button>
+                    <button class="button" onclick="checkQuiz('q2u2','DCMAI')">Definir–Controlar–Medir–Analizar–Implementar</button>
+                    <span class="badge" id="q2u2" style="display:none"></span>
+                </p>
+            </div>
+            
+            <div class="card">
+                <h4>❓ 2) ¿Qué herramienta se usa para priorizar causas por impacto?</h4>
+                <p>
+                    <button class="button" onclick="checkQuiz('q3u2','Pareto')">Diagrama de Pareto</button>
+                    <button class="button" onclick="checkQuiz('q3u2','Histograma')">Histograma</button>
+                    <span class="badge" id="q3u2" style="display:none"></span>
+                </p>
+            </div>
+            
+            <div class="card">
+                <h4>❓ 3) ¿Cuáles son las bases fundamentales del Kaizen?</h4>
+                <p>
+                    <button class="button" onclick="checkQuiz('q4u2','5S-Gemba')">5S y Gemba</button>
+                    <button class="button" onclick="checkQuiz('q4u2','PDCA-Six')">PDCA y Six Sigma</button>
+                    <span class="badge" id="q4u2" style="display:none"></span>
+                </p>
+            </div>
+            
+            <div class="card" style="margin-top: 30px; background: linear-gradient(135deg, #d4edda, #c3e6cb);">
+                <h4 style="color: #155724;">🎯 Resumen de Aprendizaje</h4>
+                <p style="color: #0f5132; font-size: 1.1em;">Has completado el estudio de los principales modelos y herramientas de gestión de la calidad y mejora continua. Recuerda que la clave está en la <strong>aplicación práctica</strong> y el <strong>compromiso organizacional</strong> para lograr resultados sostenibles.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 10: Referencias Bibliográficas -->
+    <section class="slide">
+        <div class="slide-header">
+            <h2 class="slide-title">📚 Referencias Bibliográficas</h2>
+            <div class="slide-subtitle">Fuentes consultadas y sugeridas</div>
+        </div>
+        <div class="slide-content">
+            <div class="card">
+                <h4>📖 Bibliografia Principal</h4>
+                <ol style="font-size: 1.05em; line-height: 1.8;">
+                    <li>Ishikawa, K. (1985). <em>What Is Total Quality Control? The Japanese Way</em>. Prentice-Hall.</li>
+                    <li>Deming, W. E. (1986). <em>Out of the Crisis</em>. MIT Press.</li>
+                    <li>Imai, M. (1986). <em>Kaizen: The Key to Japan's Competitive Success</em>. McGraw-Hill.</li>
+                    <li>Pande, P. S., Neuman, R. P., & Cavanagh, R. R. (2000). <em>The Six Sigma Way</em>. McGraw-Hill.</li>
+                    <li>George, M. L., Rowlands, D., & Kastle, B. (2003). <em>What is Lean Six Sigma</em>. McGraw-Hill.</li>
+                </ol>
+            </div>
+            
+            <div class="card">
+                <h4>🌐 Recursos en Línea</h4>
+                <ul style="font-size: 1.05em; line-height: 1.8;">
+                    <li><strong>NIST:</strong> <em>Baldrige Performance Excellence Program</em>. <a href="https://nist.gov/baldrige" target="_blank">nist.gov/baldrige</a></li>
+                    <li><strong>EFQM:</strong> <em>The EFQM Model</em>. <a href="https://efqm.org" target="_blank">efqm.org</a></li>
+                    <li><strong>FUNDIBEQ:</strong> <em>Modelo Iberoamericano de Excelencia</em>. <a href="https://fundibeq.org" target="_blank">fundibeq.org</a></li>
+                    <li><strong>JUSE:</strong> <em>Quality Control Circles</em>. <a href="https://juse.or.jp" target="_blank">juse.or.jp</a></li>
+                    <li><strong>ASQ:</strong> <em>American Society for Quality</em>. <a href="https://asq.org" target="_blank">asq.org</a></li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h4>🏛️ Organizaciones de Referencia</h4>
+                <div class="grid-2">
+                    <ul>
+                        <li><strong>ISO</strong> - International Organization for Standardization</li>
+                        <li><strong>NIST</strong> - National Institute of Standards and Technology</li>
+                        <li><strong>ASQ</strong> - American Society for Quality</li>
+                    </ul>
+                    <ul>
+                        <li><strong>EFQM</strong> - European Foundation for Quality Management</li>
+                        <li><strong>JUSE</strong> - Union of Japanese Scientists and Engineers</li>
+                        <li><strong>INEN</strong> - Instituto Mexicano de Normalización</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+        var currentSlide = 0;
+        var totalSlides = 10;
+        var autoPlayInterval = null;
+
+        function goToSlide(n) {
+            var slides = document.querySelectorAll('.slide');
+            totalSlides = slides.length;
+            if (n < 0 || n >= slides.length) return;
+            
+            for (var i = 0; i < slides.length; i++) {
+                slides[i].classList.remove('active');
+            }
+            
+            slides[n].classList.add('active');
+            currentSlide = n;
+            
+            document.getElementById('slideCounter').textContent = (n + 1) + ' / ' + slides.length;
+            document.getElementById('progressBar').style.width = ((n + 1) / slides.length * 100) + '%';
+            
+            updateButtons();
+            updateIndicators();
+        }
+
+        function changeSlide(direction) {
+            var slides = document.querySelectorAll('.slide');
+            var newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < slides.length) {
+                goToSlide(newSlide);
+            }
+        }
+
+        function updateButtons() {
+            var slides = document.querySelectorAll('.slide');
+            var prev = document.getElementById('prevBtn');
+            var next = document.getElementById('nextBtn');
+            
+            prev.disabled = (currentSlide === 0);
+            prev.style.opacity = (currentSlide === 0) ? '0.5' : '1';
+            
+            next.disabled = (currentSlide === slides.length - 1);
+            next.style.opacity = (currentSlide === slides.length - 1) ? '0.5' : '1';
+        }
+
+        function updateIndicators() {
+            var container = document.getElementById('slideIndicators');
+            container.innerHTML = '';
+            var slides = document.querySelectorAll('.slide');
+            
+            for (var i = 0; i < slides.length; i++) {
+                var indicator = document.createElement('div');
+                indicator.className = 'slide-indicator';
+                indicator.textContent = i + 1;
+                indicator.onclick = (function(slideIndex) {
+                    return function() { goToSlide(slideIndex); };
+                })(i);
+                
+                if (i < currentSlide) {
+                    indicator.classList.add('completed');
+                } else if (i === currentSlide) {
+                    indicator.classList.add('current');
+                } else {
+                    indicator.classList.add('upcoming');
+                }
+                
+                container.appendChild(indicator);
+            }
+        }
+
+        function startAutoPlay() {
+            if (autoPlayInterval) return;
+            autoPlayInterval = setInterval(function() {
+                var slides = document.querySelectorAll('.slide');
+                if (currentSlide < slides.length - 1) {
+                    changeSlide(1);
+                } else {
+                    pauseAutoPlay();
+                }
+            }, 8000);
+        }
+
+        function pauseAutoPlay() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+            }
+        }
+
+        function resetPresentation() {
+            pauseAutoPlay();
+            goToSlide(0);
+        }
+
+        function toggleFullscreen() {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                document.documentElement.requestFullscreen();
+            }
+        }
+
+        function showHelp() {
+            var helpMessage = `
+🎯 AYUDA - Navegación de la Presentación:
+
+⌨️ Teclado:
+• Flecha Izquierda ← : Diapositiva anterior
+• Flecha Derecha → : Siguiente diapositiva  
+• Inicio : Primera diapositiva
+• Fin : Última diapositiva
+
+🖱️ Controles:
+• Usar botones de navegación superiores
+• Hacer clic en indicadores inferiores
+• Botones de reproducción automática
+
+📱 Características:
+• Presentación adaptable a móviles
+• Modo pantalla completa disponible
+• Progreso visual en tiempo real
+
+¡Disfruta explorando los modelos de gestión de calidad!`;
+            alert(helpMessage);
+        }
+
+        // Quiz functionality
+        function checkQuiz(id, answer) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            
+            el.style.display = 'inline-block';
+            
+            var correct = false;
+            if (id === 'q1u2' && answer === 'Act') correct = true;
+            else if (id === 'q2u2' && answer === 'DMAIC') correct = true;
+            else if (id === 'q3u2' && answer === 'Pareto') correct = true;
+            else if (id === 'q4u2' && answer === '5S-Gemba') correct = true;
+            
+            if (correct) {
+                el.textContent = '✅ ¡Correcto!';
+                el.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+            } else {
+                el.textContent = '❌ Intenta de nuevo';
+                el.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+            }
+        }
+
+        // Unit map functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            var unitMap = document.getElementById('unitMap2');
+            if (unitMap) {
+                unitMap.addEventListener('click', function(e) {
+                    var chip = e.target.closest('button.unit-chip');
+                    if (!chip) return;
+                    
+                    var code = chip.getAttribute('data-code') || '';
+                    var slides = document.querySelectorAll('.slide');
+                    
+                    for (var i = 0; i < slides.length; i++) {
+                        var titleEl = slides[i].querySelector('.slide-title, h1, h2, h3');
+                        if (titleEl && titleEl.textContent.includes(code)) {
+                            goToSlide(i);
+                            break;
+                        }
+                    }
+                });
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            else if (e.key === 'ArrowRight') changeSlide(1);
+            else if (e.key === 'Home') goToSlide(0);
+            else if (e.key === 'End') {
+                var slides = document.querySelectorAll('.slide');
+                goToSlide(slides.length - 1);
+            }
+            else if (e.key === 'F11') {
+                e.preventDefault();
+                toggleFullscreen();
+            }
+        });
+
+        // Initialize presentation
+        document.addEventListener('DOMContentLoaded', function() {
+            var slides = document.querySelectorAll('.slide');
+            totalSlides = slides.length;
+            currentSlide = 0;
+            
+            // Show first slide
+            if (slides.length > 0) {
+                slides[0].classList.add('active');
+            }
+            
+            // Update UI
+            document.getElementById('slideCounter').textContent = '1 / ' + totalSlides;
+            document.getElementById('progressBar').style.width = (100 / totalSlides) + '%';
+            
+            updateButtons();
+            updateIndicators();
+        });
+
+        // Responsive adjustments
+        window.addEventListener('resize', function() {
+            // Adjust font sizes for mobile
+            if (window.innerWidth < 768) {
+                document.body.style.fontSize = '14px';
+            } else {
+                document.body.style.fontSize = '16px';
+            }
+        });
+    </script>
+</body>
+</html>
