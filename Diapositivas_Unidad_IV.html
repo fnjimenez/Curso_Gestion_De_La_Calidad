@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<title>Unidad IV — Gestión de Riesgos</title>
+<style>
+/* ===== Base (patrón Unidad III) ===== */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background:linear-gradient(135deg,#667eea 0%, #764ba2 100%);
+  color:#333;
+  overflow:hidden;
+}
+/* Ribbon superior (con menú desplegable tipo Unidad I) */
+.ribbon{
+  position:fixed; inset:0 0 auto 0; height:100px; z-index:1000;
+  background:linear-gradient(135deg,#2c3e50,#34495e);
+  border-bottom:3px solid #3498db; display:flex; align-items:center;
+  padding:0 20px; box-shadow:0 4px 15px rgba(0,0,0,.2);
+}
+.logo-section{background:linear-gradient(135deg,#3498db,#2980b9); border-radius:10px; padding:14px; margin-right:18px; color:#fff; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,.2)}
+.logo-text{font-weight:700; font-size:1.05rem; margin-bottom:2px}
+.course-name{font-size:.8rem; opacity:.9}
+.separator{width:2px; height:60px; background:rgba(255,255,255,.2); margin:0 18px}
+.ribbon-section{display:flex; flex-direction:column; align-items:center; gap:6px; margin-right:16px}
+.ribbon-section h4{color:#ecf0f1; font-size:.8rem; margin:0; text-transform:uppercase; letter-spacing:.04em}
+.ribbon-group{display:flex; gap:8px; align-items:center}
+.ribbon-btn{
+  background:linear-gradient(135deg,#3498db,#2980b9); color:#fff; border:none;
+  padding:10px 14px; border-radius:8px; cursor:pointer; font-weight:600; font-size:.9rem;
+  display:flex; align-items:center; gap:6px; min-height:40px; white-space:nowrap; transition:.25s ease all;
+}
+.ribbon-btn:hover{background:linear-gradient(135deg,#2980b9,#1f4e79); transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.2)}
+.ribbon-btn.success{background:linear-gradient(135deg,#27ae60,#229954)}
+.ribbon-btn.warning{background:linear-gradient(135deg,#f39c12,#e67e22)}
+.ribbon-btn.purple{background:linear-gradient(135deg,#9b59b6,#8e44ad)}
+.progress-section{margin-left:auto; text-align:center; color:#fff}
+.slide-counter{background:linear-gradient(135deg,#34495e,#2c3e50); color:#fff; padding:8px 14px; border-radius:999px; font-weight:700; font-size:.95rem; margin-bottom:8px}
+.progress-bar-container{width:220px; height:10px; background:rgba(255,255,255,.22); border-radius:5px; overflow:hidden}
+.progress-bar{height:100%; background:linear-gradient(90deg,#3498db,#e74c3c); transition:width .3s ease; border-radius:5px}
+
+/* Menú desplegable (rápido) */
+.dropdown{position:relative}
+.dropdown-menu{
+  position:absolute; top:100%; left:0; min-width:240px; z-index:1100; display:none;
+  background:#fff; border:1px solid #e1e5ea; border-radius:10px; padding:8px;
+  box-shadow:0 14px 34px rgba(0,0,0,.22);
+}
+.dropdown.open .dropdown-menu{display:block}
+.dropdown-item{
+  display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; cursor:pointer;
+  font-weight:600; color:#2c3e50;
+}
+.dropdown-item:hover{background:#f2f6ff}
+
+/* Contenedor principal + slides (una por vez, como UIII) */
+.presentation-container{width:100vw; height:calc(100vh - 150px); margin-top:100px; position:relative; padding:0 20px}
+.slide{
+  width:100%; height:100%; position:absolute; inset:0 0 0 0; display:none; padding:20px 40px;
+  background:#fff; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,.2);
+  opacity:0; transform:translateX(100px); transition:all .6s ease; overflow-y:auto;
+}
+.slide.active{display:block; opacity:1; transform:translateX(0)}
+.slide-header{background:linear-gradient(135deg,#2c3e50,#34495e); color:#fff; padding:32px 44px; margin:-20px -40px 28px -40px; border-radius:15px 15px 0 0; box-shadow:0 4px 15px rgba(0,0,0,.1)}
+.slide-title{font-size:2.4rem; font-weight:800; margin:0 0 10px; color:#fff; text-shadow:2px 2px 4px rgba(0,0,0,.3)}
+.slide-subtitle{font-size:1.15rem; opacity:.9}
+
+/* Mini-map inferior */
+.mini-map{position:fixed; inset:auto 0 0 0; background:rgba(0,0,0,.82); padding:12px 24px; z-index:1000; display:flex; justify-content:center; align-items:center; gap:16px; height:60px}
+.mini-map-title{color:#fff; font-weight:700; font-size:.95rem; margin-right:8px}
+.slide-indicators{display:flex; gap:8px; align-items:center}
+.slide-indicator{min-width:34px; height:28px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:.85rem; font-weight:800; color:#fff; transition:.2s}
+.slide-indicator.completed{background:linear-gradient(135deg,#27ae60,#2ecc71)}
+.slide-indicator.current{background:linear-gradient(135deg,#e74c3c,#c0392b); transform:scale(1.1)}
+.slide-indicator.upcoming{background:linear-gradient(135deg,#95a5a6,#7f8c8d)}
+
+/* Tarjetas y grids */
+.card{background:linear-gradient(135deg,#ffffff,#f8f9fa); border:2px solid #3498db; border-left:6px solid #3498db; padding:22px; margin:16px 0; border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,.1); transition:.22s}
+.card:hover{transform:translateY(-3px); box-shadow:0 10px 30px rgba(52,152,219,.22)}
+.card h4{margin:0 0 10px; font-size:1.25rem; color:#2c3e50; font-weight:800}
+.grid-2{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:14px 0}
+.grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin:14px 0}
+@media (max-width:1024px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+/* Objetivo + chips */
+.objective{background:linear-gradient(135deg,#e8f8f5,#d4edda); border:3px solid #28a745; border-left:8px solid #28a745; padding:24px; margin:18px 0; border-radius:15px; box-shadow:0 8px 25px rgba(0,0,0,.1)}
+.objective h3{margin:0 0 10px; color:#155724}
+.unit-map{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; margin:18px 0}
+.unit-chip{background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; border:none; padding:18px 22px; border-radius:12px; cursor:pointer; font-size:1rem; font-weight:700; text-align:left; box-shadow:0 6px 20px rgba(0,0,0,.15); transition:.25s}
+.unit-chip:hover{transform:translateY(-4px); box-shadow:0 12px 28px rgba(0,0,0,.22)}
+.unit-chip .code{background:rgba(255,255,255,.22); padding:6px 10px; border-radius:8px; margin-right:10px}
+
+/* Tips / hints */
+.hint{position:relative; cursor:help; color:#3498db; font-weight:700; border-bottom:2px dotted #3498db}
+.hint[data-tip]:hover::after{
+  content:attr(data-tip); position:absolute; bottom:100%; left:50%; transform:translateX(-50%);
+  background:#2c3e50; color:#fff; padding:10px 12px; border-radius:8px; white-space:nowrap; z-index:1000; font-size:.9rem; box-shadow:0 4px 15px rgba(0,0,0,.3);
+}
+
+/* Botón básico */
+.button{background:linear-gradient(135deg,#3498db,#2980b9); color:#fff; border:none; padding:10px 14px; border-radius:8px; cursor:pointer; font-weight:700; margin:4px; transition:.22s}
+.button:hover{background:linear-gradient(135deg,#2980b9,#1f4e79); transform:translateY(-2px)}
+
+/* Diagrama flujo simple */
+.flow{
+  display:grid; grid-template-columns:repeat(6,1fr); gap:8px; align-items:center; margin:10px 0;
+}
+.flow .step{
+  background:#f8fafc; border:2px dashed #a5b4fc; border-radius:10px; padding:10px; text-align:center; font-weight:800;
+}
+.flow .arrow{font-size:1.3rem; text-align:center}
+
+/* Tabla */
+.table{width:100%; border-collapse:collapse; margin:8px 0}
+.table th,.table td{border:1px solid #e1e5ea; padding:10px; border-radius:4px; text-align:left}
+
+/* Quiz */
+.badge{display:inline-block; padding:6px 10px; background:linear-gradient(135deg,#f39c12,#e67e22); color:#fff; border-radius:999px; font-weight:800}
+.quiz{background:linear-gradient(135deg,#e8f8f5,#d4f6e8); border:2px solid #27ae60; border-radius:12px; padding:16px; margin:12px 0}
+
+/* Responsive */
+@media (max-width:768px){
+  .ribbon{height:84px; padding:0 10px}
+  .presentation-container{padding:0 12px}
+  .slide{padding:16px 18px}
+  .slide-header{padding:22px 26px; margin:-16px -18px 16px -18px}
+  .slide-title{font-size:2rem}
+}
+</style>
+<style id="u4-hero-template">
+.hero{
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  margin-top:8px; gap:14px;
+}
+.hero-icons{display:flex; gap:26px; align-items:center; justify-content:center; flex-wrap:wrap}
+.hero-badge{
+  width:120px; height:120px; border-radius:28px; display:grid; place-items:center;
+  background:linear-gradient(135deg,#e6e9ff,#f3e8ff);
+  border:3px solid #667eea; box-shadow:0 16px 36px rgba(0,0,0,.18);
+}
+.hero-badge svg{width:78px; height:78px}
+.download-btn{
+  display:inline-block; background:linear-gradient(135deg,#3498db,#2980b9); color:#fff; 
+  padding:12px 16px; border-radius:12px; font-weight:800; text-decoration:none;
+  box-shadow:0 8px 22px rgba(41,128,185,.25); transition:.2s;
+}
+.download-btn:hover{transform:translateY(-2px); box-shadow:0 12px 28px rgba(41,128,185,.32)}
+</style><style id="u4-iconrow">
+.icon-row{display:flex;gap:18px;justify-content:center;align-items:center;margin:10px 0 0 0;flex-wrap:wrap}
+.icon-badge{width:80px;height:80px;border-radius:16px;display:grid;place-items:center;
+  background:linear-gradient(135deg,#eef2ff,#ede9fe);
+  border:2px solid #667eea; box-shadow:0 8px 22px rgba(0,0,0,.12)}
+.icon-badge svg{width:50px;height:50px}
+</style><style id="u4-quicklist-css">
+/* ---- Lista rápida (dropdown) U4 ---- */
+.dropdown{position:relative}
+.dropdown-menu{
+  position:absolute; top:100%; left:0; min-width:260px; z-index:1100; display:none;
+  background:#fff; border:1px solid #e1e5ea; border-radius:10px; padding:8px;
+  box-shadow:0 14px 34px rgba(0,0,0,.22);
+}
+.dropdown.open .dropdown-menu{display:block}
+.dropdown-item{
+  display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; cursor:pointer;
+  font-weight:600; color:#2c3e50;
+}
+.dropdown-item:hover{background:#f2f6ff}
+.quick-btn, .ribbon-btn.purple{background:linear-gradient(135deg,#9b59b6,#8e44ad)}
+</style><style>
+
+/* ======= STD LOOK (Unidad IV) ======= */
+#std-ribbon.std-look{
+  position:sticky; top:0; z-index:999;
+  display:flex; align-items:center; gap:14px; padding:10px;
+  background: linear-gradient(180deg,#26384a 0%, #1e2d3a 100%);
+  border-bottom: 2px solid #0ea5e9;
+  color:#eaf1f7;
+  border-radius: 12px 12px 0 0;
+}
+.ribbon:not(#std-ribbon){ display:none !important; }
+.ribbon-brand{
+  display:flex; flex-direction:column; gap:2px;
+  min-width: 240px; padding:10px 14px; border-radius:12px;
+  background: linear-gradient(135deg,#2e8fdd,#4fb5ed);
+  color:white; box-shadow:0 10px 24px rgba(0,0,0,.18);
+}
+.brand-title{ font-weight:800; font-size:18px; line-height:1; }
+.brand-sub{ opacity:.92; font-weight:600; font-size:12.5px; }
+.ribbon-divider{ width:1px; height:46px; background:rgba(255,255,255,.22); margin:0 6px; border-radius:1px; }
+.ribbon-section{ display:flex; flex-direction:column; gap:6px; }
+.section-title{ margin:0; font-size:12px; letter-spacing:.12em; font-weight:800; color:#f1f5f9; opacity:.9; }
+.ribbon-group{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.ribbon-btn{ display:inline-flex; align-items:center; gap:6px; border:none; border-radius:10px; padding:10px 14px; font-weight:700; color:white;
+  box-shadow: 0 6px 18px rgba(0,0,0,.18); transition: transform .22s ease, box-shadow .22s ease, filter .22s ease; cursor:pointer; }
+.ribbon-btn.gray   { background:#64748b; }
+.ribbon-btn.green  { background:#22c55e; }
+.ribbon-btn.blue   { background:#3b82f6; }
+.ribbon-btn.orange { background:#f59e0b; color:#1f2937; }
+.ribbon-btn.purple { background:#a855f7; }
+.ribbon-btn[disabled]{ opacity:.55; cursor:not-allowed; filter:saturate(.6); }
+.ribbon-btn:hover{ transform: translateY(-1px); filter:brightness(1.04); }
+.ribbon-btn:active{ transform: translateY(0); }
+.ribbon-btn:focus-visible{ outline:3px solid rgba(255,255,255,.6); outline-offset:2px; }
+.ribbon-indicator{ margin-left:auto; display:flex; align-items:center; gap:12px; min-width:160px; }
+.ribbon-indicator .counter{ background: rgba(255,255,255,.08); padding:8px 14px; border-radius:24px; font-weight:800; }
+.ribbon-indicator .progress{ width:160px; height:8px; background:rgba(255,255,255,.18); border-radius:999px; overflow:hidden; }
+.ribbon-indicator .progress .bar{ height:100%; background: linear-gradient(90deg,#ef4444,#94a3b8); width:0%; }
+/* Quicklist */
+#quicklist.quicklist{ position:fixed; top:76px; right:0; width:min(360px,90vw); max-height:70vh; overflow:auto; background:#0b1723; color:#e5effa;
+  border-left:2px solid rgba(255,255,255,.12); padding:12px; box-shadow:0 10px 24px rgba(0,0,0,.35); z-index:1001; }
+#quicklist[hidden]{ display:none; }
+#quicklist a{ display:block; padding:8px 10px; border-radius:8px; color:inherit; text-decoration:none; margin:3px 0; border:1px solid transparent; }
+#quicklist a:hover{ background: rgba(148,163,184,.18); transform: translateX(-1px); transition: all .22s ease; }
+#quicklist a[aria-current="true"]{ border-color: rgba(148,163,184,.6); background: rgba(148,163,184,.22); }
+body.quicklist-open .presentation-container,
+body.quicklist-open .slide-content,
+body.quicklist-open main,
+body.quicklist-open #slides{ margin-right: min(360px, 90vw); transition: margin .22s ease; }
+
+</style>
+<style type="text/css" id="operaUserStyle"></style></head>
+<body>
+<div id="std-ribbon" class="ribbon std-look" role="banner" aria-label="Cinta de opciones">
+  <div class="ribbon-brand">
+    <div class="brand-title">CURSO: Gestión de la Calidad</div>
+    <div class="brand-sub" id="brandSub">UNIDAD IV · Gestión de Riesgos</div>
+  </div>
+
+  <div class="ribbon-divider" aria-hidden="true"></div>
+
+  <div class="ribbon-section">
+    <h4 class="section-title">NAVEGACIÓN</h4>
+    <div class="ribbon-group">
+      <button id="btnPrev" class="ribbon-btn gray" aria-label="Anterior" disabled="">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path></svg>
+        <span>Anterior</span>
+      </button>
+      <button id="btnHome" class="ribbon-btn green" aria-label="Inicio">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
+        <span>Inicio</span>
+      </button>
+      <button id="btnNext" class="ribbon-btn blue" aria-label="Siguiente">
+        <span>Siguiente</span>
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-left:6px"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"></path></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="ribbon-divider" aria-hidden="true"></div>
+
+  <div class="ribbon-section">
+    <h4 class="section-title">REPRODUCCIÓN</h4>
+    <div class="ribbon-group">
+      <button id="btnPlay" class="ribbon-btn green" aria-label="Reproducir">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+        <span>Play</span>
+      </button>
+      <button id="btnPause" class="ribbon-btn orange" aria-label="Pausar">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
+        <span>Pausa</span>
+      </button>
+      <button id="btnReset" class="ribbon-btn blue" aria-label="Reiniciar">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 6V3L8 7l4 4V8c2.76 0 5 2.24 5 5 0 1.64-.8 3.1-2.02 4.02l1.42 1.42A6.96 6.96 0 0 0 19 13c0-3.86-3.14-7-7-7z"></path></svg>
+        <span>Reset</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="ribbon-divider" aria-hidden="true"></div>
+
+  <div class="ribbon-section">
+    <h4 class="section-title">VISTA</h4>
+    <div class="ribbon-group">
+      <button id="btnFS" class="ribbon-btn purple" aria-label="Pantalla Completa">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm0-4h3V7h2v5H7V10zm10 9h-3v2h5v-5h-2v3zm0-13V3h-5v2h3v3h2z"></path></svg>
+        <span>Pantalla Completa</span>
+      </button>
+      <button id="btnQuick" class="ribbon-btn purple" aria-controls="quicklist" aria-expanded="false" aria-label="Lista rápida">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h3v3H4V6zm0 9h3v3H4v-3zM9 6h11v3H9V6zm0 9h11v3H9v-3zM4 11h3v2H4v-2zm5 0h11v2H9v-2z"></path></svg>
+        <span>Lista rápida</span>
+      </button>
+      <button id="btnHelp" class="ribbon-btn blue" aria-label="Ayuda">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm1.07-7.75-.9.92C12.45 12.9 12 13.5 12 15h-2v-.5c0-1 .45-1.75 1.17-2.47l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"></path></svg>
+        <span>Ayuda</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="ribbon-indicator">
+    <div class="counter"><span id="slideIndex">1</span> / <span id="slideTotal">9</span></div>
+    <div class="progress"><div class="bar" id="slideBar" style="width: 0%;"></div></div>
+  </div>
+</div>
+<!-- Ribbon superior con navegación y menú desplegable -->
+<div class="ribbon"><div class="logo-section">
+<div class="logo-text">Universidad del SABES</div>
+<div class="course-name">Gestión de la Calidad</div>
+</div><div class="separator"></div><div class="ribbon-section">
+<h4>VISTA</h4>
+<div class="ribbon-group"><div class="dropdown" id="quickMenu"><button class="quick-btn" onclick="toggleMenu()">Lista rápida</button><div class="dropdown-menu" id="menuList"><div class="dropdown-item"><span style="display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 6px; background: rgb(139, 92, 246); color: rgb(255, 255, 255); font-weight: 900;">1</span><span>UNIDAD IV · Gestión de Riesgos</span></div><div class="dropdown-item"><span style="display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 6px; background: rgb(139, 92, 246); color: rgb(255, 255, 255); font-weight: 900;">2</span><span>4.1 Definición de riesgo y sus tipos</span></div><div class="dropdown-item"><span style="display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 6px; background: rgb(139, 92, 246); color: rgb(255, 255, 255); font-weight: 900;">3</span><span>4.2 Pensamiento basado en riesgos</span></div><div class="dropdown-item"><span style="display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 6px; background: rgb(139, 92, 246); color: rgb(255, 255, 255); font-weight: 900;">4</span><span>4.3 Proceso de gestión de riesgos</span></div><div class="dropdown-item"><span style="display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 6px; background: rgb(139, 92, 246); color: rgb(255, 255, 255); font-weight: 900;">5</span><span>4.4 Criterios necesarios para cumplir con un SGR</span></div><div class="dropdown-item"><span style="display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 6px; background: rgb(139, 92, 246); color: rgb(255, 255, 255); font-weight: 900;">6</span><span>4.5 Directrices, sistemas y técnicas de apoyo</span></div><div class="dropdown-item"><span style="display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 6px; background: rgb(139, 92, 246); color: rgb(255, 255, 255); font-weight: 900;">7</span><span>Recursos y actividades</span></div><div class="dropdown-item"><span style="display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 6px; background: rgb(139, 92, 246); color: rgb(255, 255, 255); font-weight: 900;">8</span><span>Evaluación — Quiz</span></div><div class="dropdown-item"><span style="display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 6px; background: rgb(139, 92, 246); color: rgb(255, 255, 255); font-weight: 900;">9</span><span>Referencias Bibliográficas</span></div></div></div>
+
+
+
+<button class="ribbon-btn" onclick="toggleFullscreen()">Pantalla completa</button><button class="ribbon-btn" onclick="showHelp()">Ayuda</button></div>
+</div><div class="ribbon-section">
+<h4>REPRODUCCIÓN</h4>
+<div class="ribbon-group">
+
+
+
+<button class="ribbon-btn" onclick="startAutoPlay &amp;&amp; startAutoPlay()">Play</button><button class="ribbon-btn" onclick="pauseAutoPlay &amp;&amp; pauseAutoPlay()">Pausa</button><button class="ribbon-btn" onclick="resetPresentation &amp;&amp; resetPresentation()">Reset</button></div>
+</div><div class="separator"></div><div class="ribbon-section">
+<h4>NAVEGACIÓN</h4>
+<div class="ribbon-group">
+
+
+
+<button class="ribbon-btn" id="prevBtn" onclick="changeSlide(-1)">Anterior</button><button class="ribbon-btn" onclick="goToSlide(0)">Inicio</button><button class="ribbon-btn" id="nextBtn" onclick="changeSlide(1)">Siguiente</button></div>
+</div><div class="separator"></div>
+
+
+
+
+
+
+
+
+<div class="progress-section">
+<div class="slide-counter" id="slideCounter">1 / 9</div>
+<div class="progress-bar-container"><div class="progress-bar" id="progressBar" style="width: 11.1111%;"></div></div>
+</div></div>
+<!-- Mini Map -->
+<div class="mini-map" id="miniMap">
+<div class="mini-map-title">Progreso:</div>
+<div class="slide-indicators" id="slideIndicators"><div class="slide-indicator current">1</div><div class="slide-indicator upcoming">2</div><div class="slide-indicator upcoming">3</div><div class="slide-indicator upcoming">4</div><div class="slide-indicator upcoming">5</div><div class="slide-indicator upcoming">6</div><div class="slide-indicator upcoming">7</div><div class="slide-indicator upcoming">8</div><div class="slide-indicator upcoming">9</div></div>
+</div>
+<div class="presentation-container" id="deck">
+<!-- Slide 1: Portada + mapa -->
+<section class="slide active">
+<div class="slide-header">
+<h1 class="slide-title">UNIDAD IV · Gestión de Riesgos</h1>
+<p class="slide-subtitle">Pensamiento basado en riesgos y proceso de gestión para asegurar la continuidad del negocio</p>
+<div class="hero"><div class="hero-icons"><div class="hero-badge"><svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 3l7 3v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-3z" stroke="#4c51bf" stroke-width="2"></path>
+<path d="M9 12l2 2 4-4" stroke="#667eea" stroke-width="2"></path></svg></div><div class="hero-badge"><svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 3l9 16H3L12 3z" stroke="#8b5cf6" stroke-width="2"></path><circle cx="12" cy="17" fill="#8b5cf6" r="1.5"></circle><path d="M12 10v4" stroke="#8b5cf6" stroke-width="2"></path></svg></div><div class="hero-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#667eea" height="14" rx="2" width="18" x="3" y="4"></rect>
+<rect fill="#eef2ff" height="5" width="2" x="6" y="11"></rect>
+<rect fill="#eef2ff" height="7" width="2" x="10" y="9"></rect>
+<rect fill="#eef2ff" height="9" width="2" x="14" y="7"></rect>
+</svg></div></div></div></div>
+<div class="slide-content">
+<div class="objective">
+<h3>Objetivo de aprendizaje</h3>
+<p>Evalúa los riesgos organizacionales, aplicando el enfoque de pensamiento basado en riesgos y el proceso de gestión de riesgos, para mitigar impactos negativos y garantizar la continuidad del negocio.</p>
+</div>
+<div class="unit-map">
+<button class="unit-chip" data-code="4.1" onclick="jumpByCode(&#39;4.1&#39;)"><span class="code">4.1</span> Definición de riesgo y tipos</button>
+<button class="unit-chip" data-code="4.2" onclick="jumpByCode(&#39;4.2&#39;)"><span class="code">4.2</span> Pensamiento basado en riesgos</button>
+<button class="unit-chip" data-code="4.3" onclick="jumpByCode(&#39;4.3&#39;)"><span class="code">4.3</span> Proceso de gestión de riesgos</button>
+<button class="unit-chip" data-code="4.4" onclick="jumpByCode(&#39;4.4&#39;)"><span class="code">4.4</span> Criterios para un SGR eficaz</button>
+<button class="unit-chip" data-code="4.5" onclick="jumpByCode(&#39;4.5&#39;)"><span class="code">4.5</span> Directrices, sistemas y técnicas</button>
+</div>
+</div>
+</section>
+<!-- Slide 2: 4.1 -->
+<section class="slide">
+<div class="slide-header">
+<h2 class="slide-title">4.1 Definición de riesgo y sus tipos</h2>
+<p class="slide-subtitle">Conceptos clave y taxonomía</p>
+<div class="icon-row"><div class="icon-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect fill="#4f46e5" height="18" rx="2" width="14" x="5" y="3"></rect><rect fill="#eef2ff" height="2" width="10" x="7" y="7"></rect><rect fill="#eef2ff" height="2" width="10" x="7" y="11"></rect><rect fill="#eef2ff" height="2" width="6" x="7" y="15"></rect></svg></div><div class="icon-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect fill="#667eea" height="14" rx="2" width="18" x="3" y="4"></rect><rect fill="#eef2ff" height="5" width="2" x="6" y="11"></rect><rect fill="#eef2ff" height="7" width="2" x="10" y="9"></rect><rect fill="#eef2ff" height="9" width="2" x="14" y="7"></rect></svg></div><div class="icon-badge"><svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l9 16H3L12 3z" stroke="#8b5cf6" stroke-width="2"></path><circle cx="12" cy="17" fill="#8b5cf6" r="1.5"></circle><path d="M12 10v4" stroke="#8b5cf6" stroke-width="2"></path></svg></div></div></div>
+<div class="slide-content">
+<div class="grid-2">
+<div class="card">
+<h4>¿Qué es el <span class="hint" data-tip="Efecto de la incertidumbre sobre los objetivos (ISO 31000:2018).">riesgo</span>?</h4>
+<ul>
+<li>Puede tener efectos <strong>positivos</strong> (oportunidades) o <strong>negativos</strong> (amenazas).</li>
+<li><span class="hint" data-tip="Nivel de riesgo propio del contexto, antes de aplicar controles.">Riesgo inherente</span> vs <span class="hint" data-tip="Riesgo que permanece tras aplicar controles.">residual</span>.</li>
+<li>Se expresa como combinación de <strong>probabilidad</strong> y <strong>impacto</strong>.</li>
+</ul>
+</div>
+<div class="card">
+<h4>Tipos frecuentes</h4>
+<table class="table">
+<thead><tr><th>Tipo</th><th>Ejemplos</th></tr></thead>
+<tbody>
+<tr><td>Estrategia</td><td>Mercado, competencia, innovación</td></tr>
+<tr><td>Operacional</td><td>Procesos, TI, cadena de suministro</td></tr>
+<tr><td>Financiero</td><td>Liquidez, crédito, tipo de cambio</td></tr>
+<tr><td>Compliance</td><td>Regulatorio, contractual, privacidad</td></tr>
+<tr><td>Reputacional</td><td>Marca, redes sociales, ESG</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="quiz">
+<p><strong>Mini-quiz:</strong> El riesgo residual es el que queda tras aplicar controles.</p>
+<button class="button" onclick="quizMsg(&#39;q1u4&#39;, true)">Verdadero</button>
+<button class="button" onclick="quizMsg(&#39;q1u4&#39;, false)">Falso</button>
+<span class="badge" id="q1u4" style="display:none"></span>
+</div>
+</div>
+</section>
+<!-- Slide 3: 4.2 -->
+<section class="slide">
+<div class="slide-header">
+<h2 class="slide-title">4.2 Pensamiento basado en riesgos</h2>
+<p class="slide-subtitle">Integración con el SGC (ISO 9001) y PDCA</p>
+<div class="icon-row"><div class="icon-badge"><svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 3a6 6 0 016 6c0 2.1-1.2 3.9-3 4.9V17a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3.1A6 6 0 0112 3Z" stroke="#8b5cf6" stroke-width="2"></path><path d="M9 21h6" stroke="#667eea" stroke-width="2"></path></svg></div><div class="icon-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect fill="#667eea" height="14" rx="2" width="18" x="3" y="4"></rect><rect fill="#eef2ff" height="5" width="2" x="6" y="11"></rect><rect fill="#eef2ff" height="7" width="2" x="10" y="9"></rect><rect fill="#eef2ff" height="9" width="2" x="14" y="7"></rect></svg></div><div class="icon-badge"><svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3.5" stroke="#4c51bf" stroke-width="2"></circle><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1" stroke="#8b5cf6" stroke-linecap="round" stroke-width="2"></path></svg></div></div></div>
+<div class="slide-content">
+<div class="grid-3">
+<div class="card">
+<h4>Principios</h4>
+<ul>
+<li>Anticipar riesgos y <strong>oportunidades</strong>.</li>
+<li>Decisiones basadas en <strong>evidencia</strong>.</li>
+<li>Alineación con objetivos del negocio.</li>
+</ul>
+</div>
+<div class="card">
+<h4>Enfoque PDCA</h4>
+<div class="flow">
+<div class="step">Plan</div><div class="arrow">→</div>
+<div class="step">Do</div><div class="arrow">→</div>
+<div class="step">Check</div><div class="arrow">→</div>
+<div class="step">Act</div>
+</div>
+<p>El riesgo se evalúa y trata iterativamente en cada ciclo.</p>
+</div>
+<div class="card">
+<h4>Beneficios</h4>
+<ul>
+<li>Prevención de no conformidades.</li>
+<li>Enfoque proactivo y resiliencia.</li>
+<li>Mejor priorización de recursos.</li>
+</ul>
+</div>
+</div>
+<div class="quiz">
+<p><strong>Pregunta:</strong> En qué fase PDCA se <em>planifican</em> los tratamientos de riesgo?</p>
+<button class="button" onclick="quizMsg(&#39;q2u4&#39;, true)">Plan</button>
+<button class="button" onclick="quizMsg(&#39;q2u4&#39;, false)">Check</button>
+<span class="badge" id="q2u4" style="display:none"></span>
+</div>
+</div>
+</section>
+<!-- Slide 4: 4.3 -->
+<section class="slide">
+<div class="slide-header">
+<h2 class="slide-title">4.3 Proceso de gestión de riesgos</h2>
+<p class="slide-subtitle">Pasos prácticos (ISO 31000)</p>
+<div class="icon-row"><div class="icon-badge"><svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3.5" stroke="#4c51bf" stroke-width="2"></circle><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1" stroke="#8b5cf6" stroke-linecap="round" stroke-width="2"></path></svg></div><div class="icon-badge"><svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l9 16H3L12 3z" stroke="#8b5cf6" stroke-width="2"></path><circle cx="12" cy="17" fill="#8b5cf6" r="1.5"></circle><path d="M12 10v4" stroke="#8b5cf6" stroke-width="2"></path></svg></div><div class="icon-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect fill="#667eea" height="14" rx="2" width="18" x="3" y="4"></rect><rect fill="#eef2ff" height="5" width="2" x="6" y="11"></rect><rect fill="#eef2ff" height="7" width="2" x="10" y="9"></rect><rect fill="#eef2ff" height="9" width="2" x="14" y="7"></rect></svg></div></div></div>
+<div class="slide-content">
+<div class="card">
+<h4>Mapa del proceso</h4>
+<div class="flow">
+<div class="step">Contexto</div><div class="arrow">→</div>
+<div class="step">Identificación</div><div class="arrow">→</div>
+<div class="step">Análisis</div><div class="arrow">→</div>
+<div class="step">Evaluación</div><div class="arrow">→</div>
+<div class="step">Tratamiento</div><div class="arrow">→</div>
+<div class="step">Monitoreo</div>
+</div>
+<p><span class="hint" data-tip="Comunicar y consultar con partes interesadas en todas las etapas.">Comunicación</span> y <span class="hint" data-tip="Registro y trazabilidad de decisiones y KRIs.">registro</span> son transversales.</p>
+</div>
+<div class="grid-2">
+<div class="card">
+<h4>Herramientas</h4>
+<ul>
+<li>Registro de riesgos (Risk Register).</li>
+<li>Matriz probabilidad/impacto (heatmap).</li>
+<li>KRIs y umbrales.</li>
+<li>Planes de tratamiento: evitar, reducir, compartir, aceptar.</li>
+</ul>
+</div>
+<div class="card">
+<h4>Práctica guiada</h4>
+<p>Crea un registro con: riesgo, causa, consecuencia, controles, impacto, probabilidad, propietario y plan.</p>
+<button class="button" onclick="alert(&#39;Plantilla sugerida: CSV/Sheet con columnas: ID, Riesgo, Causa, Consecuencia, Impacto, Probabilidad, Controles, Plan, Propietario, Fecha.&#39;)">Ver plantilla</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Slide 5: 4.4 -->
+<section class="slide">
+<div class="slide-header">
+<h2 class="slide-title">4.4 Criterios necesarios para cumplir con un SGR</h2>
+<p class="slide-subtitle">Liderazgo, integración, evidencia y mejora</p>
+<div class="icon-row"><div class="icon-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect fill="#22c55e" height="14" rx="2" width="18" x="3" y="4"></rect><path d="M7 11l3 3 7-7" fill="none" stroke="#ECFDF5" stroke-width="2"></path></svg></div><div class="icon-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect fill="#4f46e5" height="18" rx="2" width="14" x="5" y="3"></rect><rect fill="#eef2ff" height="2" width="10" x="7" y="7"></rect><rect fill="#eef2ff" height="2" width="10" x="7" y="11"></rect><rect fill="#eef2ff" height="2" width="6" x="7" y="15"></rect></svg></div><div class="icon-badge"><svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3.5" stroke="#4c51bf" stroke-width="2"></circle><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1" stroke="#8b5cf6" stroke-linecap="round" stroke-width="2"></path></svg></div></div></div>
+<div class="slide-content">
+<div class="grid-2">
+<div class="card">
+<h4>Liderazgo y compromiso</h4>
+<ul>
+<li>Tablero ejecutivo de riesgos en tiempo real.</li>
+<li>Comité de riesgos con enfoque digital.</li>
+<li>Simulacros periódicos de crisis.</li>
+</ul>
+</div>
+<div class="card">
+<h4>Integración sistémica</h4>
+<pre style="white-space:pre-wrap; margin:0">Enterprise Risk Architecture (ERA):
+┌─────────────────────────────────────────┐
+│ Capa Estratégica (Board/C-Suite)       │
+├─────────────────────────────────────────┤
+│ Capa Táctica (Unidades de negocio)     │
+├─────────────────────────────────────────┤
+│ Capa Operacional (Procesos/Controles)  │
+├─────────────────────────────────────────┤
+│ Capa Tecnología (Sistemas/Datos/APIs)  │
+└─────────────────────────────────────────┘</pre>
+</div>
+</div>
+<div class="grid-2">
+<div class="card">
+<h4>Metodología basada en evidencia</h4>
+<ul>
+<li>Uso de datos y analítica (p.ej., Monte Carlo, detección de anomalías).</li>
+<li>KRIs en tiempo real; reporting automatizado.</li>
+<li><span class="hint" data-tip="Ajuste de umbrales y controles con datos recientes.">Sistemas adaptativos</span>.</li>
+</ul>
+</div>
+<div class="card">
+<h4>Mejora continua</h4>
+<ul>
+<li>Monitoreo continuo de efectividad de controles.</li>
+<li>Lecciones aprendidas y retroalimentación.</li>
+<li>Auditorías internas y revisión por la dirección.</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<!-- Slide 6: 4.5 -->
+<section class="slide">
+<div class="slide-header">
+<h2 class="slide-title">4.5 Directrices, sistemas y técnicas de apoyo</h2>
+<p class="slide-subtitle">ISO 31000/31010, COSO ERM y herramientas</p>
+<div class="icon-row"><div class="icon-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect fill="#4f46e5" height="18" rx="2" width="14" x="5" y="3"></rect><rect fill="#eef2ff" height="2" width="10" x="7" y="7"></rect><rect fill="#eef2ff" height="2" width="10" x="7" y="11"></rect><rect fill="#eef2ff" height="2" width="6" x="7" y="15"></rect></svg></div><div class="icon-badge"><svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 3a6 6 0 016 6c0 2.1-1.2 3.9-3 4.9V17a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3.1A6 6 0 0112 3Z" stroke="#8b5cf6" stroke-width="2"></path><path d="M9 21h6" stroke="#667eea" stroke-width="2"></path></svg></div><div class="icon-badge"><svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3.5" stroke="#4c51bf" stroke-width="2"></circle><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1" stroke="#8b5cf6" stroke-linecap="round" stroke-width="2"></path></svg></div></div></div>
+<div class="slide-content">
+<div class="grid-3">
+<div class="card">
+<h4>Principios y directrices</h4>
+<ul>
+<li>ISO 31000: Integrado, estructurado, personalizado, inclusivo, dinámico, información fiable, factores humanos, mejora continua.</li>
+<li>COSO ERM: Gobierno y cultura; Estrategia y objetivos; Desempeño; Revisión; Información y reporte.</li>
+</ul>
+</div>
+<div class="card">
+<h4>Técnicas (ISO 31010)</h4>
+<ul>
+<li>FMEA, HAZOP, Bow-Tie.</li>
+<li>Árbol de fallos/acontecimientos.</li>
+<li>Ishikawa (causa-efecto) y Pareto.</li>
+</ul>
+</div>
+<div class="card">
+<h4>Sistemas de soporte</h4>
+<ul>
+<li>Plataformas GRC/EHS con dashboards.</li>
+<li>Integración con ERP/BI.</li>
+<li>Automatización de alertas (KRIs).</li>
+</ul>
+</div>
+</div>
+<div class="quiz">
+<p><strong>Pregunta:</strong> ¿Cuál de estos marcos define <em>principios</em> para gestionar el riesgo?</p>
+<button class="button" onclick="quizMsg(&#39;q3u4&#39;, true)">ISO 31000</button>
+<button class="button" onclick="quizMsg(&#39;q3u4&#39;, false)">Diagrama de Pareto</button>
+<span class="badge" id="q3u4" style="display:none"></span>
+</div>
+</div>
+</section>
+<!-- Slide 7: Recursos y actividades -->
+<section class="slide">
+<div class="slide-header">
+<h2 class="slide-title">Recursos y actividades</h2>
+<p class="slide-subtitle">Lecturas verificables, prácticas y evaluaciones</p>
+<div class="icon-row"><div class="icon-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect fill="#4f46e5" height="18" rx="2" width="14" x="5" y="3"></rect><rect fill="#eef2ff" height="2" width="10" x="7" y="7"></rect><rect fill="#eef2ff" height="2" width="10" x="7" y="11"></rect><rect fill="#eef2ff" height="2" width="6" x="7" y="15"></rect></svg></div><div class="icon-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect fill="#22c55e" height="14" rx="2" width="18" x="3" y="4"></rect><path d="M7 11l3 3 7-7" fill="none" stroke="#ECFDF5" stroke-width="2"></path></svg></div><div class="icon-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect fill="#667eea" height="14" rx="2" width="18" x="3" y="4"></rect><rect fill="#eef2ff" height="5" width="2" x="6" y="11"></rect><rect fill="#eef2ff" height="7" width="2" x="10" y="9"></rect><rect fill="#eef2ff" height="9" width="2" x="14" y="7"></rect></svg></div></div></div>
+<div class="slide-content">
+<div class="grid-2">
+<div class="card">
+<h4>Lecturas/verificables</h4>
+<ul>
+<li><a href="https://www.iso.org/standard/65694.html" rel="noopener" target="_blank">ISO 31000:2018</a> (gestión del riesgo)</li>
+<li><a href="https://www.iso.org/standard/72140.html" rel="noopener" target="_blank">ISO 31010:2019</a> (técnicas de evaluación)</li>
+<li><a href="https://www.coso.org/" rel="noopener" target="_blank">COSO ERM (2017)</a></li>
+</ul>
+</div>
+<div class="card">
+<h4>Prácticas</h4>
+<ul>
+<li>Construye un <strong>registro de riesgos</strong> y una <strong>matriz de calor</strong>.</li>
+<li>Ejercicio de <strong>Bow-Tie</strong> para un riesgo crítico.</li>
+<li>Simula impacto con <em>escenarios</em> (mejor/medio/peor caso).</li>
+</ul>
+</div>
+</div>
+<div class="card">
+<h4>Evaluación breve</h4>
+<p>Completa el quiz de esta unidad y entrega tu registro de riesgos con 5 riesgos priorizados (KRIs, umbrales y planes de tratamiento).</p>
+</div>
+<div class="card"><h4>Plantilla descargable — Registro de Riesgos</h4><p>Úsala para tu práctica y evaluación de la unidad:</p><a class="download-btn" href="file:///C:/Users/fnjim/Downloads/plantilla_registro_riesgos.csv" id="riskTplBtn">Descargar CSV</a></div></div>
+</section>
+<!-- Slide 8: Evaluación -->
+<section class="slide">
+<div class="slide-header">
+<h2 class="slide-title">Evaluación — Quiz</h2>
+<p class="slide-subtitle">Selecciona la opción correcta</p>
+<div class="icon-row"><div class="icon-badge"><svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 3a6 6 0 016 6c0 2.1-1.2 3.9-3 4.9V17a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3.1A6 6 0 0112 3Z" stroke="#8b5cf6" stroke-width="2"></path><path d="M9 21h6" stroke="#667eea" stroke-width="2"></path></svg></div><div class="icon-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect fill="#667eea" height="14" rx="2" width="18" x="3" y="4"></rect><rect fill="#eef2ff" height="5" width="2" x="6" y="11"></rect><rect fill="#eef2ff" height="7" width="2" x="10" y="9"></rect><rect fill="#eef2ff" height="9" width="2" x="14" y="7"></rect></svg></div><div class="icon-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect fill="#22c55e" height="14" rx="2" width="18" x="3" y="4"></rect><path d="M7 11l3 3 7-7" fill="none" stroke="#ECFDF5" stroke-width="2"></path></svg></div></div></div>
+<div class="slide-content">
+<div class="quiz">
+<p>1) El pensamiento basado en riesgos se incorpora principalmente en la fase:</p>
+<button class="button" onclick="quizMsg(&#39;q4u4&#39;, true)">Plan</button>
+<button class="button" onclick="quizMsg(&#39;q4u4&#39;, false)">Act</button>
+<span class="badge" id="q4u4" style="display:none"></span>
+</div>
+<div class="quiz">
+<p>2) ¿Cuál NO es un tratamiento de riesgo?</p>
+<button class="button" onclick="quizMsg(&#39;q5u4&#39;, false)">Evitar</button>
+<button class="button" onclick="quizMsg(&#39;q5u4&#39;, true)">Ignorar sin evaluación</button>
+<span class="badge" id="q5u4" style="display:none"></span>
+</div>
+</div>
+</section>
+<!-- Slide 9: Referencias -->
+<section class="slide">
+<div class="slide-header">
+<h2 class="slide-title">Referencias Bibliográficas</h2>
+<p class="slide-subtitle">Fuentes consultadas y sugeridas</p>
+<div class="icon-row"><div class="icon-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect fill="#4f46e5" height="18" rx="2" width="14" x="5" y="3"></rect><rect fill="#eef2ff" height="2" width="10" x="7" y="7"></rect><rect fill="#eef2ff" height="2" width="10" x="7" y="11"></rect><rect fill="#eef2ff" height="2" width="6" x="7" y="15"></rect></svg></div><div class="icon-badge"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect fill="#22c55e" height="14" rx="2" width="18" x="3" y="4"></rect><path d="M7 11l3 3 7-7" fill="none" stroke="#ECFDF5" stroke-width="2"></path></svg></div><div class="icon-badge"><svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 3a6 6 0 016 6c0 2.1-1.2 3.9-3 4.9V17a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3.1A6 6 0 0112 3Z" stroke="#8b5cf6" stroke-width="2"></path><path d="M9 21h6" stroke="#667eea" stroke-width="2"></path></svg></div></div></div>
+<div class="slide-content">
+<ol>
+<li>ISO 31000:2018. <em>Risk management — Guidelines.</em></li>
+<li>ISO 31010:2019. <em>Risk management — Risk assessment techniques.</em></li>
+<li>COSO (2017). <em>Enterprise Risk Management—Integrating with Strategy and Performance.</em></li>
+<li>Aven, T. (2015). <em>Risk Analysis</em>. Wiley.</li>
+<li>Hubbard, D. (2016). <em>How to Measure Anything in Cybersecurity Risk</em>. Wiley.</li>
+<li>Material del curso (semanas 9–10).</li>
+</ol>
+</div>
+</section>
+</div>
+<script>
+// ===== Utilidades de navegación estilo Unidad III =====
+let current = 0;
+let autoPlayTimer = null;
+const slides = () => Array.from(document.querySelectorAll('.slide'));
+function goToSlide(n){
+  const s = slides(); if(n<0||n>=s.length) return;
+  s.forEach((el,i)=> el.classList.toggle('active', i===n));
+  current = n; updateUI();
+}
+function changeSlide(delta){ goToSlide(current + delta); }
+function updateUI(){
+  // Counter & progress
+  const total = slides().length;
+  document.getElementById('slideCounter').textContent = (current+1) + ' / ' + total;
+  const pct = ((current+1)/total)*100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  // Mini-map
+  const wrap = document.getElementById('slideIndicators');
+  wrap.innerHTML='';
+  slides().forEach((_,i)=>{
+    const b = document.createElement('div');
+    b.className='slide-indicator ' + (i<current ? 'completed' : (i===current?'current':'upcoming'));
+    b.textContent = i+1;
+    b.addEventListener('click', ()=>goToSlide(i));
+    wrap.appendChild(b);
+  });
+  // Menú desplegable
+  renderMenu();
+}
+function startAutoPlay(){ if(autoPlayTimer) return; autoPlayTimer = setInterval(()=>{ if(current>=slides().length-1){ pauseAutoPlay(); return; } changeSlide(1); }, 6000); }
+function pauseAutoPlay(){ clearInterval(autoPlayTimer); autoPlayTimer=null; }
+function resetPresentation(){ pauseAutoPlay(); goToSlide(0); }
+function toggleFullscreen(){
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+}
+function showHelp(){
+  alert('Usa Anterior/Siguiente o teclas ← →. Abre "Lista rápida" para saltar a cualquier diapositiva. Mini-map al pie indica progreso.');
+}
+// Teclado
+document.addEventListener('keydown', (e)=>{
+  if(e.key==='ArrowRight') changeSlide(1);
+  if(e.key==='ArrowLeft') changeSlide(-1);
+});
+// Chips por código (4.1..4.5)
+function jumpByCode(code){
+  const idx = slides().findIndex(sl => (sl.querySelector('.slide-title')||sl).textContent.includes(code));
+  if(idx>=0) goToSlide(idx);
+}
+// Quiz feedback
+function quizMsg(id, ok){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.style.display='inline-block';
+  el.textContent = ok ? '✅ Correcto' : '❌ Intenta de nuevo';
+}
+
+// ===== Menú desplegable como Unidad I =====
+const dd = document.getElementById('quickMenu');
+function toggleMenu(){ dd.classList.toggle('open'); }
+document.addEventListener('click', (e)=>{
+  if(!dd.contains(e.target)){ dd.classList.remove('open'); }
+});
+function renderMenu(){
+  const list = document.getElementById('menuList'); list.innerHTML='';
+  slides().forEach((sl,i)=>{
+    const t = (sl.querySelector('.slide-title')||sl).textContent.trim();
+    const item = document.createElement('div'); item.className='dropdown-item';
+    const dot = document.createElement('span'); dot.textContent = i+1; dot.style.cssText='display:inline-grid;place-items:center;width:26px;height:26px;border-radius:6px;background:#3498db;color:#fff;font-weight:900';
+    const tx = document.createElement('span'); tx.textContent = t;
+    item.appendChild(dot); item.appendChild(tx);
+    item.addEventListener('click', ()=>{ goToSlide(i); toggleMenu(); });
+    list.appendChild(item);
+  });
+}
+
+// Inicializa
+updateUI();
+</script>
+<script id="u4-quicklist-js">
+(function(){
+  function $(sel){ return document.querySelector(sel); }
+  function $all(sel){ return Array.from(document.querySelectorAll(sel)); }
+  function slides(){ return $all('.presentation-container .slide'); }
+  window.toggleMenu = function(){ var dd = $('#quickMenu'); if(dd) dd.classList.toggle('open'); };
+  document.addEventListener('click', function(e){ var dd = $('#quickMenu'); if(dd && !dd.contains(e.target)) dd.classList.remove('open'); });
+  window.renderMenu = function(){
+    var list = $('#menuList'); if(!list) return; list.innerHTML='';
+    slides().forEach(function(sl, i){
+      var t = (sl.querySelector('.slide-title')||sl).textContent.trim();
+      var item = document.createElement('div'); item.className='dropdown-item';
+      var dot = document.createElement('span'); dot.textContent = i+1;
+      dot.style.cssText='display:inline-grid;place-items:center;width:26px;height:26px;border-radius:6px;background:#8e44ad;color:#fff;font-weight:900';
+      var tx = document.createElement('span'); tx.textContent = t;
+      item.appendChild(dot); item.appendChild(tx);
+      item.addEventListener('click', function(){ if(typeof goToSlide==='function'){ goToSlide(i); } toggleMenu(); });
+      list.appendChild(item);
+    });
+  };
+  if(typeof updateUI === 'function'){
+    var _u = updateUI; window.updateUI = function(){ _u(); try{ renderMenu(); }catch(e){} };
+  } else { document.addEventListener('DOMContentLoaded', function(){ try{ renderMenu(); }catch(e){} }); }
+  try{ renderMenu(); }catch(e){}
+})();
+</script><script id="quicklist-js-common-std">
+(function(){
+  function $(sel){ return document.querySelector(sel); }
+  function $all(sel){ return Array.from(document.querySelectorAll(sel)); }
+  function slides(){ return $all('.presentation-container .slide'); }
+  window.toggleMenu = function(){ var dd = $('#quickMenu'); if(dd) dd.classList.toggle('open'); };
+  document.addEventListener('click', function(e){ var dd = $('#quickMenu'); if(dd && !dd.contains(e.target)) dd.classList.remove('open'); });
+  window.renderMenu = function(){
+    var list = $('#menuList'); if(!list) return; list.innerHTML='';
+    slides().forEach(function(sl, i){
+      var t = (sl.querySelector('.slide-title')||sl).textContent.trim();
+      var item = document.createElement('div'); item.className='dropdown-item';
+      var dot = document.createElement('span'); dot.textContent = i+1;
+      dot.style.cssText='display:inline-grid;place-items:center;width:26px;height:26px;border-radius:6px;background:#8b5cf6;color:#fff;font-weight:900';
+      var tx = document.createElement('span'); tx.textContent = t;
+      item.appendChild(dot); item.appendChild(tx);
+      item.addEventListener('click', function(){ if(typeof goToSlide==='function') goToSlide(i); var dd = $('#quickMenu'); if(dd) dd.classList.remove('open'); });
+      list.appendChild(item);
+    });
+  };
+  if(typeof updateUI === 'function'){ var _u = updateUI; window.updateUI = function(){ _u(); try{ renderMenu(); }catch(e){} }; }
+  try{ renderMenu(); }catch(e){}
+})();</script><aside id="quicklist" class="quicklist" aria-label="Lista rápida" hidden=""><div role="list"><a role="listitem" href="javascript:void(0)" data-index="0" aria-current="false">1. UNIDAD IV · Gestión de Riesgos</a><a role="listitem" href="javascript:void(0)" data-index="1" aria-current="true">2. 4.1 Definición de riesgo y sus tipos</a><a role="listitem" href="javascript:void(0)" data-index="2" aria-current="false">3. 4.2 Pensamiento basado en riesgos</a><a role="listitem" href="javascript:void(0)" data-index="3" aria-current="false">4. 4.3 Proceso de gestión de riesgos</a><a role="listitem" href="javascript:void(0)" data-index="4" aria-current="false">5. 4.4 Criterios necesarios para cumplir con un SGR</a><a role="listitem" href="javascript:void(0)" data-index="5" aria-current="false">6. 4.5 Directrices, sistemas y técnicas de apoyo</a><a role="listitem" href="javascript:void(0)" data-index="6" aria-current="false">7. Recursos y actividades</a><a role="listitem" href="javascript:void(0)" data-index="7" aria-current="false">8. Evaluación — Quiz</a><a role="listitem" href="javascript:void(0)" data-index="8" aria-current="false">9. Referencias Bibliográficas</a></div></aside>
+
+<script>
+(function(){
+  function collectSlides(){
+    var list = Array.from(document.querySelectorAll('.slide,[data-slide]'));
+    if(list.length===0){
+      var main = document.querySelector('main') || document.body;
+      list = Array.from(main.querySelectorAll(':scope > section'));
+      if(list.length===0) list = [main];
+    }
+    return list;
+  }
+  var slides = collectSlides();
+  var idx = (typeof window.currentSlide==='number') ? window.currentSlide : 0;
+  var total = slides.length;
+  var elIdx = document.getElementById('slideIndex');
+  var elTot = document.getElementById('slideTotal');
+  var elBar = document.getElementById('slideBar');
+
+  function clamp(n,min,max){ return Math.max(min, Math.min(max, n)); }
+  function updateIndicator(){
+    if(elIdx) elIdx.textContent = String((typeof window.currentSlide==='number'? window.currentSlide : idx) + 1);
+    if(elTot) elTot.textContent = String(total);
+    var i = (typeof window.currentSlide==='number'? window.currentSlide : idx);
+    var pct = total>1 ? (i/(total-1))*100 : 100;
+    if(elBar) elBar.style.width = pct + '%';
+    var bPrev = document.getElementById('btnPrev');
+    var bNext = document.getElementById('btnNext');
+    if(bPrev) bPrev.disabled = (i<=0);
+    if(bNext) bNext.disabled = (i>=total-1);
+  }
+
+  // Subtítulo de marca
+  var h1 = document.querySelector('h1, .unit-title, .titulo');
+  if(h1){ var sub = document.getElementById('brandSub'); if(sub) sub.textContent = h1.textContent.trim(); }
+
+  var btnPrev = document.getElementById('btnPrev');
+  var btnHome = document.getElementById('btnHome');
+  var btnNext = document.getElementById('btnNext');
+  var btnFS   = document.getElementById('btnFS');
+  var btnQuick= document.getElementById('btnQuick');
+  var btnHelp = document.getElementById('btnHelp');
+
+  function go(i){
+    if(typeof window.goToSlide === 'function'){
+      window.goToSlide(clamp(i,0,total-1));
+    }else if(typeof window.changeSlide === 'function'){
+      var cur = (typeof window.currentSlide==='number') ? window.currentSlide : idx;
+      window.changeSlide(clamp(i,0,total-1)-cur);
+    }
+    idx = clamp(i,0,total-1);
+    updateIndicator();
+  }
+
+  btnPrev && (btnPrev.onclick = function(){ go((typeof window.currentSlide==='number'? window.currentSlide : idx)-1); });
+  btnHome && (btnHome.onclick = function(){ go(0); });
+  btnNext && (btnNext.onclick = function(){ go((typeof window.currentSlide==='number'? window.currentSlide : idx)+1); });
+  btnFS && (btnFS.onclick = function(){ if(!document.fullscreenElement){ document.documentElement.requestFullscreen?.(); } else { document.exitFullscreen?.(); } });
+  btnHelp && (btnHelp.onclick = function(){ alert('Atajos: ←/→ navegar, Home inicio, F pantalla completa. Usa “Lista rápida” para saltar a una diapositiva.'); });
+
+  // Quicklist
+  var quick = document.getElementById('quicklist');
+  if(!quick){
+    quick = document.createElement('aside');
+    quick.id = 'quicklist'; quick.className = 'quicklist'; quick.setAttribute('aria-label','Lista rápida'); quick.hidden = true;
+    document.body.appendChild(quick);
+  }
+  btnQuick && (btnQuick.onclick = function(){
+    var willOpen = quick.hasAttribute('hidden');
+    if(willOpen){ renderQuick(); quick.removeAttribute('hidden'); document.body.classList.add('quicklist-open'); }
+    else{ quick.setAttribute('hidden',''); document.body.classList.remove('quicklist-open'); }
+    btnQuick.setAttribute('aria-expanded', String(willOpen));
+  });
+
+  function renderQuick(){
+    slides = collectSlides(); total = slides.length;
+    var out = ['<div role="list">'];
+    for(var i=0;i<slides.length;i++){
+      var titleEl = slides[i].querySelector('.slide-title, h1, h2, h3');
+      var title = titleEl ? titleEl.textContent.trim() : ('Diapositiva ' + (i+1));
+      out.push('<a role="listitem" href="javascript:void(0)" data-index="'+i+'">'+(i+1)+'. '+title+'</a>');
+    }
+    out.push('</div>');
+    quick.innerHTML = out.join('');
+    quick.querySelectorAll('a[data-index]').forEach(function(a){
+      a.addEventListener('click', function(){
+        var k = parseInt(this.getAttribute('data-index'), 10) || 0;
+        go(k);
+        btnQuick.click(); // cerrar
+      });
+    });
+    highlightQuick();
+  }
+
+  function highlightQuick(){
+    var i = (typeof window.currentSlide==='number'? window.currentSlide : idx);
+    quick.querySelectorAll('a[data-index]').forEach(function(a){
+      a.setAttribute('aria-current', (parseInt(a.dataset.index,10)===i) ? 'true' : 'false');
+    });
+  }
+
+  // Hooks
+  var origGo = window.goToSlide;
+  if(typeof origGo === 'function'){
+    window.goToSlide = function(n){ origGo.call(window, n); updateIndicator(); highlightQuick(); };
+  }
+  var origChange = window.changeSlide;
+  if(typeof origChange === 'function'){
+    window.changeSlide = function(step){ origChange.call(window, step); updateIndicator(); highlightQuick(); };
+  }
+
+  // Keyboard
+  document.addEventListener('keydown', function(e){
+    var tag = (e.target && (e.target.tagName||'')).toLowerCase();
+    if(tag==='input' || tag==='textarea' || e.altKey || e.ctrlKey || e.metaKey) return;
+    if(e.key==='ArrowLeft'){ btnPrev && btnPrev.click(); }
+    if(e.key==='ArrowRight'){ btnNext && btnNext.click(); }
+    if(e.key==='Home'){ btnHome && btnHome.click(); }
+    if(e.key==='f' || e.key==='F'){ btnFS && btnFS.click(); }
+  }, {passive:true});
+
+  updateIndicator();
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ updateIndicator(); renderQuick(); });
+  }else{
+    renderQuick();
+  }
+})();
+</script>
+
+
+</body></html>

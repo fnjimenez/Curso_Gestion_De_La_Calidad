@@ -1,9 +1,7 @@
 <!DOCTYPE html>
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-<html lang="es">
-<head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
 <title>Sistema de Gestion de la Calidad - UNIDAD 1</title>
 <style>
         * {
@@ -423,52 +421,77 @@
   #current-topic-badge{font-size:.8rem; padding:.25rem .6rem}
   #current-topic-prefix{display:none;}
 }
-</style></head>
-<body><div id="current-topic-badge"><span id="current-topic-prefix">Unidad 1 ·</span><span id="current-topic-label">Cargando tema…</span></div>
+</style><style>
+/* Quicklist panel (no superposición) */
+.quicklist{ position:fixed; top:100px; right:0; width:min(360px, 90vw); max-height:70vh; overflow:auto; background:#fff;
+  border-left:2px solid rgba(0,0,0,.1); padding:12px; box-shadow: 0 10px 24px rgba(0,0,0,.15); z-index:1001; }
+.quicklist[hidden]{ display:none; }
+.quicklist a{ display:block; padding:8px 10px; border-radius:8px; color:#2c3e50; text-decoration:none; margin:2px 0; border:1px solid transparent; }
+.quicklist a:hover{ background: rgba(52,152,219,.12); transform: translateX(-1px); transition: all .25s ease; }
+.quicklist a[aria-current="true"]{ border-color: rgba(52,152,219,.5); background: rgba(52,152,219,.15); }
+body.quicklist-open .presentation-container{ margin-right: min(360px, 90vw); transition: margin .25s ease; }
+</style>
+
+<style>
+/* ribbon button icon alignment */
+#std-ribbon .btn svg,
+.ribbon .ribbon-btn svg{
+  vertical-align: -3px; margin-right: 6px;
+}
+</style>
+<style type="text/css" id="operaUserStyle"></style></head>
+<body><div id="current-topic-badge"><span id="current-topic-prefix">Unidad 1 ·</span><span id="current-topic-label">1.3 Evolucion de la Gestion de Calidad</span></div>
 <div class="ribbon">
 <div class="logo-section">
-<div class="logo-text">Universidad del SABES</div>
-<div class="course-name">Gestión de la Calidad</div>
+<div class="logo-text">Curso: Gestión de la Calidad</div>
+<div class="course-name">UNIDAD I. Sistema de Gestión de la Calidad </div>
 </div>
 <div class="separator"></div>
 <div class="ribbon-section">
 <h4>Navegacion</h4>
 <div class="ribbon-group">
-<button class="ribbon-btn large" id="prevBtn" onclick="changeSlide(-1)">Anterior</button>
-<button class="ribbon-btn large success" onclick="goToSlide(0)">Inicio</button>
-<button class="ribbon-btn large" id="nextBtn" onclick="changeSlide(1)">Siguiente</button>
+<button class="ribbon-btn large" id="prevBtn" onclick="changeSlide(-1)" style="opacity: 1;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" focusable="false"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path></svg><span class="btn__label">Anterior</span></button>
+<button class="ribbon-btn large success" onclick="goToSlide(0)"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" focusable="false"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg><span class="btn__label">Inicio</span></button>
+<button class="ribbon-btn large" id="nextBtn" onclick="changeSlide(1)" style="opacity: 1;"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" focusable="false"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"></path></svg><span class="btn__label">Siguiente</span></button>
 </div>
 </div>
 <div class="separator"></div>
 <div class="ribbon-section">
 <h4>Reproduccion</h4>
 <div class="ribbon-group">
-<button class="ribbon-btn success" onclick="startAutoPlay()">Play</button>
-<button class="ribbon-btn warning" onclick="pauseAutoPlay()">Pausa</button>
-<button class="ribbon-btn" onclick="resetPresentation()">Reset</button>
+<button class="ribbon-btn success" onclick="startAutoPlay()"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" focusable="false"><path d="M8 5v14l11-7z"></path></svg><span class="btn__label">Play</span></button>
+<button class="ribbon-btn warning" onclick="pauseAutoPlay()"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" focusable="false"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg><span class="btn__label">Pausa</span></button>
+<button class="ribbon-btn" onclick="resetPresentation()"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" focusable="false"><path d="M12 6V3L8 7l4 4V8c2.76 0 5 2.24 5 5 0 1.64-.8 3.1-2.02 4.02l1.42 1.42A6.96 6.96 0 0 0 19 13c0-3.86-3.14-7-7-7z"></path></svg><span class="btn__label">Reset</span></button>
 </div>
 </div>
 <div class="separator"></div>
 <div class="ribbon-section">
 <h4>Vista</h4>
 <div class="ribbon-group">
-<button class="ribbon-btn purple" onclick="toggleFullscreen()">Pantalla Completa</button>
-<button class="ribbon-btn" onclick="showHelp()">Ayuda</button>
+<button class="ribbon-btn purple" onclick="toggleFullscreen()"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" focusable="false"><path d="M7 14H5v5h5v-2H7v-3zm0-4h3V7h2v5H7V10zm10 9h-3v2h5v-5h-2v3zm0-13V3h-5v2h3v3h2z"></path></svg><span class="btn__label">Pantalla Completa</span></button>
+<button class="ribbon-btn purple" id="btnQuick" onclick="toggleQuicklist()" aria-controls="quicklist" aria-expanded="false" title="Lista rápida">
+  <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" focusable="false" style="margin-right:4px">
+    <path d="M4 6h3v3H4V6zm0 9h3v3H4v-3zM9 6h11v3H9V6zm0 9h11v3H9v-3zM4 11h3v2H4v-2zm5 0h11v2H9v-2z"></path>
+  </svg>
+  Lista rápida
+</button>
+
+<button class="ribbon-btn" onclick="showHelp()"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" focusable="false"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm1.07-7.75-.9.92C12.45 12.9 12 13.5 12 15h-2v-.5c0-1 .45-1.75 1.17-2.47l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"></path></svg><span class="btn__label">Ayuda</span></button>
 </div>
 </div>
 <div class="progress-section">
-<div class="slide-counter" id="slideCounter">1 / 15</div>
+<div class="slide-counter" id="slideCounter">6 / 18</div>
 <div class="progress-bar-container">
-<div class="progress-bar" id="progressBar"></div>
+<div class="progress-bar" id="progressBar" style="width: 33.3333%;"></div>
 </div>
 </div>
 </div>
 <div class="mini-map" id="miniMap">
 <div class="mini-map-title">Progreso:</div>
-<div class="slide-indicators" id="slideIndicators"></div>
+<div class="slide-indicators" id="slideIndicators"><div class="slide-indicator completed">1</div><div class="slide-indicator completed">2</div><div class="slide-indicator completed">3</div><div class="slide-indicator completed">4</div><div class="slide-indicator completed">5</div><div class="slide-indicator current">6</div><div class="slide-indicator upcoming">7</div><div class="slide-indicator upcoming">8</div><div class="slide-indicator upcoming">9</div><div class="slide-indicator upcoming">10</div><div class="slide-indicator upcoming">11</div><div class="slide-indicator upcoming">12</div><div class="slide-indicator upcoming">13</div><div class="slide-indicator upcoming">14</div><div class="slide-indicator upcoming">15</div><div class="slide-indicator upcoming">16</div><div class="slide-indicator upcoming">17</div><div class="slide-indicator upcoming">18</div></div>
 </div>
 <div class="presentation-container">
-<div class="slide active">
+<div class="slide">
 <div style="text-align: center; padding-top: 60px;">
 <h1 style="font-size: 3.2em; color: #2c3e50; margin-bottom: 30px; font-weight: 700;">
                     UNIDAD 1
@@ -490,11 +513,42 @@
 </div>
 </div>
 </div>
-<div class="slide"><div class="slide-header">
+<div class="slide">
+<div class="slide-header">
+<h1 class="slide-title">Contenido de la Unidad</h1>
+<p class="slide-subtitle">Temas principales a desarrollar</p>
+</div>
+<div class="systems-diagram">
+<div class="system-element" onclick="goToSlide(2)">
+<h3>1.1</h3>
+<p>Teoria General de Sistemas</p>
+</div>
+<div class="system-element" onclick="goToSlide(5)">
+<h3>1.2</h3>
+<p>Estandarizacion de Procesos</p>
+</div>
+<div class="system-element" onclick="goToSlide(6)">
+<h3>1.3</h3>
+<p>Evolucion de la Gestion de Calidad</p>
+</div>
+<div class="system-element" onclick="goToSlide(8)">
+<h3>1.4</h3>
+<p>Principios de Gestion de Calidad</p>
+</div>
+<div class="system-element" onclick="goToSlide(11)">
+<h3>1.5</h3>
+<p>Gestion del Cambio Organizacional</p>
+</div>
+<div class="system-element" onclick="goToSlide(13)">
+<h3>1.6</h3>
+<p>Calidad Total y Competitividad</p>
+</div>
+</div>
+</div><div class="slide"><div class="slide-header">
 <h1 class="slide-title">Componentes de un Sistema</h1>
 <p class="slide-subtitle">Elementos fundamentales</p>
 </div><div class="systems-diagram">
-<div class="interactive-box" onclick="toggleContent('subsistema-info')">
+<div class="interactive-box" onclick="toggleContent(&#39;subsistema-info&#39;)">
 <h3>Subsistema</h3>
 <p>Parte del sistema mayor</p>
 <div class="expandable-content" id="subsistema-info">
@@ -502,7 +556,7 @@
                         con componentes y funciones propias, pero que contribuye al proposito general del sistema principal.</p>
 </div>
 </div>
-<div class="interactive-box" onclick="toggleContent('entorno-info')">
+<div class="interactive-box" onclick="toggleContent(&#39;entorno-info&#39;)">
 <h3>Entorno</h3>
 <p>Ambiente externo</p>
 <div class="expandable-content" id="entorno-info">
@@ -510,7 +564,7 @@
                         o ser influido por el. Es crucial en sistemas abiertos.</p>
 </div>
 </div>
-<div class="interactive-box" onclick="toggleContent('feedback-info')">
+<div class="interactive-box" onclick="toggleContent(&#39;feedback-info&#39;)">
 <h3>Retroalimentacion</h3>
 <p>Proceso de autorregulacion</p>
 <div class="expandable-content" id="feedback-info">
@@ -562,7 +616,7 @@
                 sistematica y repetible, mejorando la eficiencia operativa y reduciendo la variabilidad.</p>
 <p style="font-style: italic; margin-top: 10px;">(Harrington, 1991)</p>
 </div>
-<div class="interactive-box" onclick="toggleContent('beneficios-estandar')">
+<div class="interactive-box" onclick="toggleContent(&#39;beneficios-estandar&#39;)">
 <h3>Beneficios de la Estandarizacion</h3>
 <p>Descubre las ventajas clave</p>
 <div class="expandable-content" id="beneficios-estandar">
@@ -582,7 +636,7 @@
 <div class="quiz-option" onclick="selectQuizAnswer(this, false)">Aumentar la complejidad del proceso</div>
 </div>
 </div>
-<div class="slide">
+<div class="slide active">
 <div class="slide-header">
 <h1 class="slide-title">1.3 Evolucion de la Gestion de Calidad</h1>
 <p class="slide-subtitle">Un recorrido historico</p>
@@ -796,7 +850,7 @@
                 estrategias, procedimientos, tecnologias o cultura, para adaptarse a factores internos o externos.</p>
 <p style="font-style: italic; margin-top: 10px;">(Robbins &amp; Coulter, 2018)</p>
 </div>
-<div class="interactive-box" onclick="toggleContent('modelo-lewin')">
+<div class="interactive-box" onclick="toggleContent(&#39;modelo-lewin&#39;)">
 <h3>Modelo de Lewin: Descongelar - Cambiar - Recongelar</h3>
 <p>Descubre el modelo mas reconocido</p>
 <div class="expandable-content" id="modelo-lewin">
@@ -856,7 +910,7 @@
                 los miembros de la organizacion con el objetivo de satisfacer las necesidades del cliente.</p>
 <p style="font-style: italic; margin-top: 10px;">(Evans &amp; Lindsay, 2011)</p>
 </div>
-<div class="interactive-box" onclick="toggleContent('competitividad-def')">
+<div class="interactive-box" onclick="toggleContent(&#39;competitividad-def&#39;)">
 <h3>¿Que es Competitividad?</h3>
 <p>Descubre la definicion segun Michael Porter</p>
 <div class="expandable-content" id="competitividad-def">
@@ -879,44 +933,13 @@
 <div style="font-size: 0.85em; color: #7f8c8d; font-style: italic; margin-top: 15px;">(Deming, 1989)</div>
 </div>
 </div>
-<div class="slide">
-<div class="slide-header">
-<h1 class="slide-title">Contenido de la Unidad</h1>
-<p class="slide-subtitle">Temas principales a desarrollar</p>
-</div>
-<div class="systems-diagram">
-<div class="system-element" onclick="goToSlide(2)">
-<h3>1.1</h3>
-<p>Teoria General de Sistemas</p>
-</div>
-<div class="system-element" onclick="goToSlide(5)">
-<h3>1.2</h3>
-<p>Estandarizacion de Procesos</p>
-</div>
-<div class="system-element" onclick="goToSlide(6)">
-<h3>1.3</h3>
-<p>Evolucion de la Gestion de Calidad</p>
-</div>
-<div class="system-element" onclick="goToSlide(8)">
-<h3>1.4</h3>
-<p>Principios de Gestion de Calidad</p>
-</div>
-<div class="system-element" onclick="goToSlide(11)">
-<h3>1.5</h3>
-<p>Gestion del Cambio Organizacional</p>
-</div>
-<div class="system-element" onclick="goToSlide(13)">
-<h3>1.6</h3>
-<p>Calidad Total y Competitividad</p>
-</div>
-</div>
-</div>
+
 <div class="slide">
 <div class="slide-header">
 <h1 class="slide-title">1.1 Teoria General de Sistemas</h1>
 <p class="slide-subtitle">Simulador Empresarial TechCorp</p>
 </div>
-<div class="interactive-box" onclick="toggleContent('sistema-def')">
+<div class="interactive-box" onclick="toggleContent(&#39;sistema-def&#39;)">
 <h3>Definicion de Sistema</h3>
 <p>Un conjunto de elementos interrelacionados que trabajan hacia un objetivo comun</p>
 <div class="expandable-content" id="sistema-def">
@@ -935,29 +958,29 @@
 <h6 style="color: #1565c0; margin-bottom: 8px;">ENTRADAS</h6>
 <label class="slider-label">
                                 Calidad Materias Primas: <span id="material-value">75</span>%
-                                <input class="slider" id="material-quality" max="100" min="20" oninput="updateSystem()" type="range" value="75"/>
+                                <input class="slider" id="material-quality" max="100" min="20" oninput="updateSystem()" type="range" value="75">
 </label>
 <label class="slider-label">
                                 Capacitacion Personal: <span id="training-value">60</span>%
-                                <input class="slider" id="training-level" max="100" min="20" oninput="updateSystem()" type="range" value="60"/>
+                                <input class="slider" id="training-level" max="100" min="20" oninput="updateSystem()" type="range" value="60">
 </label>
 </div>
 <div class="slider-group processes">
 <h6 style="color: #7b1fa2; margin-bottom: 8px;">PROCESOS</h6>
 <label class="slider-label">
                                 Estandarizacion: <span id="standard-value">50</span>%
-                                <input class="slider" id="standardization" max="100" min="0" oninput="updateSystem()" type="range" value="50"/>
+                                <input class="slider" id="standardization" max="100" min="0" oninput="updateSystem()" type="range" value="50">
 </label>
 <label class="slider-label">
                                 Control de Calidad: <span id="quality-value">70</span>%
-                                <input class="slider" id="quality-control" max="100" min="0" oninput="updateSystem()" type="range" value="70"/>
+                                <input class="slider" id="quality-control" max="100" min="0" oninput="updateSystem()" type="range" value="70">
 </label>
 </div>
 <div class="slider-group feedback">
 <h6 style="color: #2e7d32; margin-bottom: 8px;">RETROALIMENTACION</h6>
 <label class="slider-label">
                                 Velocidad de Respuesta: <span id="response-value">40</span>%
-                                <input class="slider" id="response-speed" max="100" min="0" oninput="updateSystem()" type="range" value="40"/>
+                                <input class="slider" id="response-speed" max="100" min="0" oninput="updateSystem()" type="range" value="40">
 </label>
 </div>
 <div style="display: flex; gap: 8px; margin: 15px 0;">
@@ -1559,5 +1582,69 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initial render
   refreshTopic(0);
 });
-</script></body>
-</html>
+</script>
+<aside id="quicklist" class="quicklist" aria-label="Lista rápida" hidden=""><div role="list"><a role="listitem" href="javascript:void(0)" data-index="0" aria-current="false">1. UNIDAD 1</a><a role="listitem" href="javascript:void(0)" data-index="1" aria-current="false">2. Contenido de la Unidad</a><a role="listitem" href="javascript:void(0)" data-index="2" aria-current="false">3. Componentes de un Sistema</a><a role="listitem" href="javascript:void(0)" data-index="3" aria-current="false">4. Sistemas Abiertos vs Cerrados</a><a role="listitem" href="javascript:void(0)" data-index="4" aria-current="false">5. 1.2 Estandarizacion de Procesos</a><a role="listitem" href="javascript:void(0)" data-index="5" aria-current="true">6. 1.3 Evolucion de la Gestion de Calidad</a><a role="listitem" href="javascript:void(0)" data-index="6" aria-current="false">7. Evolucion Moderna de la Calidad</a><a role="listitem" href="javascript:void(0)" data-index="7" aria-current="false">8. 1.4 Principios de Gestion de Calidad</a><a role="listitem" href="javascript:void(0)" data-index="8" aria-current="false">9. Los 7 Principios ISO - Exploracion Detallada</a><a role="listitem" href="javascript:void(0)" data-index="9" aria-current="false">10. Aplicaciones Industriales de los Principios</a><a role="listitem" href="javascript:void(0)" data-index="10" aria-current="false">11. 1.5 Gestion del Cambio Organizacional</a><a role="listitem" href="javascript:void(0)" data-index="11" aria-current="false">12. Casos de Exito y Fracaso</a><a role="listitem" href="javascript:void(0)" data-index="12" aria-current="false">13. 1.6 Calidad Total y Competitividad</a><a role="listitem" href="javascript:void(0)" data-index="13" aria-current="false">14. 1.1 Teoria General de Sistemas</a><a role="listitem" href="javascript:void(0)" data-index="14" aria-current="false">15. 1.2 Estandarizacion de Procesos</a><a role="listitem" href="javascript:void(0)" data-index="15" aria-current="false">16. 1.3 Evolucion de la Gestion de Calidad</a><a role="listitem" href="javascript:void(0)" data-index="16" aria-current="false">17. Principios y Competitividad</a><a role="listitem" href="javascript:void(0)" data-index="17" aria-current="false">18. Referencias Bibliograficas</a></div></aside>
+
+<script>
+// Quicklist logic
+function toggleQuicklist(){
+  var q = document.getElementById('quicklist');
+  var btn = document.getElementById('btnQuick');
+  var willOpen = q.hasAttribute('hidden');
+  if(willOpen){ renderQuicklist(); q.removeAttribute('hidden'); document.body.classList.add('quicklist-open'); }
+  else{ q.setAttribute('hidden',''); document.body.classList.remove('quicklist-open'); }
+  if(btn) btn.setAttribute('aria-expanded', String(willOpen));
+}
+
+function renderQuicklist(){
+  var q = document.getElementById('quicklist');
+  if(!q) return;
+  var slides = document.querySelectorAll('.slide');
+  var html = '<div role="list">';
+  for(var i=0;i<slides.length;i++){
+    var titleEl = slides[i].querySelector('.slide-title, h1, h2, h3');
+    var title = titleEl ? titleEl.textContent.trim() : ('Diapositiva ' + (i+1));
+    html += '<a role="listitem" href="javascript:void(0)" data-index="'+i+'">'+(i+1)+'. '+title+'</a>';
+  }
+  html += '</div>';
+  q.innerHTML = html;
+  var items = q.querySelectorAll('a[data-index]');
+  for(var j=0;j<items.length;j++){
+    items[j].addEventListener('click', function(){
+      var k = parseInt(this.getAttribute('data-index'), 10);
+      goToSlide(k);
+      // keep panel open or close? Close to evitar distracción
+      toggleQuicklist();
+    });
+  }
+  highlightQuicklist();
+}
+
+function highlightQuicklist(){
+  var q = document.getElementById('quicklist');
+  if(!q) return;
+  var items = q.querySelectorAll('a[data-index]');
+  for(var i=0;i<items.length;i++){
+    items[i].setAttribute('aria-current', (i===currentSlide) ? 'true' : 'false');
+  }
+}
+
+// Hook to existing functions
+(function(){
+  var origGoTo = window.goToSlide;
+  window.goToSlide = function(n){
+    origGoTo.call(window, n);
+    highlightQuicklist();
+  };
+  // After page load, render once to cache titles
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ renderQuicklist(); });
+  }else{
+    renderQuicklist();
+  }
+})();
+</script>
+
+
+
+</body></html>

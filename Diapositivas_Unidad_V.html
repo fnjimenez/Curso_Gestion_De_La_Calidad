@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Unidad V – Familia de Normas ISO 14000</title>
+<style>
+/* ===== Base (patrón Unidad III) ===== */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background:linear-gradient(135deg,#667eea 0%, #764ba2 100%);
+  color:#333;
+  overflow:hidden;
+}
+
+/* Contenedor principal + slides (una por vez, como UIII) */
+.presentation-container{width:100vw; height:calc(100vh - 90px); margin-top:80px; position:relative; padding:0 20px}
+.slide{
+  width:100%; height:100%; position:absolute; inset:0 0 0 0; display:none; padding:20px 40px;
+  background:#fff; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,.2);
+  opacity:0; transform:translateX(100px); transition:all .6s ease; overflow-y:auto;
+}
+.slide.active{display:block; opacity:1; transform:translateX(0)}
+.slide-header{background:linear-gradient(135deg,#2c3e50,#34495e); color:#fff; padding:32px 44px; margin:-20px -40px 28px -40px; border-radius:15px 15px 0 0; box-shadow:0 4px 15px rgba(0,0,0,.1)}
+.slide-title{font-size:2.4rem; font-weight:800; margin:0 0 10px; color:#fff; text-shadow:2px 2px 4px rgba(0,0,0,.3)}
+.slide-subtitle{font-size:1.15rem; opacity:.9}
+
+/* Mini-map inferior */
+.mini-map{position:fixed; inset:auto 0 0 0; background:rgba(0,0,0,.82); padding:12px 24px; z-index:1000; display:flex; justify-content:center; align-items:center; gap:16px; height:60px}
+.mini-map-title{color:#fff; font-weight:700; font-size:.95rem; margin-right:8px}
+.slide-indicators{display:flex; gap:8px; align-items:center}
+.slide-indicator{min-width:34px; height:28px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:.85rem; font-weight:800; color:#fff; transition:.2s}
+.slide-indicator.completed{background:linear-gradient(135deg,#27ae60,#2ecc71)}
+.slide-indicator.current{background:linear-gradient(135deg,#e74c3c,#c0392b); transform:scale(1.1)}
+.slide-indicator.upcoming{background:linear-gradient(135deg,#95a5a6,#7f8c8d)}
+
+/* Tarjetas y grids */
+.card{background:linear-gradient(135deg,#ffffff,#f8f9fa); border:2px solid #3498db; border-left:6px solid #3498db; padding:22px; margin:16px 0; border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,.1); transition:.22s}
+.card:hover{transform:translateY(-3px); box-shadow:0 10px 30px rgba(52,152,219,.22)}
+.card h4{margin:0 0 10px; font-size:1.25rem; color:#2c3e50; font-weight:800}
+.grid-2{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:14px 0}
+.grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin:14px 0}
+@media (max-width:1024px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+/* Objetivo + chips */
+.objective{background:linear-gradient(135deg,#e8f8f5,#d4edda); border:3px solid #28a745; border-left:8px solid #28a745; padding:24px; margin:18px 0; border-radius:15px; box-shadow:0 8px 25px rgba(0,0,0,.1)}
+.objective h3{margin:0 0 10px; color:#155724}
+.unit-map{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; margin:18px 0}
+.unit-chip{background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; border:none; padding:18px 22px; border-radius:12px; cursor:pointer; font-size:1rem; font-weight:700; text-align:left; box-shadow:0 6px 20px rgba(0,0,0,.15); transition:.25s}
+.unit-chip:hover{transform:translateY(-4px); box-shadow:0 12px 28px rgba(0,0,0,.22)}
+.unit-chip .code{background:rgba(255,255,255,.22); padding:6px 10px; border-radius:8px; margin-right:10px}
+
+/* Tips / hints */
+.hint{position:relative; cursor:help; color:#3498db; font-weight:700; border-bottom:2px dotted #3498db}
+.hint[data-tip]:hover::after{
+  content:attr(data-tip); position:absolute; bottom:100%; left:50%; transform:translateX(-50%);
+  background:#2c3e50; color:#fff; padding:10px 12px; border-radius:8px; white-space:nowrap; z-index:1000; font-size:.9rem; box-shadow:0 4px 15px rgba(0,0,0,.3);
+}
+
+/* Botón básico */
+.button{background:linear-gradient(135deg,#3498db,#2980b9); color:#fff; border:none; padding:10px 14px; border-radius:8px; cursor:pointer; font-weight:700; margin:4px; transition:.22s}
+.button:hover{background:linear-gradient(135deg,#2980b9,#1f4e79); transform:translateY(-2px)}
+
+/* Diagrama flujo simple */
+.flow{
+  display:grid; grid-template-columns:repeat(6,1fr); gap:8px; align-items:center; margin:10px 0;
+}
+.flow .step{
+  background:#f8fafc; border:2px dashed #a5b4fc; border-radius:10px; padding:10px; text-align:center; font-weight:800;
+}
+.flow .arrow{font-size:1.3rem; text-align:center}
+
+/* Tabla */
+.table{width:100%; border-collapse:collapse; margin:8px 0}
+.table th,.table td{border:1px solid #e1e5ea; padding:10px; border-radius:4px; text-align:left}
+
+/* Quiz */
+.badge{display:inline-block; padding:6px 10px; background:linear-gradient(135deg,#f39c12,#e67e22); color:#fff; border-radius:999px; font-weight:800}
+.quiz{background:linear-gradient(135deg,#e8f8f5,#d4f6e8); border:2px solid #27ae60; border-radius:12px; padding:16px; margin:12px 0}
+
+/* Responsive */
+@media (max-width:768px){
+  .presentation-container{padding:0 12px}
+  .slide{padding:16px 18px}
+  .slide-header{padding:22px 26px; margin:-16px -18px 16px -18px}
+  .slide-title{font-size:2rem}
+}
+
+/* --- Extras visuales Unidad V --- */
+.icon-row{display:flex;gap:22px;justify-content:center;align-items:center;margin:10px 0 0 0;flex-wrap:wrap}
+.icon-badge{width:86px;height:86px;border-radius:18px;display:grid;place-items:center;
+  background:linear-gradient(135deg,#e0f7f1,#c6f6d5);
+  border:2px solid #22c55e; box-shadow:0 8px 22px rgba(0,0,0,.12)}
+.icon-badge svg{width:56px;height:56px}
+.corp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:14px 0}
+.corp-card{background:linear-gradient(135deg,#ffffff,#f8fafc);border:2px solid #10b981;border-left:6px solid #10b981;border-radius:12px;
+  padding:16px;display:flex;align-items:center;gap:12px;transition:.2s;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+.corp-card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(16,185,129,.25)}
+.corp-card .title{font-weight:800;color:#065f46}
+.corp-card .desc{font-size:.92rem;margin:.15rem 0 0 0;color:#0f172a;opacity:.85}
+@media (max-width:1024px){.corp-grid{grid-template-columns:1fr}}
+.references ol{padding-left:18px}
+.references li{margin:.4rem 0}
+
+.hero{
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  margin-top:8px; gap:14px;
+}
+.hero-icons{display:flex; gap:26px; align-items:center; justify-content:center; flex-wrap:wrap}
+.hero-badge{
+  width:120px; height:120px; border-radius:28px; display:grid; place-items:center;
+  background:linear-gradient(135deg,#e0f7f1,#c6f6d5);
+  border:3px solid #22c55e; box-shadow:0 16px 36px rgba(0,0,0,.18);
+}
+.hero-badge svg{width:78px; height:78px}
+.download-btn{
+  display:inline-block; background:linear-gradient(135deg,#10b981,#059669); color:#fff; 
+  padding:12px 16px; border-radius:12px; font-weight:800; text-decoration:none;
+  box-shadow:0 8px 22px rgba(16,185,129,.25); transition:.2s;
+}
+.download-btn:hover{transform:translateY(-2px); box-shadow:0 12px 28px rgba(16,185,129,.32)}
+
+/* ======= STD LOOK (Unidad V) ======= */
+#std-ribbon.std-look{
+  position:fixed; top:0; left:0; right:0; z-index:999;
+  display:flex; align-items:center; gap:14px; padding:10px;
+  background: linear-gradient(180deg,#26384a 0%, #1e2d3a 100%);
+  border-bottom: 2px solid #0ea5e9;
+  color:#eaf1f7;
+  border-radius: 0;
+  height: 80px;
+}
+
+.ribbon-brand{
+  display:flex; flex-direction:column; gap:2px;
+  min-width: 240px; padding:10px 14px; border-radius:12px;
+  background: linear-gradient(135deg,#2e8fdd,#4fb5ed);
+  color:white; box-shadow:0 10px 24px rgba(0,0,0,.18);
+}
+.brand-title{ font-weight:800; font-size:18px; line-height:1; }
+.brand-sub{ opacity:.92; font-weight:600; font-size:12.5px; }
+
+.ribbon-divider{ width:1px; height:46px; background:rgba(255,255,255,.22); margin:0 6px; border-radius:1px; }
+
+.ribbon-section{ display:flex; flex-direction:column; gap:6px; }
+.section-title{ margin:0; font-size:12px; letter-spacing:.12em; font-weight:800; color:#f1f5f9; opacity:.9; }
+
+.ribbon-group{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+.ribbon-btn{
+  display:inline-flex; align-items:center; gap:6px;
+  border:none; border-radius:10px; padding:10px 14px; font-weight:700; color:white;
+  box-shadow: 0 6px 18px rgba(0,0,0,.18);
+  transition: transform .22s ease, box-shadow .22s ease, filter .22s ease;
+  cursor:pointer;
+}
+.ribbon-btn.gray   { background:#64748b; }
+.ribbon-btn.green  { background:#22c55e; }
+.ribbon-btn.blue   { background:#3b82f6; }
+.ribbon-btn.orange { background:#f59e0b; color:#1f2937; }
+.ribbon-btn.purple { background:#a855f7; }
+
+.ribbon-btn[disabled]{ opacity:.55; cursor:not-allowed; filter:saturate(.6); }
+.ribbon-btn:hover{ transform: translateY(-1px); filter:brightness(1.04); }
+.ribbon-btn:active{ transform: translateY(0); }
+.ribbon-btn:focus-visible{ outline:3px solid rgba(255,255,255,.6); outline-offset:2px; }
+
+/* Indicador derecha */
+.ribbon-indicator{ margin-left:auto; display:flex; align-items:center; gap:12px; min-width:160px; }
+.ribbon-indicator .counter{
+  background: rgba(255,255,255,.08); padding:8px 14px; border-radius:24px; font-weight:800;
+}
+.ribbon-indicator .progress{ width:160px; height:8px; background:rgba(255,255,255,.18); border-radius:999px; overflow:hidden; }
+.ribbon-indicator .progress .bar{ height:100%; background: linear-gradient(90deg,#ef4444,#94a3b8); width:0%; }
+
+/* Lista rápida (panel) */
+#quicklist.quicklist{ position:fixed; top:80px; right:0; width:min(360px,90vw); max-height:70vh; overflow:auto; background:#0b1723; color:#e5effa;
+  border-left:2px solid rgba(255,255,255,.12); padding:12px; box-shadow:0 10px 24px rgba(0,0,0,.35); z-index:1001; }
+#quicklist[hidden]{ display:none; }
+#quicklist a{ display:block; padding:8px 10px; border-radius:8px; color:inherit; text-decoration:none; margin:3px 0; border:1px solid transparent; }
+#quicklist a:hover{ background: rgba(148,163,184,.18); transform: translateX(-1px); transition: all .22s ease; }
+#quicklist a[aria-current="true"]{ border-color: rgba(148,163,184,.6); background: rgba(148,163,184,.22); }
+
+/* No superponer contenido */
+body.quicklist-open .presentation-container,
+body.quicklist-open .slide-content,
+body.quicklist-open main,
+body.quicklist-open #slides{ margin-right: min(360px, 90vw); transition: margin .22s ease; }
+
+/* Responsive */
+@media (max-width: 1100px){
+  #std-ribbon.std-look{ flex-wrap:wrap; gap:10px; height:auto; min-height:80px; }
+  .ribbon-divider{ display:none; }
+  .ribbon-indicator{ width:100%; justify-content:flex-end; }
+  .presentation-container{ margin-top:90px; }
+}
+</style>
+<style id="operaUserStyle" type="text/css"></style></head>
+<body>
+<div aria-label="Cinta de opciones" class="ribbon std-look" id="std-ribbon" role="banner">
+<div class="ribbon-brand">
+<div class="brand-title">CURSO: Gestión de la Calidad</div>
+<div class="brand-sub" id="brandSub">UNIDAD V · Familia de Normas ISO 14000</div>
+</div>
+<div aria-hidden="true" class="ribbon-divider"></div>
+<div class="ribbon-section">
+<h4 class="section-title">NAVEGACIÓN</h4>
+<div class="ribbon-group">
+<button aria-label="Anterior" class="ribbon-btn gray" disabled="" id="btnPrev">
+<svg aria-hidden="true" fill="currentColor" height="16" viewbox="0 0 24 24" width="16"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path></svg>
+<span>Anterior</span>
+</button>
+<button aria-label="Inicio" class="ribbon-btn green" id="btnHome">
+<svg aria-hidden="true" fill="currentColor" height="16" viewbox="0 0 24 24" width="16"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
+<span>Inicio</span>
+</button>
+<button aria-label="Siguiente" class="ribbon-btn blue" id="btnNext">
+<span>Siguiente</span>
+<svg aria-hidden="true" fill="currentColor" height="16" style="margin-left:6px" viewbox="0 0 24 24" width="16"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"></path></svg>
+</button>
+</div>
+</div>
+<div aria-hidden="true" class="ribbon-divider"></div>
+<div class="ribbon-section">
+<h4 class="section-title">REPRODUCCIÓN</h4>
+<div class="ribbon-group">
+<button aria-label="Reproducir" class="ribbon-btn green" id="btnPlay">
+<svg aria-hidden="true" fill="currentColor" height="16" viewbox="0 0 24 24" width="16"><path d="M8 5v14l11-7z"></path></svg>
+<span>Play</span>
+</button>
+<button aria-label="Pausar" class="ribbon-btn orange" id="btnPause">
+<svg aria-hidden="true" fill="currentColor" height="16" viewbox="0 0 24 24" width="16"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
+<span>Pausa</span>
+</button>
+<button aria-label="Reiniciar" class="ribbon-btn blue" id="btnReset">
+<svg aria-hidden="true" fill="currentColor" height="16" viewbox="0 0 24 24" width="16"><path d="M12 6V3L8 7l4 4V8c2.76 0 5 2.24 5 5 0 1.64-.8 3.1-2.02 4.02l1.42 1.42A6.96 6.96 0 0 0 19 13c0-3.86-3.14-7-7-7z"></path></svg>
+<span>Reset</span>
+</button>
+</div>
+</div>
+<div aria-hidden="true" class="ribbon-divider"></div>
+<div class="ribbon-section">
+<h4 class="section-title">VISTA</h4>
+<div class="ribbon-group">
+<button aria-label="Pantalla Completa" class="ribbon-btn purple" id="btnFS">
+<svg aria-hidden="true" fill="currentColor" height="16" viewbox="0 0 24 24" width="16"><path d="M7 14H5v5h5v-2H7v-3zm0-4h3V7h2v5H7V10zm10 9h-3v2h5v-5h-2v3zm0-13V3h-5v2h3v3h2z"></path></svg>
+<span>Pantalla Completa</span>
+</button>
+<button aria-controls="quicklist" aria-expanded="false" aria-label="Lista rápida" class="ribbon-btn purple" id="btnQuick">
+<svg aria-hidden="true" fill="currentColor" height="16" viewbox="0 0 24 24" width="16"><path d="M4 6h3v3H4V6zm0 9h3v3H4v-3zM9 6h11v3H9V6zm0 9h11v3H9v-3zM4 11h3v2H4v-2zm5 0h11v2H9v-2z"></path></svg>
+<span>Lista rápida</span>
+</button>
+<button aria-label="Ayuda" class="ribbon-btn blue" id="btnHelp">
+<svg aria-hidden="true" fill="currentColor" height="16" viewbox="0 0 24 24" width="16"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm1.07-7.75-.9.92C12.45 12.9 12 13.5 12 15h-2v-.5c0-1 .45-1.75 1.17-2.47l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"></path></svg>
+<span>Ayuda</span>
+</button>
+</div>
+</div>
+<div class="ribbon-indicator">
+<div class="counter"><span id="slideIndex">1</span> / <span id="slideTotal">9</span></div>
+<div class="progress"><div class="bar" id="slideBar" style="width: 0%;"></div></div>
+</div>
+</div>
+<aside aria-label="Lista rápida" class="quicklist" hidden="" id="quicklist"><div role="list"><a aria-current="true" data-index="0" href="javascript:void(0)" role="listitem">1. UNIDAD V · Familia de Normas ISO 14000</a><a aria-current="false" data-index="1" href="javascript:void(0)" role="listitem">2. Sitios corporativos y casos (SGMA en la práctica)</a><a aria-current="false" data-index="2" href="javascript:void(0)" role="listitem">3. 5.1 Definición de las normas 14000, 14001, 14004</a><a aria-current="false" data-index="3" href="javascript:void(0)" role="listitem">4. 5.2 Sistema de Gestión Medioambiental (SGMA)</a><a aria-current="false" data-index="4" href="javascript:void(0)" role="listitem">5. 5.3 Criterios necesarios para cumplir con un SGMA</a><a aria-current="false" data-index="5" href="javascript:void(0)" role="listitem">6. 5.4 Directrices, sistemas y técnicas de apoyo</a><a aria-current="false" data-index="6" href="javascript:void(0)" role="listitem">7. Recursos y actividades</a><a aria-current="false" data-index="7" href="javascript:void(0)" role="listitem">8. Evaluación – Quiz</a><a aria-current="false" data-index="8" href="javascript:void(0)" role="listitem">9. Referencias Bibliográficas</a></div></aside>
+<!-- Mini Map -->
+<div class="mini-map" id="miniMap">
+<div class="mini-map-title">Progreso:</div>
+<div class="slide-indicators" id="slideIndicators"><div class="slide-indicator current">1</div><div class="slide-indicator upcoming">2</div><div class="slide-indicator upcoming">3</div><div class="slide-indicator upcoming">4</div><div class="slide-indicator upcoming">5</div><div class="slide-indicator upcoming">6</div><div class="slide-indicator upcoming">7</div><div class="slide-indicator upcoming">8</div><div class="slide-indicator upcoming">9</div></div>
+</div>
+<div class="presentation-container" id="deck">
+<!-- Slide 1: Portada + mapa -->
+<section class="slide active">
+<div class="slide-header">
+<h1 class="slide-title">UNIDAD V · Familia de Normas ISO 14000</h1>
+<p class="slide-subtitle">SGMA, requisitos ISO 14001/14004 y directrices de apoyo</p>
+<div class="hero"><div class="hero-icons"><div class="hero-badge"><svg fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M19 3C12 3 5 8 5 14c0 4 3 7 7 7 6 0 11-7 11-14 0-2-2-4-4-4Z" stroke="#059669" stroke-width="2"></path><path d="M12 21c0-6 3-10 9-12" stroke="#10B981" stroke-width="2"></path></svg></div><div class="hero-badge"><svg fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle cx="12" cy="12" r="9" stroke="#059669" stroke-width="2"></circle>
+<path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" stroke="#10B981" stroke-width="2"></path></svg></div><div class="hero-badge"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#10B981" height="14" rx="2" width="18" x="3" y="4"></rect>
+<rect fill="#ecfdf5" height="5" width="2" x="6" y="11"></rect>
+<rect fill="#ecfdf5" height="7" width="2" x="10" y="9"></rect>
+<rect fill="#ecfdf5" height="9" width="2" x="14" y="7"></rect>
+</svg></div></div></div></div>
+<div class="slide-content">
+<div class="objective">
+<h3>Objetivo de aprendizaje</h3>
+<p>Determina los elementos de un Sistema de Gestión Medioambiental (SGMA), utilizando las normas ISO 14001 y 14004, para reducir el impacto ambiental y cumplir regulaciones internacionales. (ISO, 2016; ISO, 2015; ISO, 2024).</p>
+</div>
+<div class="unit-map">
+<button class="unit-chip" data-code="5.1" onclick="jumpByCode('5.1')"><span class="code">5.1</span> Definición ISO 14000/14001/14004</button>
+<button class="unit-chip" data-code="5.2" onclick="jumpByCode('5.2')"><span class="code">5.2</span> Sistema de Gestión Medioambiental (SGMA)</button>
+<button class="unit-chip" data-code="5.3" onclick="jumpByCode('5.3')"><span class="code">5.3</span> Criterios para cumplir con un SGMA</button>
+<button class="unit-chip" data-code="5.4" onclick="jumpByCode('5.4')"><span class="code">5.4</span> Directrices, sistemas y técnicas de apoyo</button>
+</div>
+</div>
+</section>
+<section class="slide">
+<div class="slide-header">
+<h2 class="slide-title">Sitios corporativos y casos (SGMA en la práctica)</h2>
+<p class="slide-subtitle">Referencias públicas de políticas, objetivos y reportes ambientales. (Apple, 2025; Microsoft, 2025; Unilever, 2025; Toyota, 2024; Patagonia, 2024; Inter IKEA Group, 2025).</p>
+</div>
+<div class="slide-content">
+<div class="corp-grid">
+<a class="corp-card" href="https://www.apple.com/environment/" rel="noopener" target="_blank">
+<div class="title">Apple – Environment</div>
+<div class="desc">Objetivos de carbono, envases y materiales; reportes anuales.</div>
+</a>
+<a class="corp-card" href="https://www.microsoft.com/sustainability" rel="noopener" target="_blank">
+<div class="title">Microsoft – Sustainability</div>
+<div class="desc">Carbono negativo, agua positiva, cero residuos; dashboard.</div>
+</a>
+<a class="corp-card" href="https://www.unilever.com/planet-and-society/" rel="noopener" target="_blank">
+<div class="title">Unilever – Planet &amp; Society</div>
+<div class="desc">Estrategia climática, plásticos, agricultura regenerativa.</div>
+</a>
+<a class="corp-card" href="https://global.toyota/en/sustainability/esg/environment/challenge2050/" rel="noopener" target="_blank">
+<div class="title">Toyota – Environmental Challenge 2050</div>
+<div class="desc">Metas a 2050 para CO₂, agua y economía circular.</div>
+</a>
+<a class="corp-card" href="https://www.patagonia.com/our-footprint/" rel="noopener" target="_blank">
+<div class="title">Patagonia – Our Footprint</div>
+<div class="desc">Transparencia en cadena de suministro y materiales.</div>
+</a>
+<a class="corp-card" href="https://about.ikea.com/en/sustainability" rel="noopener" target="_blank">
+<div class="title">IKEA – Sustainability</div>
+<div class="desc">Objetivos de clima positivo y circularidad.</div>
+</a>
+</div>
+<div class="card">
+<h4>Cómo usarlos en clase</h4>
+<ul>
+<li>Comparar <strong>políticas ambientales</strong> y <strong>objetivos</strong> de 2 empresas.</li>
+<li>Identificar <strong>aspectos/impactos</strong> y KPIs reportados.</li>
+<li>Evaluar la madurez del SGMA con una rúbrica breve.</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- Slide 2: 5.1 -->
+<section class="slide">
+<div class="slide-header">
+<h2 class="slide-title">5.1 Definición de las normas 14000, 14001, 14004</h2>
+<p class="slide-subtitle">Conceptos base y alcance</p>
+<div class="icon-row"><div class="icon-badge"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#22C55E" height="18" rx="2" width="14" x="5" y="3"></rect><rect fill="#ECFDF5" height="2" width="10" x="7" y="7"></rect><rect fill="#ECFDF5" height="2" width="10" x="7" y="11"></rect><rect fill="#ECFDF5" height="2" width="6" x="7" y="15"></rect></svg></div><div class="icon-badge"><svg fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M19 3C12 3 5 8 5 14c0 4 3 7 7 7 6 0 11-7 11-14 0-2-2-4-4-4Z" stroke="#059669" stroke-width="2"></path><path d="M12 21c0-6 3-10 9-12" stroke="#10B981" stroke-width="2"></path></svg></div><div class="icon-badge"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#10B981" height="14" rx="2" width="18" x="3" y="4"></rect><path d="M7 11l3 3 7-7" fill="none" stroke="#ECFDF5" stroke-width="2"></path></svg></div></div></div>
+<div class="slide-content">
+<div class="grid-2">
+<div class="card">
+<h4>Familia ISO 14000</h4>
+<ul>
+<li>Conjunto de normas para <strong>gestión ambiental</strong> (política, desempeño, auditorías, evaluación del ciclo de vida, etc.).</li>
+<li>Enfoque <strong>PDCA</strong> y ciclo de mejora continua.</li>
+<li>Compatibles con otros sistemas de gestión (ej. ISO 9001, ISO 45001).</li>
+</ul>
+</div>
+<div class="card">
+<h4>ISO 14001 / ISO 14004</h4>
+<ul>
+<li><strong>ISO 14001</strong>: requisitos para implementar y certificar un SGMA.</li>
+<li><strong>ISO 14004</strong>: directrices y buenas prácticas para apoyar la implementación.</li>
+<li>Foco en <span class="hint" data-tip="Cuestiones internas y externas, necesidades de partes interesadas.">contexto</span>, <strong>liderazgo</strong>, <strong>planificación</strong> (aspectos/impactos, obligaciones de cumplimiento, riesgos y oportunidades), <strong>operación</strong>, <strong>evaluación del desempeño</strong> y <strong>mejora</strong>.</li>
+</ul>
+</div>
+</div>
+<div class="quiz">
+<p><strong>Mini-quiz:</strong> ISO 14004 contiene <em>requisitos certificables</em> del SGMA.</p>
+<button class="button" onclick="quizMsg('q1u5', false)">Verdadero</button>
+<button class="button" onclick="quizMsg('q1u5', true)">Falso</button>
+<span class="badge" id="q1u5" style="display:none"></span>
+</div>
+</div>
+</section>
+<!-- Slide 3: 5.2 -->
+<section class="slide">
+<div class="slide-header">
+<h2 class="slide-title">5.2 Sistema de Gestión Medioambiental (SGMA)</h2>
+<p class="slide-subtitle">Componentes, procesos y digitalización</p>
+<div class="icon-row"><div class="icon-badge"><svg fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M19 3C12 3 5 8 5 14c0 4 3 7 7 7 6 0 11-7 11-14 0-2-2-4-4-4Z" stroke="#059669" stroke-width="2"></path><path d="M12 21c0-6 3-10 9-12" stroke="#10B981" stroke-width="2"></path></svg></div><div class="icon-badge"><svg fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle cx="12" cy="12" r="3.5" stroke="#059669" stroke-width="2"></circle><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1" stroke="#10B981" stroke-linecap="round" stroke-width="2"></path></svg></div><div class="icon-badge"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#10B981" height="14" rx="2" width="18" x="3" y="4"></rect><path d="M7 11l3 3 7-7" fill="none" stroke="#ECFDF5" stroke-width="2"></path></svg></div></div></div>
+<div class="slide-content">
+<div class="grid-3">
+<div class="card">
+<h4>Componentes del SGMA</h4>
+<ul>
+<li>Política ambiental y <strong>objetivos/ metas</strong>.</li>
+<li><strong>Identificación de aspectos</strong> y evaluación de <strong>impactos</strong>.</li>
+<li>Obligaciones de cumplimiento.</li>
+<li>Controles operacionales y preparación ante emergencias.</li>
+</ul>
+</div>
+<div class="card">
+<h4>Proceso PDCA (ambiental)</h4>
+<div class="flow">
+<div class="step">Política</div><div class="arrow">→</div>
+<div class="step">Plan (Aspectos, Riesgos)</div><div class="arrow">→</div>
+<div class="step">Do (Operación)</div><div class="arrow">→</div>
+<div class="step">Check (Monitoreo)</div><div class="arrow">→</div>
+<div class="step">Act (Mejora)</div>
+</div>
+<p>Integra <span class="hint" data-tip="Indicadores de desempeño ambiental (KPI), auditorías internas, revisiones.">medición</span> y <strong>revisión</strong> por la dirección.</p>
+</div>
+<div class="card">
+<h4>SGMA digital</h4>
+<ul>
+<li>Automatización (IoT, tableros, alertas).</li>
+<li>Evaluación del desempeño ambiental (ISO 14031), LCA (ISO 14040/44). (ISO, 2021; ISO, 2006).</li>
+<li>Integración con GRC/BI para decisiones basadas en datos.</li>
+</ul>
+</div>
+</div>
+<div class="quiz">
+<p><strong>Pregunta:</strong> ¿Qué norma guía la evaluación del desempeño ambiental (EPE)?</p>
+<button class="button" onclick="quizMsg('q2u5', true)">ISO 14031</button>
+<button class="button" onclick="quizMsg('q2u5', false)">ISO 14004</button>
+<span class="badge" id="q2u5" style="display:none"></span>
+</div>
+</div>
+</section>
+<!-- Slide 4: 5.3 -->
+<section class="slide">
+<div class="slide-header">
+<h2 class="slide-title">5.3 Criterios necesarios para cumplir con un SGMA</h2>
+<p class="slide-subtitle">Cláusulas clave y evidencias típicas</p>
+<div class="icon-row"><div class="icon-badge"><svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#10B981" height="14" rx="2" width="18" x="3" y="4"></rect><path d="M7 11l3 3 7-7" fill="none" stroke="#ECFDF5" stroke-width="2"></path></svg></div><div class="icon-badge"><svg fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle cx="12" cy="12" r="3.5" stroke="#059669" stroke-width="2"></circle><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1" stroke="#10B981" stroke-linecap="round" stroke-width="2"></path></svg></div><div class="icon-badge"><svg fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M19 3C12 3 5 8 5 14c0 4 3 7 7 7 6 0 11-7 11-14 0-2-2-4-4-4Z" stroke="#059669" stroke-width="2"></path><path d="M12 21c0-6 3-10 9-12" stroke="#10B981" stroke-width="2"></path></svg></div></div></div>
+<div class="slide-content">
+<div class="grid-2">
+<div class="card">
+<h4>Criterios (ISO 14001)</h4>
+<ul>
+<li>Contexto y <strong>partes interesadas</strong>.</li>
+<li>Liderazgo, roles y responsabilidades.</li>
+<li>Planificación: aspectos, <strong>riesgos y oportunidades</strong>, objetivos y planes.</li>
+<li>Apoyo: competencia, comunicación, información documentada.</li>
+<li>Operación: control de cambios, subcontratistas, emergencias.</li>
+<li>Desempeño: seguimiento, medición, auditoría interna, revisión.</li>
+<li>Mejora: no conformidades, acciones correctivas. (ISO, 2015; ISO, 2024).</li>
+</ul>
+</div>
+<div class="card">
+<h4>Checklist de evidencias</h4>
+<table class="table">
+<thead><tr><th>Elemento</th><th>Evidencia</th></tr></thead>
+<tbody>
+<tr><td>Política ambiental</td><td>Documento aprobado y comunicado</td></tr>
+<tr><td>Aspectos/impactos</td><td>Metodología, matriz y resultados</td></tr>
+<tr><td>Objetivos/planes</td><td>KPIs, responsables, plazos</td></tr>
+<tr><td>Competencia</td><td>Perfiles, formación, registros</td></tr>
+<tr><td>Operación</td><td>Procedimientos/controles/contingencias</td></tr>
+<tr><td>Seguimiento</td><td>Plan de monitoreo, calibración</td></tr>
+<tr><td>Auditoría/ revisión</td><td>Programa, informes, actas</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<!-- Slide 5: 5.4 -->
+<section class="slide">
+<div class="slide-header">
+<h2 class="slide-title">5.4 Directrices, sistemas y técnicas de apoyo</h2>
+<p class="slide-subtitle">Buenas prácticas, herramientas y tendencias</p>
+<div class="icon-row"><div class="icon-badge"><svg fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 3a6 6 0 016 6c0 2.1-1.2 3.9-3 4.9V17a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3.1A6 6 0 0112 3Z" stroke="#059669" stroke-width="2"></path><path d="M9 21h6" stroke="#10B981" stroke-width="2"></path></svg></div><div class="icon-badge"><svg fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle cx="12" cy="12" r="3.5" stroke="#059669" stroke-width="2"></circle><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1" stroke="#10B981" stroke-linecap="round" stroke-width="2"></path></svg></div><div class="icon-badge"><svg fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M19 3C12 3 5 8 5 14c0 4 3 7 7 7 6 0 11-7 11-14 0-2-2-4-4-4Z" stroke="#059669" stroke-width="2"></path><path d="M12 21c0-6 3-10 9-12" stroke="#10B981" stroke-width="2"></path></svg></div></div></div>
+<div class="slide-content">
+<div class="grid-3">
+<div class="card">
+<h4>Directrices (ISO 14004)</h4>
+<ul>
+<li>Enfoque por procesos e integración con estrategia.</li>
+<li>Gestión del cambio y cultura ambiental.</li>
+<li>Comunicación y participación de stakeholders.</li>
+</ul><p>(ISO, 2016).</p>
+</div>
+<div class="card">
+<h4>Técnicas de apoyo</h4>
+<ul>
+<li><strong>LCA</strong> (ISO 14040/44), <strong>EPE</strong> (ISO 14031).</li>
+<li>Análisis de riesgos ambientales, HAZOP, FMEA.</li>
+<li>Indicadores/KPIs, tableros y analítica.</li>
+</ul><p>(ISO, 2006; ISO, 2021).</p>
+</div>
+<div class="card">
+<h4>Tendencias</h4>
+<ul>
+<li>Digitalización del SGMA (IoT, IA, gemelos digitales).</li>
+<li>Economía circular y compras verdes.</li>
+<li>Transparencia y trazabilidad (reportes, cadena de suministro).</li>
+</ul>
+</div>
+</div>
+<div class="quiz">
+<p><strong>Pregunta:</strong> ¿Cuál norma describe directrices para implementar SGMA (no certificable)?</p>
+<button class="button" onclick="quizMsg('q3u5', true)">ISO 14004</button>
+<button class="button" onclick="quizMsg('q3u5', false)">ISO 14001</button>
+<span class="badge" id="q3u5" style="display:none"></span>
+</div>
+</div>
+</section>
+<!-- Slide 6: Recursos y actividades -->
+<section class="slide">
+<div class="slide-header">
+<h2 class="slide-title">Recursos y actividades</h2>
+<p class="slide-subtitle">Lecturas verificables, prácticas y evaluación</p>
+</div>
+<div class="slide-content">
+<div class="grid-2">
+<div class="card">
+<h4>Lecturas verificables</h4>
+<ul>
+<li><a href="https://www.iso.org/iso-14001-environmental-management.html" rel="noopener" target="_blank">ISO 14001 – Environmental management systems</a></li><li><a href="https://www.iso.org/standard/88209.html" rel="noopener" target="_blank">ISO 14001:2015/Amd 1:2024 – Climate action changes</a></li>
+<li><a href="https://www.iso.org/standard/60857.html" rel="noopener" target="_blank">ISO 14004 – General guidelines</a></li>
+<li><a href="https://www.iso.org/iso-14000-family.html" rel="noopener" target="_blank">Family ISO 14000</a></li>
+<li><a href="https://www.iso.org/standard/81453.html" rel="noopener" target="_blank">ISO 14031:2021 – Environmental performance evaluation</a></li>
+<li><a href="https://www.iso.org/standard/37456.html" rel="noopener" target="_blank">ISO 14040/44 – LCA</a></li>
+</ul>
+</div>
+<div class="card">
+<h4>Prácticas</h4>
+<ul>
+<li>Identifica 8 aspectos ambientales y evalúa su significancia.</li>
+<li>Define 3 objetivos ambientales SMART+ con KPIs y metas.</li>
+<li>Construye un tablero de seguimiento mensual (energía/agua/residuos).</li>
+</ul>
+</div>
+</div>
+<div class="card">
+<h4>Evaluación breve</h4>
+<p>Resuelve el quiz de la unidad y entrega:
+        </p><ul>
+<li>Matriz de aspectos/impactos + método de priorización.</li>
+<li>Objetivos/planes con responsables y cronograma.</li>
+<li>Plan de monitoreo y reporte (indicadores, umbrales y acciones).</li>
+</ul>
+<p></p>
+</div>
+<div class="card"><h4>Plantilla descargable – Matriz de aspectos e impactos</h4><p>Usa esta plantilla para tu práctica y evaluación:</p><a class="download-btn" href="file:///C:/Users/fnjim/Downloads/plantilla_matriz_aspectos.csv" id="csvTplBtn">Descargar CSV</a></div></div>
+</section>
+<!-- Slide 7: Evaluación – Quiz -->
+<section class="slide">
+<div class="slide-header">
+<h2 class="slide-title">Evaluación – Quiz</h2>
+<p class="slide-subtitle">Selecciona la opción correcta</p>
+</div>
+<div class="slide-content">
+<div class="quiz">
+<p>1) ¿Cuál de estas <em>NO</em> es una cláusula de ISO 14001?</p>
+<button class="button" onclick="quizMsg('q4u5', false)">Planificación</button>
+<button class="button" onclick="quizMsg('q4u5', true)">Diseño de producto</button>
+<span class="badge" id="q4u5" style="display:none"></span>
+</div>
+<div class="quiz">
+<p>2) ¿Qué técnica soporta el análisis de ciclo de vida?</p>
+<button class="button" onclick="quizMsg('q5u5', true)">ISO 14040/44</button>
+<button class="button" onclick="quizMsg('q5u5', false)">ISO 19011</button>
+<span class="badge" id="q5u5" style="display:none"></span>
+</div>
+</div>
+</section>
+<!-- Slide 8: Referencias -->
+<section class="slide">
+<div class="slide-header">
+<h2 class="slide-title">Referencias Bibliográficas</h2>
+<p class="slide-subtitle">Fuentes consultadas y sugeridas</p>
+</div>
+<div class="slide-content">
+<div class="references">
+<ol>
+<li>International Organization for Standardization. (2015). <em>ISO 14001:2015 Environmental management systems—Requirements with guidance for use</em>. https://www.iso.org/standard/60857.html</li>
+<li>International Organization for Standardization. (2024). <em>ISO 14001:2015/Amd 1:2024 Environmental management systems—Requirements with guidance for use—Amendment 1: Climate action changes</em>. https://www.iso.org/standard/88209.html</li>
+<li>International Organization for Standardization. (2016). <em>ISO 14004:2016 Environmental management systems—General guidelines on implementation</em>. https://www.iso.org/standard/60856.html</li>
+<li>International Organization for Standardization. (2021). <em>ISO 14031:2021 Environmental management—Environmental performance evaluation—Guidelines</em>. https://www.iso.org/standard/81453.html</li>
+<li>International Organization for Standardization. (2006). <em>ISO 14040:2006 Environmental management—Life cycle assessment—Principles and framework</em>. https://www.iso.org/standard/37456.html</li>
+<li>Apple Inc. (2025). <em>Environmental Progress Report 2025</em>. https://www.apple.com/environment/pdf/Apple_Environmental_Progress_Report_2025.pdf</li>
+<li>Microsoft Corporation. (2025). <em>Environmental Sustainability Report 2025</em>. https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/microsoft/msc/documents/presentations/CSR/2025-Microsoft-Environmental-Sustainability-Report-PDF.pdf</li>
+<li>Unilever. (2025). <em>Annual Report and Accounts 2024</em>. https://www.unilever.com/files/unilever-annual-report-and-accounts-2024.pdf</li>
+<li>Toyota Motor Corporation. (2024). <em>Sustainability Data Book 2024</em>. https://global.toyota/pages/global_toyota/sustainability/report/sdb/sdb24_en.pdf</li>
+<li>Patagonia, Inc. (2024). <em>Annual Benefit Corporation Report 2023–2024</em>. https://www.patagonia.com/on/demandware.static/-/Library-Sites-PatagoniaShared/default/dw2f8292a3/PDF-US/Patagonia-2023-2024-BCorp-Report.pdf</li>
+<li>Inter IKEA Group. (2025). <em>IKEA Sustainability Report FY24</em>. https://www.ikea.com/global/en/images/IKEA_Sustainability_Report_FY_24_2025_01_27_2c35989733.pdf</li>
+</ol>
+<p style="opacity:.8"><small>Formato APA (6ª/7ª ed.). </small></p>
+</div>
+</div>
+</section>
+</div>
+<script>
+// ===== Utilidades de navegación estilo Unidad III/IV =====
+let current = 0;
+let autoPlayTimer = null;
+const slides = () => Array.from(document.querySelectorAll('.slide'));
+
+function goToSlide(n){
+  const s = slides(); if(n<0||n>=s.length) return;
+  s.forEach((el,i)=> el.classList.toggle('active', i===n));
+  current = n; updateUI();
+}
+
+function changeSlide(delta){ goToSlide(current + delta); }
+
+function updateUI(){
+  // Counter & progress
+  const total = slides().length;
+  document.getElementById('slideIndex').textContent = current + 1;
+  document.getElementById('slideTotal').textContent = total;
+  const pct = total > 1 ? (current/(total-1))*100 : 100;
+  document.getElementById('slideBar').style.width = pct + '%';
+  
+  // Botones prev/next
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+  if(btnPrev) btnPrev.disabled = (current <= 0);
+  if(btnNext) btnNext.disabled = (current >= total-1);
+  
+  // Mini-map
+  const wrap = document.getElementById('slideIndicators');
+  if(wrap) {
+    wrap.innerHTML='';
+    slides().forEach((_,i)=>{
+      const b = document.createElement('div');
+      b.className='slide-indicator ' + (i<current ? 'completed' : (i===current?'current':'upcoming'));
+      b.textContent = i+1;
+      b.addEventListener('click', ()=>goToSlide(i));
+      wrap.appendChild(b);
+    });
+  }
+}
+
+function startAutoPlay(){ 
+  if(autoPlayTimer) return; 
+  autoPlayTimer = setInterval(()=>{ 
+    if(current>=slides().length-1){ 
+      pauseAutoPlay(); 
+      return; 
+    } 
+    changeSlide(1); 
+  }, 6000); 
+}
+
+function pauseAutoPlay(){ 
+  clearInterval(autoPlayTimer); 
+  autoPlayTimer=null; 
+}
+
+function resetPresentation(){ 
+  pauseAutoPlay(); 
+  goToSlide(0); 
+}
+
+// Chips por código (5.1..5.4)
+function jumpByCode(code){
+  const idx = slides().findIndex(sl => (sl.querySelector('.slide-title')||sl).textContent.includes(code));
+  if(idx>=0) goToSlide(idx);
+}
+
+// Quiz feedback
+function quizMsg(id, ok){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.style.display='inline-block';
+  el.textContent = ok ? '✅ Correcto' : '❌ Intenta de nuevo';
+}
+
+// Teclado
+document.addEventListener('keydown', (e)=>{
+  const tag = (e.target && (e.target.tagName||'')).toLowerCase();
+  if(tag==='input' || tag==='textarea' || e.altKey || e.ctrlKey || e.metaKey) return;
+  if(e.key==='ArrowRight') changeSlide(1);
+  if(e.key==='ArrowLeft') changeSlide(-1);
+  if(e.key==='Home') goToSlide(0);
+});
+
+// Inicializa
+updateUI();
+</script>
+<script>
+(function(){
+  function collectSlides(){
+    var list = Array.from(document.querySelectorAll('.slide,[data-slide]'));
+    if(list.length===0){
+      var main = document.querySelector('main') || document.body;
+      list = Array.from(main.querySelectorAll(':scope > section'));
+      if(list.length===0) list = [main];
+    }
+    return list;
+  }
+  var slides = collectSlides();
+  var idx = (typeof window.current==='number') ? window.current : (typeof window.currentSlide==='number'? window.currentSlide : 0);
+  var total = slides.length;
+  var elIdx = document.getElementById('slideIndex');
+  var elTot = document.getElementById('slideTotal');
+  var elBar = document.getElementById('slideBar');
+
+  function clamp(n,min,max){ return Math.max(min, Math.min(max, n)); }
+  function curIdx(){ return (typeof window.current==='number') ? window.current : (typeof window.currentSlide==='number'? window.currentSlide : idx); }
+  function updateIndicator(){
+    var i = curIdx();
+    if(elIdx) elIdx.textContent = String(i + 1);
+    if(elTot) elTot.textContent = String(total);
+    var pct = total>1 ? (i/(total-1))*100 : 100;
+    if(elBar) elBar.style.width = pct + '%';
+    var bPrev = document.getElementById('btnPrev');
+    var bNext = document.getElementById('btnNext');
+    if(bPrev) bPrev.disabled = (i<=0);
+    if(bNext) bNext.disabled = (i>=total-1);
+  }
+
+  // Subtítulo de marca
+  var h1 = document.querySelector('h1, .unit-title, .slide-title, .titulo');
+  if(h1){ var sub = document.getElementById('brandSub'); if(sub) sub.textContent = h1.textContent.trim(); }
+
+  var btnPrev = document.getElementById('btnPrev');
+  var btnHome = document.getElementById('btnHome');
+  var btnNext = document.getElementById('btnNext');
+  var btnPlay = document.getElementById('btnPlay');
+  var btnPause = document.getElementById('btnPause');
+  var btnReset = document.getElementById('btnReset');
+  var btnFS   = document.getElementById('btnFS');
+  var btnQuick= document.getElementById('btnQuick');
+  var btnHelp = document.getElementById('btnHelp');
+
+  function go(i){
+    var total = collectSlides().length;
+    if(typeof window.goToSlide === 'function'){
+      window.goToSlide(clamp(i,0,total-1));
+    }else if(typeof window.changeSlide === 'function'){
+      var cur = curIdx();
+      window.changeSlide(clamp(i,0,total-1)-cur);
+    }
+    idx = clamp(i,0,total-1);
+    updateIndicator();
+  }
+
+  btnPrev && (btnPrev.onclick = function(){ go(curIdx()-1); });
+  btnHome && (btnHome.onclick = function(){ go(0); });
+  btnNext && (btnNext.onclick = function(){ go(curIdx()+1); });
+  btnPlay && (btnPlay.onclick = function(){ if(typeof startAutoPlay==='function') startAutoPlay(); });
+  btnPause && (btnPause.onclick = function(){ if(typeof pauseAutoPlay==='function') pauseAutoPlay(); });
+  btnReset && (btnReset.onclick = function(){ if(typeof resetPresentation==='function') resetPresentation(); });
+  btnFS && (btnFS.onclick = function(){ if(!document.fullscreenElement){ document.documentElement.requestFullscreen?.(); } else { document.exitFullscreen?.(); } });
+  btnHelp && (btnHelp.onclick = function(){ alert('Atajos: ←/→ navegar, Home inicio, F pantalla completa. Usa "Lista rápida" para saltar a una diapositiva.'); });
+
+  // Quicklist
+  var quick = document.getElementById('quicklist');
+  if(!quick){
+    quick = document.createElement('aside');
+    quick.id = 'quicklist'; quick.className = 'quicklist'; quick.setAttribute('aria-label','Lista rápida'); quick.hidden = true;
+    document.body.appendChild(quick);
+  }
+  btnQuick && (btnQuick.onclick = function(){
+    var willOpen = quick.hasAttribute('hidden');
+    if(willOpen){ renderQuick(); quick.removeAttribute('hidden'); document.body.classList.add('quicklist-open'); }
+    else{ quick.setAttribute('hidden',''); document.body.classList.remove('quicklist-open'); }
+    btnQuick.setAttribute('aria-expanded', String(willOpen));
+  });
+
+  function renderQuick(){
+    slides = collectSlides(); total = slides.length;
+    var out = ['<div role="list">'];
+    for(var i=0;i<slides.length;i++){
+      var titleEl = slides[i].querySelector('.slide-title, h1, h2, h3');
+      var title = titleEl ? titleEl.textContent.trim() : ('Diapositiva ' + (i+1));
+      out.push('<a role="listitem" href="javascript:void(0)" data-index="'+i+'">'+(i+1)+'. '+title+'</a>');
+    }
+    out.push('</div>');
+    quick.innerHTML = out.join('');
+    quick.querySelectorAll('a[data-index]').forEach(function(a){
+      a.addEventListener('click', function(){
+        var k = parseInt(this.getAttribute('data-index'), 10) || 0;
+        go(k);
+        btnQuick.click(); // cerrar
+      });
+    });
+    highlightQuick();
+  }
+
+  function highlightQuick(){
+    var i = curIdx();
+    quick.querySelectorAll('a[data-index]').forEach(function(a){
+      a.setAttribute('aria-current', (parseInt(a.dataset.index,10)===i) ? 'true' : 'false');
+    });
+  }
+
+  // Hooks para mantener sincronía con funciones existentes
+  var origGo = window.goToSlide;
+  if(typeof origGo === 'function'){
+    window.goToSlide = function(n){ origGo.call(window, n); updateIndicator(); highlightQuick(); };
+  }
+  var origChange = window.changeSlide;
+  if(typeof origChange === 'function'){
+    window.changeSlide = function(step){ origChange.call(window, step); updateIndicator(); highlightQuick(); };
+  }
+  var origUpdateUI = window.updateUI;
+  if(typeof origUpdateUI === 'function'){
+    window.updateUI = function(){ origUpdateUI.call(window); updateIndicator(); highlightQuick(); };
+  }
+
+  // Atajos
+  document.addEventListener('keydown', function(e){
+    var tag = (e.target && (e.target.tagName||'')).toLowerCase();
+    if(tag==='input' || tag==='textarea' || e.altKey || e.ctrlKey || e.metaKey) return;
+    if(e.key==='ArrowLeft'){ btnPrev && btnPrev.click(); }
+    if(e.key==='ArrowRight'){ btnNext && btnNext.click(); }
+    if(e.key==='Home'){ btnHome && btnHome.click(); }
+    if(e.key==='f' || e.key==='F'){ btnFS && btnFS.click(); }
+  }, {passive:true});
+
+  // Inicial
+  updateIndicator();
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ updateIndicator(); renderQuick(); });
+  }else{
+    renderQuick();
+  }
+})();
+</script>
+</body></html>
