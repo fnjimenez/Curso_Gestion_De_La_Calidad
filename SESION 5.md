@@ -1,5 +1,6 @@
 ---
-
+extensions:
+  tables: true
 
 ---
 
