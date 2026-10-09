@@ -5,7 +5,10 @@ extensions:
 ---
 
 <h1 id="gestión-de-la-calidad-—-contenido-temático-de-la-sesión-5-semana-5">Gestión de la Calidad — Contenido temático de la Sesión 5 (Semana 5)</h1>
-<p><strong>Tema (programa oficial, Unidad II):</strong> 2.6 Premio Nacional de Calidad: Modelo Mexicano; cierre integrador de la Unidad II (PDCA, Kaizen, Seis Sigma y modelos de excelencia) <strong>Fecha:</strong> 6 al 13 de octubre de 2026 (sesión presencial: sábado 10 de octubre) <strong>Actividad 2 oficial:</strong> Modelos de gestión de mejora continua — 10 puntos, vence el 13 de octubre, entrega en plataforma educativa. <strong>Propósito de la sesión:</strong> Que el estudiante conozca el Premio Nacional de Calidad y su modelo de evaluación, lo compare con los modelos de excelencia de la Semana 4, y aplique herramientas de mejora (SIPOC, Pareto, DPMO) y una metodología justificada (PDCA/A3, Kaizen o DMAIC) sobre un caso, como base del ensayo de la <strong>Actividad 2</strong>.</p>
+<p><strong>Tema (programa oficial, Unidad II):</strong> 2.6 Premio Nacional de Calidad: Modelo Mexicano; cierre integrador de la Unidad II (PDCA, Kaizen, Seis Sigma y modelos de excelencia)<br>
+<strong>Fecha:</strong> 6 al 13 de octubre de 2026 (sesión presencial: sábado 10 de octubre)<br>
+<strong>Actividad 2 oficial:</strong> Modelos de gestión de mejora continua — 10 puntos, vence el 13 de octubre, entrega en plataforma educativa.<br>
+<strong>Propósito de la sesión:</strong> Que el estudiante conozca el Premio Nacional de Calidad y su modelo de evaluación, lo compare con los modelos de excelencia de la Semana 4, y aplique herramientas de mejora (SIPOC, Pareto, DPMO) y una metodología justificada (PDCA/A3, Kaizen o DMAIC) sobre un caso, como base del ensayo de la <strong>Actividad 2</strong>.</p>
 <blockquote>
 <p><strong>Nota sobre las fuentes del tema 2.6:</strong> el Premio Nacional de Calidad (PNC) de México ha cambiado de nombre, de administrador y de criterios a lo largo del tiempo. La información de este documento se tomó de dos fuentes públicas (una presentación de la ANUIES y un recurso educativo de la Universidad de Guanajuato) que <strong>no coinciden en todo</strong>; los puntos donde difieren se señalan. Antes de usar un dato en un trabajo, cada estudiante debe verificarlo en el documento oficial vigente del modelo.</p>
 </blockquote>
@@ -36,31 +39,49 @@ extensions:
 <p><strong>Benchmarking (comparación referencial).</strong> Comparar prácticas y resultados propios con los de organizaciones reconocidas para aprender de ellas (Gutiérrez Pulido, 2014).</p>
 <hr>
 <h2 id="repaso-de-la-unidad-ii-mapa-de-herramientas-y-modelos">1. Repaso de la Unidad II: mapa de herramientas y modelos</h2>
-<p>Nivel</p>
-<p>Herramienta o modelo</p>
-<p>Pregunta que responde</p>
-<p>Semana</p>
-<p>Problema puntual</p>
-<p><strong>Círculos de calidad</strong></p>
-<p>¿Quién resuelve problemas de su área?</p>
-<p>3</p>
-<p>Ciclo de mejora</p>
-<p><strong>PDCA</strong></p>
-<p>¿Cómo planeo, ejecuto, verifico y estandarizo una mejora?</p>
-<p>3</p>
-<p>Mejora incremental</p>
-<p><strong>Kaizen</strong></p>
-<p>¿Cómo mejoro continuamente con pasos pequeños?</p>
-<p>4</p>
-<p>Reducción de variabilidad</p>
-<p><strong>Seis Sigma (DMAIC)</strong></p>
-<p>¿Cómo encuentro y elimino con datos la causa de un problema exigente?</p>
-<p>4</p>
-<p>Organización completa</p>
-<p><strong>Modelos de excelencia</strong> (Baldrige, EFQM, Iberoamericano, y el Modelo Mexicano)</p>
-<p>¿Qué tan bien gestiona la organización en su conjunto?</p>
-<p>4 y 5</p>
-<p><strong>Idea central de la sesión:</strong> las herramientas resuelven problemas; los modelos de excelencia evalúan si la organización tiene lo necesario para mejorar de forma sostenida.</p>
+
+<table>
+<thead>
+<tr>
+<th>Nivel</th>
+<th>Herramienta o modelo</th>
+<th>Pregunta que responde</th>
+<th>Semana</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Problema puntual</td>
+<td><strong>Círculos de calidad</strong></td>
+<td>¿Quién resuelve problemas de su área?</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Ciclo de mejora</td>
+<td><strong>PDCA</strong></td>
+<td>¿Cómo planeo, ejecuto, verifico y estandarizo una mejora?</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Mejora incremental</td>
+<td><strong>Kaizen</strong></td>
+<td>¿Cómo mejoro continuamente con pasos pequeños?</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Reducción de variabilidad</td>
+<td><strong>Seis Sigma (DMAIC)</strong></td>
+<td>¿Cómo encuentro y elimino con datos la causa de un problema exigente?</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Organización completa</td>
+<td><strong>Modelos de excelencia</strong> (Baldrige, EFQM, Iberoamericano, y el Modelo Mexicano)</td>
+<td>¿Qué tan bien gestiona la organización en su conjunto?</td>
+<td>4 y 5</td>
+</tr>
+</tbody>
+</table><p><strong>Idea central de la sesión:</strong> las herramientas resuelven problemas; los modelos de excelencia evalúan si la organización tiene lo necesario para mejorar de forma sostenida.</p>
 <hr>
 <h2 id="premio-nacional-de-calidad-modelo-mexicano">2. 2.6 Premio Nacional de Calidad: Modelo Mexicano</h2>
 <h3 id="origen-y-propósito">2.1 Origen y propósito</h3>
@@ -71,34 +92,58 @@ extensions:
 </ul>
 <h3 id="el-modelo-nacional-para-la-competitividad-mnc">2.2 El Modelo Nacional para la Competitividad (MNC)</h3>
 <p>La presentación de la ANUIES (2020) enlista <strong>ocho criterios</strong>:</p>
-<h1 id="section"></h1>
-<p>Criterio</p>
-<p>Pregunta orientadora (interpretación didáctica)</p>
-<p>1</p>
-<p>Reflexión estratégica</p>
-<p>¿Hacia dónde va la organización y cómo evalúa y aprende de su avance?</p>
-<p>2</p>
-<p>Liderazgo</p>
-<p>¿Cómo la dirección guía, comunica e impulsa la cultura de excelencia?</p>
-<p>3</p>
-<p>Responsabilidad social</p>
-<p>¿Cómo responde la organización a su entorno y a la sociedad?</p>
-<p>4</p>
-<p>Enfoque a cliente</p>
-<p>¿Cómo conoce y atiende las necesidades de sus clientes?</p>
-<p>5</p>
-<p>Capital humano</p>
-<p>¿Cómo desarrolla, involucra y evalúa a su personal?</p>
-<p>6</p>
-<p>Procesos</p>
-<p>¿Cómo diseña, gestiona y mejora sus procesos?</p>
-<p>7</p>
-<p>Administración del conocimiento</p>
-<p>¿Cómo captura, comparte y usa la información y el conocimiento?</p>
-<p>8</p>
-<p>Resultados</p>
-<p>¿Qué logra en clientes, personal, procesos y finanzas, y con qué tendencia?</p>
-<blockquote>
+
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Criterio</th>
+<th>Pregunta orientadora (interpretación didáctica)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Reflexión estratégica</td>
+<td>¿Hacia dónde va la organización y cómo evalúa y aprende de su avance?</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Liderazgo</td>
+<td>¿Cómo la dirección guía, comunica e impulsa la cultura de excelencia?</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Responsabilidad social</td>
+<td>¿Cómo responde la organización a su entorno y a la sociedad?</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Enfoque a cliente</td>
+<td>¿Cómo conoce y atiende las necesidades de sus clientes?</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Capital humano</td>
+<td>¿Cómo desarrolla, involucra y evalúa a su personal?</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Procesos</td>
+<td>¿Cómo diseña, gestiona y mejora sus procesos?</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Administración del conocimiento</td>
+<td>¿Cómo captura, comparte y usa la información y el conocimiento?</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Resultados</td>
+<td>¿Qué logra en clientes, personal, procesos y finanzas, y con qué tendencia?</td>
+</tr>
+</tbody>
+</table><blockquote>
 <p><strong>Advertencia:</strong> la lista corresponde a la fuente consultada y puede haber cambiado en otras ediciones del modelo. Las preguntas orientadoras de la tercera columna son una interpretación didáctica para trabajar en clase, no el texto oficial del modelo.</p>
 </blockquote>
 <h3 id="cómo-se-participa-idea-general">2.3 Cómo se participa (idea general)</h3>
@@ -106,57 +151,83 @@ extensions:
 <hr>
 <h2 id="comparación-con-baldrige-efqm-e-iberoamericano">3. Comparación con Baldrige, EFQM e Iberoamericano</h2>
 <p>Los modelos vistos en la Semana 4 y el Modelo Mexicano comparten una lógica: evalúan <strong>cómo se gestiona</strong> (liderazgo, estrategia, clientes, personas, procesos, conocimiento) y <strong>qué se logra</strong> (resultados).</p>
-<p>Aspecto</p>
-<p>Baldrige (EUA)</p>
-<p>EFQM (Europa)</p>
-<p>Iberoamericano</p>
-<p>Modelo Mexicano (MNC)</p>
-<p>Alcance</p>
-<p>Organización completa</p>
-<p>Organización completa</p>
-<p>Organización completa</p>
-<p>Organización completa</p>
-<p>Liderazgo</p>
-<p>Sí (categoría)</p>
-<p>Sí (agente facilitador)</p>
-<p>Sí</p>
-<p>Sí (criterio 2)</p>
-<p>Estrategia</p>
-<p>Sí (categoría)</p>
-<p>Sí (agente facilitador)</p>
-<p>Sí</p>
-<p>Sí (criterio 1, reflexión estratégica)</p>
-<p>Clientes</p>
-<p>Sí (categoría)</p>
-<p>Resultados en clientes</p>
-<p>Sí</p>
-<p>Sí (criterio 4)</p>
-<p>Personas</p>
-<p>Fuerza de trabajo</p>
-<p>Personas</p>
-<p>Sí</p>
-<p>Sí (criterio 5, capital humano)</p>
-<p>Procesos</p>
-<p>Operaciones</p>
-<p>Procesos, productos y servicios</p>
-<p>Sí</p>
-<p>Sí (criterio 6)</p>
-<p>Conocimiento / información</p>
-<p>Medición, análisis y gestión del conocimiento</p>
-<p>Alianzas y recursos</p>
-<p>Sí</p>
-<p>Sí (criterio 7)</p>
-<p>Sociedad</p>
-<p>Incluida en varios criterios</p>
-<p>Resultados en la sociedad</p>
-<p>Sí</p>
-<p>Sí (criterio 3, responsabilidad social)</p>
-<p>Resultados</p>
-<p>Sí</p>
-<p>Resultados clave</p>
-<p>Sí</p>
-<p>Sí (criterio 8)</p>
-<p><em>(La comparación es general y está basada en los criterios descritos en la Sesión 4 y en la sección 2.2; las equivalencias entre modelos son una simplificación didáctica, no una correspondencia oficial.)</em></p>
+
+<table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th>Baldrige (EUA)</th>
+<th>EFQM (Europa)</th>
+<th>Iberoamericano</th>
+<th>Modelo Mexicano (MNC)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Alcance</td>
+<td>Organización completa</td>
+<td>Organización completa</td>
+<td>Organización completa</td>
+<td>Organización completa</td>
+</tr>
+<tr>
+<td>Liderazgo</td>
+<td>Sí (categoría)</td>
+<td>Sí (agente facilitador)</td>
+<td>Sí</td>
+<td>Sí (criterio 2)</td>
+</tr>
+<tr>
+<td>Estrategia</td>
+<td>Sí (categoría)</td>
+<td>Sí (agente facilitador)</td>
+<td>Sí</td>
+<td>Sí (criterio 1, reflexión estratégica)</td>
+</tr>
+<tr>
+<td>Clientes</td>
+<td>Sí (categoría)</td>
+<td>Resultados en clientes</td>
+<td>Sí</td>
+<td>Sí (criterio 4)</td>
+</tr>
+<tr>
+<td>Personas</td>
+<td>Fuerza de trabajo</td>
+<td>Personas</td>
+<td>Sí</td>
+<td>Sí (criterio 5, capital humano)</td>
+</tr>
+<tr>
+<td>Procesos</td>
+<td>Operaciones</td>
+<td>Procesos, productos y servicios</td>
+<td>Sí</td>
+<td>Sí (criterio 6)</td>
+</tr>
+<tr>
+<td>Conocimiento / información</td>
+<td>Medición, análisis y gestión del conocimiento</td>
+<td>Alianzas y recursos</td>
+<td>Sí</td>
+<td>Sí (criterio 7)</td>
+</tr>
+<tr>
+<td>Sociedad</td>
+<td>Incluida en varios criterios</td>
+<td>Resultados en la sociedad</td>
+<td>Sí</td>
+<td>Sí (criterio 3, responsabilidad social)</td>
+</tr>
+<tr>
+<td>Resultados</td>
+<td>Sí</td>
+<td>Resultados clave</td>
+<td>Sí</td>
+<td>Sí (criterio 8)</td>
+</tr>
+</tbody>
+</table><p><em>(La comparación es general y está basada en los criterios descritos en la Sesión 4 y en la sección 2.2; las equivalencias entre modelos son una simplificación didáctica, no una correspondencia oficial.)</em></p>
 <hr>
 <h2 id="cómo-usar-un-modelo-de-excelencia-para-un-diagnóstico">4. Cómo usar un modelo de excelencia para un diagnóstico</h2>
 <ol>
@@ -167,80 +238,136 @@ extensions:
 <li><strong>Priorizar</strong> qué área de oportunidad atender y con qué herramienta (PDCA, Kaizen o DMAIC).</li>
 </ol>
 <p><strong>Ejemplo (ficticio) con un taller de manufactura:</strong></p>
-<p>Criterio</p>
-<p>Evidencia del caso</p>
-<p>Valor</p>
-<p>Lectura</p>
-<p>Procesos</p>
-<p>Hay hojas de proceso, pero no se mide el defecto por turno</p>
-<p>2</p>
-<p>Área de oportunidad: medir antes de mejorar (DMAIC, fase Medir)</p>
-<p>Enfoque a cliente</p>
-<p>Se atiende la queja pero no se registra su causa</p>
-<p>2</p>
-<p>Área de oportunidad: registrar y analizar quejas</p>
-<p>Capital humano</p>
-<p>Capacitación de ajuste de presión realizada</p>
-<p>3</p>
-<p>Fortaleza</p>
-<hr>
+
+<table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>Evidencia del caso</th>
+<th>Valor</th>
+<th>Lectura</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Procesos</td>
+<td>Hay hojas de proceso, pero no se mide el defecto por turno</td>
+<td>2</td>
+<td>Área de oportunidad: medir antes de mejorar (DMAIC, fase Medir)</td>
+</tr>
+<tr>
+<td>Enfoque a cliente</td>
+<td>Se atiende la queja pero no se registra su causa</td>
+<td>2</td>
+<td>Área de oportunidad: registrar y analizar quejas</td>
+</tr>
+<tr>
+<td>Capital humano</td>
+<td>Capacitación de ajuste de presión realizada</td>
+<td>3</td>
+<td>Fortaleza</td>
+</tr>
+</tbody>
+</table><hr>
 <h2 id="herramientas-para-el-ensayo-sipoc-pareto-dpmo-y-elección-de-metodología">5. Herramientas para el ensayo: SIPOC, Pareto, DPMO y elección de metodología</h2>
 <p>La rúbrica del ensayo pide aplicar herramientas como SIPOC, Pareto, DPMO, PDCA/A3 y Kaizen (sección 6). Esta sección las resume para poder usarlas en la actividad en aula.</p>
 <p><strong>SIPOC.</strong> Mapa de alto nivel de un proceso: <strong>P</strong>roveedores, <strong>E</strong>ntradas (Inputs), <strong>P</strong>roceso (4 a 6 pasos), <strong>S</strong>alidas (Outputs) y <strong>C</strong>lientes. Sirve para delimitar el proceso foco: dónde empieza, dónde termina y quién lo recibe.</p>
 <p><strong>Diagrama de Pareto.</strong> Ordena las causas de un problema de mayor a menor frecuencia y muestra el porcentaje acumulado. Pocas causas, las <strong>vitales</strong> (cerca de 75 a 80% acumulado), explican la mayor parte del problema; conviene atacarlas primero (Gutiérrez Pulido, 2014).</p>
 <p><strong>DPMO y nivel sigma.</strong> DPMO = defectos / (unidades × oportunidades de defecto por unidad) × 1,000,000. El nivel sigma se obtiene con la conversión normal: sigma ≈ Z(1 − DPMO/1,000,000) + 1.5, con la convención de 1.5σ de desplazamiento. <em>(Criterio por confirmar por el docente; verificar en Gutiérrez Pulido, 2014.)</em></p>
-<p>DPMO</p>
-<p>691,462</p>
-<p>308,538</p>
-<p>66,807</p>
-<p>22,750</p>
-<p>6,210</p>
-<p>233</p>
-<p>3.4</p>
-<p>Nivel sigma</p>
-<p>1.0</p>
-<p>2.0</p>
-<p>3.0</p>
-<p>3.5</p>
-<p>4.0</p>
-<p>5.0</p>
-<p>6.0</p>
-<p><strong>Ejemplo resuelto (ficticio): línea de ensamble de mochilas.</strong> Se inspeccionaron 300 mochilas, con 5 oportunidades de defecto por mochila; 75 defectos en total.</p>
-<p>Causa</p>
-<p>Frecuencia</p>
-<p>% del total</p>
-<p>% acumulado</p>
-<p>Costura desviada</p>
-<p>30</p>
-<p>40.0%</p>
-<p>40.0%</p>
-<p>Cierre defectuoso</p>
-<p>22</p>
-<p>29.3%</p>
-<p>69.3%</p>
-<p>Manchas</p>
-<p>12</p>
-<p>16.0%</p>
-<p>85.3%</p>
-<p>Etiqueta mal colocada</p>
-<p>8</p>
-<p>10.7%</p>
-<p>96.0%</p>
-<p>Otros</p>
-<p>3</p>
-<p>4.0%</p>
-<p>100.0%</p>
-<p>Causas vitales: costura desviada y cierre defectuoso (69.3%), junto con las manchas llegan a 85.3%. <strong>DPMO = 75 / (300 × 5) × 1,000,000 = 50,000</strong>, es decir, un nivel sigma de aproximadamente <strong>3.14</strong>. <em>(Cálculos verificados con un script.)</em></p>
+
+<table>
+<thead>
+<tr>
+<th>DPMO</th>
+<th>691,462</th>
+<th>308,538</th>
+<th>66,807</th>
+<th>22,750</th>
+<th>6,210</th>
+<th>233</th>
+<th>3.4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nivel sigma</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>3.0</td>
+<td>3.5</td>
+<td>4.0</td>
+<td>5.0</td>
+<td>6.0</td>
+</tr>
+</tbody>
+</table><p><strong>Ejemplo resuelto (ficticio): línea de ensamble de mochilas.</strong> Se inspeccionaron 300 mochilas, con 5 oportunidades de defecto por mochila; 75 defectos en total.</p>
+
+<table>
+<thead>
+<tr>
+<th>Causa</th>
+<th>Frecuencia</th>
+<th>% del total</th>
+<th>% acumulado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Costura desviada</td>
+<td>30</td>
+<td>40.0%</td>
+<td>40.0%</td>
+</tr>
+<tr>
+<td>Cierre defectuoso</td>
+<td>22</td>
+<td>29.3%</td>
+<td>69.3%</td>
+</tr>
+<tr>
+<td>Manchas</td>
+<td>12</td>
+<td>16.0%</td>
+<td>85.3%</td>
+</tr>
+<tr>
+<td>Etiqueta mal colocada</td>
+<td>8</td>
+<td>10.7%</td>
+<td>96.0%</td>
+</tr>
+<tr>
+<td>Otros</td>
+<td>3</td>
+<td>4.0%</td>
+<td>100.0%</td>
+</tr>
+</tbody>
+</table><p>Causas vitales: costura desviada y cierre defectuoso (69.3%), junto con las manchas llegan a 85.3%. <strong>DPMO = 75 / (300 × 5) × 1,000,000 = 50,000</strong>, es decir, un nivel sigma de aproximadamente <strong>3.14</strong>. <em>(Cálculos verificados con un script.)</em></p>
 <p><strong>¿Qué metodología elegir?</strong></p>
-<p>Metodología</p>
-<p>Cuándo conviene</p>
-<p>PDCA / A3</p>
-<p>El problema tiene causas conocidas o atacables; se ordena en un ciclo y se resume en una hoja A3.</p>
-<p>Kaizen</p>
-<p>La mejora es pequeña, rápida y de bajo costo (formularios, estandarización, orden).</p>
-<p>DMAIC</p>
-<p>El problema es complejo o variable y hay que medir con datos antes de buscar la causa.</p>
-<hr>
+
+<table>
+<thead>
+<tr>
+<th>Metodología</th>
+<th>Cuándo conviene</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PDCA / A3</td>
+<td>El problema tiene causas conocidas o atacables; se ordena en un ciclo y se resume en una hoja A3.</td>
+</tr>
+<tr>
+<td>Kaizen</td>
+<td>La mejora es pequeña, rápida y de bajo costo (formularios, estandarización, orden).</td>
+</tr>
+<tr>
+<td>DMAIC</td>
+<td>El problema es complejo o variable y hay que medir con datos antes de buscar la causa.</td>
+</tr>
+</tbody>
+</table><hr>
 <h2 id="actividad-2-elaboración-de-un-ensayo-estructura-y-rúbrica-oficiales">6. Actividad 2: elaboración de un ensayo (estructura y rúbrica oficiales)</h2>
 <p><strong>Vence el 13 de octubre; 10 puntos; entrega en la plataforma educativa.</strong> Fuente: documento descargable, rúbrica y banco de casos sectoriales publicados en la plataforma.</p>
 <h3 id="estructura-del-documento">6.1 Estructura del documento</h3>
@@ -255,47 +382,55 @@ extensions:
 <h3 id="casos">6.2 Casos</h3>
 <p>El banco sectorial incluye 13 casos: logística, manufactura, automotriz, plásticos, química, farmacéutica, muebles, agroindustria, alimentos, calzado, aeronáutica, servicios (mesa de ayuda TI) y educación (reinscripción). Cada caso trae proceso foco, contexto, datos típicos, dolores del cliente, riesgos, sistemas y metas de referencia (por ejemplo, OTD/OTIF de 80–88% a ≥ 95%, FPY de 85–92% a ≥ 97%, retrabajo o desperdicio a ≤ 2%).</p>
 <h3 id="rúbrica-10-puntos">6.3 Rúbrica (10 puntos)</h3>
-<p>Dimensión</p>
-<p>Excelente</p>
-<p>Satisfactorio</p>
-<p>Insuficiente</p>
-<ol>
-<li>Definición y contextualización del caso</li>
-</ol>
-<p>1.5</p>
-<p>1.0</p>
-<p>0.5</p>
-<ol start="2">
-<li>Aplicación técnica de metodologías (acta, PDCA/A3, Kaizen, SIPOC, Pareto, DPMO, gráficos)</li>
-</ol>
-<p>3.0</p>
-<p>2.0</p>
-<p>1.0</p>
-<ol start="3">
-<li>Evidencias y análisis antes/después</li>
-</ol>
-<p>2.0</p>
-<p>1.5</p>
-<p>0.5</p>
-<ol start="4">
-<li>Argumentación y justificación metodológica</li>
-</ol>
-<p>1.5</p>
-<p>1.0</p>
-<p>0.5</p>
-<ol start="5">
-<li>Plan de control y sostenibilidad</li>
-</ol>
-<p>1.0</p>
-<p>0.7</p>
-<p>0.3</p>
-<ol start="6">
-<li>Trabajo colaborativo y coherencia integral (incluye identificar correctamente el archivo)</li>
-</ol>
-<p>1.0</p>
-<p>0.7</p>
-<p>0.3</p>
-<p><em>Criterios de nivel excelente (resumen):</em> caso claramente delimitado, con evidencia base y portada completa; aplicación completa y correcta con coherencia sólida; evidencias cuantitativas y visuales con análisis comparativo consistente; explicación clara del porqué y el cómo con sustento técnico; plan estructurado con indicadores, responsables y periodicidad; integración evidente entre secciones.</p>
+
+<table>
+<thead>
+<tr>
+<th>Dimensión</th>
+<th>Excelente</th>
+<th>Satisfactorio</th>
+<th>Insuficiente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Definición y contextualización del caso</td>
+<td>1.5</td>
+<td>1.0</td>
+<td>0.5</td>
+</tr>
+<tr>
+<td>2. Aplicación técnica de metodologías (acta, PDCA/A3, Kaizen, SIPOC, Pareto, DPMO, gráficos)</td>
+<td>3.0</td>
+<td>2.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>3. Evidencias y análisis antes/después</td>
+<td>2.0</td>
+<td>1.5</td>
+<td>0.5</td>
+</tr>
+<tr>
+<td>4. Argumentación y justificación metodológica</td>
+<td>1.5</td>
+<td>1.0</td>
+<td>0.5</td>
+</tr>
+<tr>
+<td>5. Plan de control y sostenibilidad</td>
+<td>1.0</td>
+<td>0.7</td>
+<td>0.3</td>
+</tr>
+<tr>
+<td>6. Trabajo colaborativo y coherencia integral (incluye identificar correctamente el archivo)</td>
+<td>1.0</td>
+<td>0.7</td>
+<td>0.3</td>
+</tr>
+</tbody>
+</table><p><em>Criterios de nivel excelente (resumen):</em> caso claramente delimitado, con evidencia base y portada completa; aplicación completa y correcta con coherencia sólida; evidencias cuantitativas y visuales con análisis comparativo consistente; explicación clara del porqué y el cómo con sustento técnico; plan estructurado con indicadores, responsables y periodicidad; integración evidente entre secciones.</p>
 <hr>
 <h2 id="actividad-en-aula-andamio-del-ensayo">7. Actividad en aula: andamio del ensayo</h2>
 <p><strong>Valor propuesto: 5 puntos</strong> (por confirmar por el docente). <strong>Entrega:</strong> una hoja por equipo, en PDF, en el Foro del Tutor(a), como <code>GC_Sem5_&lt;NombreDelEquipo&gt;.pdf</code>. El equipo trabaja un mismo caso para dejar listas las bases del ensayo; cada integrante redacta después su propio ensayo.</p>
