@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>⚠️ Quiz Gestión de Riesgos - Unidad IV</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+    
+    :root {
+      --bg: #f8f9fa;
+      --panel: #ffffff;
+      --ink: #1a1a1a;
+      --muted: #6c757d;
+      --primary: #dc3545;
+      --secondary: #fd7e14;
+      --accent: #6f42c1;
+      --success: #198754;
+      --warn: #ffc107;
+      --danger: #dc2626;
+      --steel: #495057;
+      --grad-primary: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      --grad-panel: linear-gradient(180deg, #ffffff, #f8fafc);
+      --shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --panel: #1e293b;
+      --ink: #f1f5f9;
+      --muted: #94a3b8;
+      --grad-panel: linear-gradient(180deg, #1e293b, #0f172a);
+      --shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      font: 16px/1.6 'Inter', system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+    
+    /* Patrón de fondo de riesgos */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(90deg, rgba(220, 53, 69, 0.02) 1px, transparent 1px),
+        linear-gradient(rgba(253, 126, 20, 0.02) 1px, transparent 1px),
+        radial-gradient(circle at 25% 75%, rgba(220, 53, 69, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 75% 25%, rgba(111, 66, 193, 0.05) 0%, transparent 50%);
+      background-size: 40px 40px, 40px 40px, 200px 200px, 200px 200px;
+      opacity: 0.4;
+      animation: riskFlow 30s linear infinite;
+      z-index: 0;
+    }
+    
+    @keyframes riskFlow {
+      from { transform: translate(0, 0); }
+      to { transform: translate(-40px, -40px); }
+    }
+    
+    /* Contenedor principal */
+    .quiz-container {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    /* Header del quiz */
+    .quiz-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 30px;
+      background: var(--grad-panel);
+      border: 1px solid rgba(220, 53, 69, 0.2);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .quiz-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--grad-primary);
+      border-radius: 24px 24px 0 0;
+    }
+    
+    .quiz-title {
+      font: 900 clamp(2rem, 6vw, 3.5rem)/1.1 'Inter', sans-serif;
+      background: var(--grad-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 15px;
+      animation: titleGlow 3s ease-in-out infinite alternate;
+    }
+    
+    @keyframes titleGlow {
+      from { filter: drop-shadow(0 0 20px rgba(220, 53, 69, 0.3)); }
+      to { filter: drop-shadow(0 0 30px rgba(253, 126, 20, 0.4)); }
+    }
+    
+    .quiz-subtitle {
+      font: 600 1.3rem 'Inter', sans-serif;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    
+    /* Stats del quiz */
+    .quiz-stats {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    
+    .stat-box {
+      background: var(--panel);
+      border: 1px solid rgba(220, 53, 69, 0.2);
+      border-radius: 16px;
+      padding: 15px 20px;
+      text-align: center;
+      min-width: 120px;
+      box-shadow: var(--shadow);
+    }
+    
+    .stat-number {
+      font: 700 1.8rem 'JetBrains Mono', monospace;
+      color: var(--primary);
+      display: block;
+      text-shadow: 0 0 15px rgba(220, 53, 69, 0.5);
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+    }
+    
+    /* Pantalla de pregunta */
+    .question-screen {
+      display: none;
+      background: var(--grad-panel);
+      border: 1px solid rgba(220, 53, 69, 0.2);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      animation: slideIn 0.5s ease;
+    }
+    
+    .question-screen.active {
+      display: block;
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    
+    .question-screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--grad-primary);
+      border-radius: 24px 24px 0 0;
+    }
+    
+    /* Barra de progreso */
+    .progress-bar {
+      background: rgba(0,0,0,0.1);
+      border-radius: 999px;
+      height: 12px;
+      margin-bottom: 30px;
+      overflow: hidden;
+      border: 1px solid rgba(220, 53, 69, 0.2);
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--grad-primary);
+      width: 0;
+      transition: width 0.5s ease;
+      border-radius: inherit;
+      position: relative;
+    }
+    
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: -20px;
+      width: 20px;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
+      animation: progressGlow 2s ease-in-out infinite;
+    }
+    
+    @keyframes progressGlow {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+    
+    /* Información de la pregunta */
+    .question-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .question-number {
+      font: 700 1.1rem 'JetBrains Mono', monospace;
+      color: var(--primary);
+      background: rgba(220, 53, 69, 0.1);
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(220, 53, 69, 0.3);
+    }
+    
+    .topic-badge {
+      font: 600 0.9rem 'JetBrains Mono', monospace;
+      color: var(--secondary);
+      background: rgba(253, 126, 20, 0.1);
+      padding: 6px 12px;
+      border-radius: 15px;
+      border: 1px solid rgba(253, 126, 20, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .timer {
+      font: 700 1.2rem 'JetBrains Mono', monospace;
+      color: var(--warn);
+      background: rgba(255, 193, 7, 0.1);
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 193, 7, 0.3);
+      animation: timerPulse 1s ease-in-out infinite;
+    }
+    
+    @keyframes timerPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    /* Pregunta */
+    .question-text {
+      font: 600 clamp(1.3rem, 3vw, 1.8rem)/1.4 'Inter', sans-serif;
+      color: var(--ink);
+      text-align: center;
+      margin-bottom: 35px;
+      padding: 20px;
+      background: rgba(220, 53, 69, 0.05);
+      border-radius: 16px;
+      border-left: 4px solid var(--primary);
+    }
+    
+    /* Opciones de respuesta */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .option {
+      background: var(--panel);
+      border: 2px solid rgba(220, 53, 69, 0.2);
+      border-radius: 16px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      font: 600 1.1rem 'Inter', sans-serif;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow);
+    }
+    
+    .option::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(220, 53, 69, 0.1), transparent);
+      transition: 0.5s;
+    }
+    
+    .option:hover {
+      transform: translateY(-5px) scale(1.02);
+      border-color: var(--primary);
+      box-shadow: 0 15px 40px rgba(220, 53, 69, 0.3);
+      background: rgba(220, 53, 69, 0.05);
+    }
+    
+    .option:hover::before {
+      left: 100%;
+    }
+    
+    .option.selected {
+      border-color: var(--warn);
+      background: rgba(255, 193, 7, 0.1);
+      animation: optionSelected 0.5s ease;
+    }
+    
+    .option.correct {
+      border-color: var(--success);
+      background: rgba(25, 135, 84, 0.1);
+      animation: correctAnswer 0.6s ease;
+    }
+    
+    .option.incorrect {
+      border-color: var(--danger);
+      background: rgba(220, 38, 38, 0.1);
+      animation: incorrectAnswer 0.6s ease;
+    }
+    
+    @keyframes optionSelected {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes correctAnswer {
+      0% { transform: scale(1); }
+      25% { transform: scale(1.1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes incorrectAnswer {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      50% { transform: translateX(10px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+    
+    /* Colores neutrales para opciones */
+    .option.option-a { background: linear-gradient(145deg, #f8f9fa, #ffffff); border-color: #6c757d; }
+    .option.option-b { background: linear-gradient(145deg, #f1f3f4, #ffffff); border-color: #6c757d; }
+    .option.option-c { background: linear-gradient(145deg, #f3f4f6, #ffffff); border-color: #6c757d; }
+    .option.option-d { background: linear-gradient(145deg, #f9fafb, #ffffff); border-color: #6c757d; }
+    
+    .option.option-a:hover { background: linear-gradient(145deg, #e9ecef, #f8f9fa); border-color: var(--primary); }
+    .option.option-b:hover { background: linear-gradient(145deg, #e9ecef, #f8f9fa); border-color: var(--primary); }
+    .option.option-c:hover { background: linear-gradient(145deg, #e9ecef, #f8f9fa); border-color: var(--primary); }
+    .option.option-d:hover { background: linear-gradient(145deg, #e9ecef, #f8f9fa); border-color: var(--primary); }
+    
+    /* Sistema de pistas */
+    .hint-system {
+      background: var(--panel);
+      border: 1px solid rgba(255, 193, 7, 0.3);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+      display: none;
+      animation: hintSlide 0.5s ease;
+      box-shadow: var(--shadow);
+    }
+    
+    .hint-system.show {
+      display: block;
+    }
+    
+    @keyframes hintSlide {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .hint-level {
+      margin-bottom: 15px;
+      padding: 10px;
+      background: rgba(255, 193, 7, 0.1);
+      border-radius: 8px;
+      border-left: 3px solid var(--warn);
+    }
+    
+    .hint-title {
+      font-weight: 700;
+      color: var(--warn);
+      margin-bottom: 5px;
+    }
+    
+    .hint-text {
+      color: var(--ink);
+      line-height: 1.4;
+    }
+    
+    /* Feedback */
+    .feedback {
+      background: var(--panel);
+      border: 1px solid rgba(220, 53, 69, 0.3);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+      display: none;
+      animation: feedbackSlide 0.5s ease;
+      box-shadow: var(--shadow);
+    }
+    
+    .feedback.show {
+      display: block;
+    }
+    
+    @keyframes feedbackSlide {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .feedback.correct {
+      border-color: var(--success);
+      background: rgba(25, 135, 84, 0.05);
+    }
+    
+    .feedback.incorrect {
+      border-color: var(--danger);
+      background: rgba(220, 38, 38, 0.05);
+    }
+    
+    .feedback-emoji {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      display: block;
+      animation: bounce 0.6s ease;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .feedback-text {
+      font: 600 1.2rem 'Inter', sans-serif;
+      margin-bottom: 10px;
+    }
+    
+    .feedback-explanation {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    
+    /* Botones */
+    .btn {
+      background: var(--grad-primary);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font: 600 1.1rem 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      box-shadow: 0 10px 30px rgba(220, 53, 69, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(220, 53, 69, 0.4);
+    }
+    
+    .btn:hover::before {
+      left: 100%;
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(145deg, #6c757d, #5a6268);
+      box-shadow: 0 10px 30px rgba(108, 117, 125, 0.3);
+    }
+    
+    .btn-secondary:hover {
+      box-shadow: 0 15px 40px rgba(108, 117, 125, 0.4);
+    }
+    
+    .btn-hint {
+      background: linear-gradient(145deg, #ffc107, #e0a800);
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      margin: 0 10px;
+    }
+    
+    /* Pantalla de resultados */
+    .results-screen {
+      display: none;
+      text-align: center;
+      background: var(--grad-panel);
+      border: 1px solid rgba(220, 53, 69, 0.2);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .results-screen.active {
+      display: block;
+      animation: slideIn 0.5s ease;
+    }
+    
+    .results-screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--grad-primary);
+      border-radius: 24px 24px 0 0;
+    }
+    
+    .final-score {
+      font: 900 4rem 'JetBrains Mono', monospace;
+      background: var(--grad-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 20px 0;
+      animation: scoreGlow 2s ease-in-out infinite alternate;
+    }
+    
+    @keyframes scoreGlow {
+      from { filter: drop-shadow(0 0 20px rgba(220, 53, 69, 0.5)); }
+      to { filter: drop-shadow(0 0 40px rgba(253, 126, 20, 0.7)); }
+    }
+    
+    .results-message {
+      font: 600 1.5rem 'Inter', sans-serif;
+      color: var(--ink);
+      margin: 20px 0;
+    }
+    
+    .results-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+    
+    /* Botones de acción */
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+    
+    .hint-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 15px 0;
+      flex-wrap: wrap;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .quiz-container {
+        padding: 10px;
+      }
+      
+      .quiz-header, .question-screen, .results-screen {
+        padding: 20px;
+        border-radius: 16px;
+      }
+      
+      .options-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      
+      .option {
+        padding: 15px;
+        min-height: 60px;
+        font-size: 1rem;
+      }
+      
+      .quiz-stats {
+        gap: 15px;
+      }
+      
+      .stat-box {
+        min-width: 100px;
+        padding: 10px 15px;
+      }
+      
+      .question-info {
+        justify-content: center;
+        text-align: center;
+      }
+      
+      .action-buttons, .hint-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .btn {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+    
+    /* Theme toggle */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--panel);
+      border: 1px solid rgba(220, 53, 69, 0.2);
+      border-radius: 50px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink);
+      z-index: 100;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+    }
+    
+    .theme-toggle:hover {
+      background: var(--primary);
+      color: white;
+    }
+    
+    /* Certificado Risk styling */
+    .risk-badge {
+      display: inline-block;
+      background: linear-gradient(145deg, #dc3545, #c82333);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-left: 10px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="theme-toggle" onclick="toggleTheme()">🌓 Tema</div>
+  
+  <div class="quiz-container">
+    <!-- Pantalla de inicio -->
+    <div class="quiz-header" id="startScreen">
+      <h1 class="quiz-title">⚠️ Quiz Gestión de Riesgos</h1>
+      <p class="quiz-subtitle">Unidad IV - Pensamiento Basado en Riesgos y Continuidad del Negocio <span class="risk-badge">ISO 31000:2018</span></p>
+      
+      <div class="quiz-stats">
+        <div class="stat-box">
+          <span class="stat-number">20</span>
+          <div class="stat-label">Preguntas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">5</span>
+          <div class="stat-label">Temas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">50s</span>
+          <div class="stat-label">Por pregunta</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">🎯</span>
+          <div class="stat-label">Con pistas</div>
+        </div>
+      </div>
+      
+      <div style="margin: 30px 0;">
+        <p style="color: var(--muted); font-size: 1.1rem; margin-bottom: 20px;">
+          ¿Estás listo para demostrar tu capacidad de evaluar y mitigar riesgos organizacionales? ⚡
+        </p>
+        <p style="color: var(--steel); font-size: 0.95rem;">
+          <strong>Temas:</strong> Definición de Riesgos • Pensamiento Basado en Riesgos • Proceso de Gestión • Criterios de Sistema • Directrices y Técnicas
+        </p>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn" onclick="startQuiz()">🚀 Iniciar Quiz</button>
+        <button class="btn btn-secondary" onclick="showInstructions()">📋 Instrucciones</button>
+      </div>
+    </div>
+    
+    <!-- Pantalla de pregunta -->
+    <div class="question-screen" id="questionScreen">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      
+      <div class="question-info">
+        <div class="question-number" id="questionNumber">Pregunta 1/20</div>
+        <div class="topic-badge" id="topicBadge">Definición Riesgos</div>
+        <div class="timer" id="timer">50s</div>
+      </div>
+      
+      <div class="question-text" id="questionText">
+        ¿Según ISO 31000:2018, cómo se define 'riesgo'?
+      </div>
+      
+      <div class="options-grid" id="optionsGrid">
+        <div class="option option-a" onclick="selectOption(0)">
+          Probabilidad de que ocurra un evento adverso
+        </div>
+        <div class="option option-b" onclick="selectOption(1)">
+          Efecto de la incertidumbre sobre los objetivos
+        </div>
+        <div class="option option-c" onclick="selectOption(2)">
+          Amenaza potencial que puede causar pérdidas
+        </div>
+        <div class="option option-d" onclick="selectOption(3)">
+          Combinación de probabilidad e impacto
+        </div>
+      </div>
+      
+      <div class="hint-system" id="hintSystem">
+        <div class="hint-level" id="hint1" style="display:none;">
+          <div class="hint-title">💡 Pista Nivel 1</div>
+          <div class="hint-text">La definición moderna enfatiza tanto aspectos positivos como negativos...</div>
+        </div>
+        <div class="hint-level" id="hint2" style="display:none;">
+          <div class="hint-title">🎯 Pista Nivel 2</div>
+          <div class="hint-text">ISO 31000:2018 cambió la definición para incluir 'incertidumbre' y 'objetivos'.</div>
+        </div>
+        <div class="hint-level" id="hint3" style="display:none;">
+          <div class="hint-title">🔑 Pista Nivel 3</div>
+          <div class="hint-text">La definición exacta es: "efecto de la incertidumbre sobre los objetivos".</div>
+        </div>
+      </div>
+      
+      <div class="hint-buttons">
+        <button class="btn btn-hint" onclick="showHint(1)">💡 Pista 1</button>
+        <button class="btn btn-hint" onclick="showHint(2)">🎯 Pista 2</button>
+        <button class="btn btn-hint" onclick="showHint(3)">🔑 Pista 3</button>
+      </div>
+      
+      <div class="feedback" id="feedback">
+        <span class="feedback-emoji">🎉</span>
+        <div class="feedback-text">¡Correcto!</div>
+        <div class="feedback-explanation">Exacto, ISO 31000:2018 define riesgo como el efecto de la incertidumbre sobre los objetivos.</div>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Siguiente Pregunta</button>
+      </div>
+    </div>
+    
+    <!-- Pantalla de resultados -->
+    <div class="results-screen" id="resultsScreen">
+      <h2 style="color: var(--primary); font-family: 'Inter', sans-serif; margin-bottom: 20px;">
+        🏆 ¡Quiz Completado!
+      </h2>
+      
+      <div class="final-score" id="finalScore">16/20</div>
+      
+      <div class="results-message" id="resultsMessage">
+        ¡Excelente! Eres un experto en gestión de riesgos ⚡
+      </div>
+      
+      <div class="results-details">
+        <div class="stat-box">
+          <span class="stat-number" id="correctAnswers">16</span>
+          <div class="stat-label">Correctas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="incorrectAnswers">4</span>
+          <div class="stat-label">Incorrectas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="accuracy">80%</span>
+          <div class="stat-label">Precisión</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="ranking">Risk Manager</span>
+          <div class="stat-label">Nivel</div>
+        </div>
+      </div>
+      
+      <div style="margin: 30px 0; padding: 20px; background: rgba(220, 53, 69, 0.1); border-radius: 16px; border: 1px solid rgba(220, 53, 69, 0.3);">
+        <div id="personalizedMessage"></div>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn" onclick="restartQuiz()">🔄 Reintentar</button>
+        <button class="btn btn-secondary" onclick="reviewAnswers()">📊 Revisar Respuestas</button>
+        <button class="btn btn-secondary" onclick="shareResults()">📤 Compartir</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Base de datos de preguntas
+    const questions = [
+      // Definición de riesgo y sus tipos (4 preguntas)
+      {
+        topic: "Definición Riesgos",
+        question: "¿Según ISO 31000:2018, cómo se define 'riesgo'?",
+        options: [
+          "Probabilidad de que ocurra un evento adverso",
+          "Efecto de la incertidumbre sobre los objetivos",
+          "Amenaza potencial que puede causar pérdidas",
+          "Combinación de probabilidad e impacto"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! ISO 31000:2018 define riesgo como 'efecto de la incertidumbre sobre los objetivos', enfatizando tanto aspectos positivos como negativos.",
+        hints: [
+          "La definición moderna enfatiza tanto aspectos positivos como negativos...",
+          "ISO 31000:2018 cambió la definición para incluir 'incertidumbre' y 'objetivos'.",
+          "La definición exacta es: 'efecto de la incertidumbre sobre los objetivos'."
+        ]
+      },
+      {
+        topic: "Definición Riesgos",
+        question: "¿Cuál NO es un tipo de riesgo emergente en la era digital según el material del curso?",
+        options: [
+          "Riesgos cibernéticos",
+          "Riesgos ESG (Environmental, Social, Governance)",
+          "Riesgos de reputación tradicional",
+          "Riesgos de economía circular"
+        ],
+        correct: 2,
+        explanation: "¡Correcto! Los riesgos de reputación tradicional no son emergentes. Los riesgos de reputación DIGITAL son los emergentes en esta era.",
+        hints: [
+          "Piensa en cuáles son específicos de la era digital actual...",
+          "La clave está en 'tradicional' vs 'digital' o 'emergente'.",
+          "Los riesgos de reputación tradicionales no son nuevos de la era digital."
+        ]
+      },
+      {
+        topic: "Definición Riesgos",
+        question: "Según el caso de Kodak mencionado en el material, ¿qué tipo de riesgo no gestionaron adecuadamente?",
+        options: [
+          "Riesgo operacional",
+          "Riesgo financiero",
+          "Riesgo de transformación digital",
+          "Riesgo regulatorio"
+        ],
+        correct: 2,
+        explanation: "¡Exacto! Kodak identificó el riesgo de la fotografía digital en 1975 pero subestimó la velocidad de adopción, un riesgo de transformación digital.",
+        hints: [
+          "Kodak fue líder en fotografía analógica y conocía la tecnología digital...",
+          "El problema fue no adaptarse a tiempo a una nueva tecnología.",
+          "Se trata específicamente de transformación digital/tecnológica."
+        ]
+      },
+      {
+        topic: "Definición Riesgos",
+        question: "¿Cuál es el costo promedio de una brecha de datos según las estadísticas 2024-2025 mencionadas?",
+        options: [
+          "$3.2 millones USD",
+          "$4.45 millones USD",
+          "$5.8 millones USD",
+          "$6.1 millones USD"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! Según las estadísticas del material, el costo promedio de una brecha de datos es $4.45 millones USD.",
+        hints: [
+          "Es una cifra entre 4 y 5 millones...",
+          "El material menciona cifras específicas de 2024-2025.",
+          "Son $4.45 millones según las estadísticas citadas."
+        ]
+      },
+      
+      // Pensamiento basado en riesgos (4 preguntas)
+      {
+        topic: "Pensamiento Riesgos",
+        question: "¿En qué norma se formalizó por primera vez el concepto de 'pensamiento basado en riesgos'?",
+        options: [
+          "ISO 31000:2009",
+          "ISO 9001:2015",
+          "ISO 14001:2015",
+          "ISO 45001:2018"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! El pensamiento basado en riesgos se formalizó en ISO 9001:2015, representando un cambio paradigmático hacia la gestión preventiva.",
+        hints: [
+          "Fue una de las principales innovaciones de la versión 2015 de una norma de calidad...",
+          "Se introdujo como cambio paradigmático en la gestión de calidad.",
+          "ISO 9001:2015 fue la primera en formalizar este concepto."
+        ]
+      },
+      {
+        topic: "Pensamiento Riesgos",
+        question: "¿Cuáles son los 5 niveles de madurez en pensamiento basado en riesgos según el material?",
+        options: [
+          "Inicial, Básico, Intermedio, Avanzado, Experto",
+          "Reactivo, Preventivo, Proactivo, Predictivo, Adaptativo",
+          "Manual, Sistemático, Integrado, Automatizado, Inteligente",
+          "Ad-hoc, Definido, Estandarizado, Gestionado, Optimizado"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! Los niveles son: Reactivo, Preventivo, Proactivo, Predictivo y Adaptativo, evolucionando desde respuesta a incidentes hasta sistemas auto-adaptativos.",
+        hints: [
+          "Empiezan con 'Reactivo' y terminan con sistemas muy avanzados...",
+          "Incluyen niveles como 'Predictivo' y 'Adaptativo' en los más altos.",
+          "El orden es: Reactivo → Preventivo → Proactivo → Predictivo → Adaptativo."
+        ]
+      },
+      {
+        topic: "Pensamiento Riesgos",
+        question: "Según el caso de Toyota mencionado, ¿qué filosofía integra el pensamiento basado en riesgos?",
+        options: [
+          "Kaizen continuo",
+          "Jidoka (Automatización con toque humano)",
+          "Just-in-Time",
+          "Poka-Yoke"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! La filosofía Jidoka ('Automatización con toque humano') integra detección inmediata de problemas y pensamiento basado en riesgos.",
+        hints: [
+          "Es una filosofía japonesa que significa 'automatización con toque humano'...",
+          "Se enfoca en detectar problemas inmediatamente.",
+          "Jidoka es la filosofía específica mencionada en el caso Toyota."
+        ]
+      },
+      {
+        topic: "Pensamiento Riesgos",
+        question: "¿Qué herramienta tecnológica menciona el material para analytics predictivo de riesgos?",
+        options: [
+          "Isolation Forest para detección de anomalías",
+          "Random Forest para clasificación",
+          "Linear Regression para tendencias",
+          "K-means para clustering"
+        ],
+        correct: 0,
+        explanation: "¡Exacto! Isolation Forest se menciona específicamente para detección de anomalías en la identificación de patrones de riesgo.",
+        hints: [
+          "Es un algoritmo específico para detectar 'anomalías'...",
+          "Se menciona en el contexto de machine learning para riesgos.",
+          "Isolation Forest es la herramienta específica mencionada."
+        ]
+      },
+      
+      // Proceso de gestión de riesgos (4 preguntas)
+      {
+        topic: "Proceso Gestión",
+        question: "¿Cuáles son los 5 componentes principales del proceso de gestión de riesgos según ISO 31000?",
+        options: [
+          "Identificar, Analizar, Evaluar, Tratar, Monitorear",
+          "Contexto, Identificación, Análisis, Evaluación, Tratamiento",
+          "Planificar, Implementar, Verificar, Actuar, Mejorar",
+          "Detectar, Prevenir, Responder, Recuperar, Aprender"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! Los componentes son: Establecimiento del contexto, Identificación, Análisis, Evaluación y Tratamiento, más Monitoreo y Comunicación como actividades transversales.",
+        hints: [
+          "Incluye 'Contexto' como primer componente...",
+          "Son los pasos secuenciales del proceso de apreciación del riesgo.",
+          "Contexto → Identificación → Análisis → Evaluación → Tratamiento."
+        ]
+      },
+      {
+        topic: "Proceso Gestión",
+        question: "¿Qué representa FMEA 4.0 según el material del curso?",
+        options: [
+          "Versión digitalizada del FMEA tradicional",
+          "FMEA con inteligencia artificial y IoT",
+          "FMEA para la Industria 4.0",
+          "Todas las anteriores"
+        ],
+        correct: 3,
+        explanation: "¡Correcto! FMEA 4.0 incorpora todas estas características: digitalización, IA, IoT y está diseñado para la Industria 4.0.",
+        hints: [
+          "FMEA 4.0 incorpora múltiples tecnologías avanzadas...",
+          "No es solo una característica, sino varias combinadas.",
+          "Todas las opciones describen aspectos de FMEA 4.0."
+        ]
+      },
+      {
+        topic: "Proceso Gestión",
+        question: "¿Cuáles son las 4 estrategias principales de tratamiento de riesgos?",
+        options: [
+          "Prevenir, Detectar, Responder, Recuperar",
+          "Evitar, Mitigar, Transferir, Aceptar",
+          "Identificar, Analizar, Controlar, Monitorear",
+          "Planificar, Ejecutar, Verificar, Ajustar"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! Las 4 estrategias clásicas son: Evitar, Mitigar, Transferir y Aceptar el riesgo, cada una con enfoques específicos.",
+        hints: [
+          "Son las estrategias clásicas de respuesta al riesgo...",
+          "Incluyen 'Evitar' y 'Aceptar' como extremos opuestos.",
+          "Las 4 T's en inglés: Avoid, Mitigate, Transfer, Accept."
+        ]
+      },
+      {
+        topic: "Proceso Gestión",
+        question: "¿Qué tecnología menciona el material para monitoreo continuo de riesgos operacionales?",
+        options: [
+          "Blockchain para trazabilidad",
+          "IoT sensors y monitoreo continuo",
+          "Machine learning predictivo",
+          "Process mining"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! IoT sensors permiten monitoreo continuo en tiempo real, siendo fundamental para la detección predictiva de fallos.",
+        hints: [
+          "Se trata de tecnología para monitoreo 'continuo' y en 'tiempo real'...",
+          "IoT permite conectar sensores para monitoreo automático.",
+          "Los sensores IoT son específicamente mencionados para monitoreo continuo."
+        ]
+      },
+      
+      // Criterios para sistema de gestión de riesgos (4 preguntas)
+      {
+        topic: "Criterios Sistema",
+        question: "Según el caso de JPMorgan Chase, ¿cuál es el nombre de su plataforma propietaria de gestión de riesgos?",
+        options: [
+          "RISK-ARMOR",
+          "ARMOR (Automated Risk Management & Operations Resilience)",
+          "GUARDIAN Risk Platform",
+          "SHIELD Risk Management"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! ARMOR (Automated Risk Management & Operations Resilience) es la plataforma propietaria de JPMorgan Chase para gestión integral de riesgos.",
+        hints: [
+          "Es un acrónimo que incluye 'Automated Risk Management'...",
+          "La palabra clave es 'ARMOR' que significa armadura.",
+          "ARMOR incluye 'Operations Resilience' en su nombre completo."
+        ]
+      },
+      {
+        topic: "Criterios Sistema",
+        question: "¿Cuál es uno de los principios clave de la proporcionalidad inteligente según el material?",
+        options: [
+          "Usar siempre la tecnología más avanzada disponible",
+          "La sofisticación debe ser proporcional al riesgo Y las capacidades tecnológicas",
+          "Aplicar los mismos controles a todos los riesgos",
+          "Priorizar siempre controles manuales sobre automatizados"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! La proporcionalidad inteligente considera tanto el nivel de riesgo como las capacidades tecnológicas disponibles para optimizar costo-beneficio.",
+        hints: [
+          "No es solo sobre el riesgo, sino también sobre las capacidades...",
+          "Incluye tanto 'riesgo' como 'capacidades tecnológicas' en la ecuación.",
+          "Es sobre encontrar el equilibrio óptimo entre riesgo y tecnología disponible."
+        ]
+      },
+      {
+        topic: "Criterios Sistema",
+        question: "¿Qué porcentaje de reducción en pérdidas operacionales logró JPMorgan Chase (2019-2024)?",
+        options: [
+          "25%",
+          "35%",
+          "45%",
+          "55%"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! JPMorgan Chase logró una reducción del 35% en pérdidas operacionales entre 2019-2024 con su sistema ARMOR.",
+        hints: [
+          "Es un porcentaje entre 30% y 40%...",
+          "Los resultados fueron muy significativos pero no extraordinarios.",
+          "35% representa una mejora sustancial en pérdidas operacionales."
+        ]
+      },
+      {
+        topic: "Criterios Sistema",
+        question: "¿Qué representa el concepto de 'sistemas adaptativos' en gestión de riesgos?",
+        options: [
+          "Sistemas que se actualizan manualmente cada año",
+          "Sistemas que requieren intervención constante del usuario",
+          "Sistemas que se ajustan automáticamente a cambios del entorno",
+          "Sistemas que solo funcionan en crisis"
+        ],
+        correct: 2,
+        explanation: "¡Correcto! Los sistemas adaptativos incluyen self-monitoring, auto-tuning y aprendizaje continuo para ajustarse automáticamente a cambios.",
+        hints: [
+          "La palabra clave es 'automáticamente'...",
+          "No requieren intervención manual constante.",
+          "Se adaptan solos a cambios en el entorno operacional."
+        ]
+      },
+      
+      // Directrices generales y técnicas de apoyo (4 preguntas)
+      {
+        topic: "Directrices Técnicas",
+        question: "¿Cuál es una de las plataformas GRC empresariales mencionadas con capacidades de machine learning?",
+        options: [
+          "Microsoft Excel con macros",
+          "ServiceNow GRC",
+          "Google Sheets avanzado",
+          "SAP básico"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! ServiceNow GRC se menciona específicamente con capacidades de machine learning para detección de patrones y workflow automation.",
+        hints: [
+          "Es una plataforma empresarial especializada en GRC...",
+          "ServiceNow es conocida por sus capacidades de automatización.",
+          "ServiceNow GRC incluye machine learning según el material."
+        ]
+      },
+      {
+        topic: "Directrices Técnicas",
+        question: "¿Qué metodología ágil se menciona para gestión de riesgos?",
+        options: [
+          "Risk Kanban Framework",
+          "Risk Scrum Framework",
+          "Risk Lean Framework",
+          "Risk DevOps Framework"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! El Risk Scrum Framework adapta la metodología Scrum para gestión de riesgos con roles como Risk Product Owner y Risk Scrum Master.",
+        hints: [
+          "Es una adaptación de una metodología ágil muy conocida...",
+          "Scrum es una de las metodologías ágiles más populares.",
+          "Risk Scrum Framework adapta Scrum específicamente para riesgos."
+        ]
+      },
+      {
+        topic: "Directrices Técnicas",
+        question: "¿Qué herramienta se menciona para análisis de redes de riesgo sistémico?",
+        options: [
+          "Excel con gráficos",
+          "NetworkX con Python",
+          "PowerPoint con diagramas",
+          "Word con tablas"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! NetworkX es una librería de Python específicamente mencionada para análisis de grafos aplicado a riesgos sistémicos y contagio.",
+        hints: [
+          "Es una librería especializada para análisis de redes/grafos...",
+          "NetworkX es específica para análisis de redes en Python.",
+          "Se usa para identificar nodos críticos y puntos de fallo único."
+        ]
+      },
+      {
+        topic: "Directrices Técnicas",
+        question: "¿Cuál es el objetivo principal de la simulación Monte Carlo adaptativa mencionada?",
+        options: [
+          "Reducir siempre el número de iteraciones",
+          "Usar un número fijo de simulaciones",
+          "Ajustar iteraciones hasta lograr convergencia estadística",
+          "Maximizar el tiempo de procesamiento"
+        ],
+        correct: 2,
+        explanation: "¡Correcto! Monte Carlo adaptativo ajusta automáticamente las iteraciones hasta alcanzar convergencia estadística, optimizando precisión vs. tiempo de cálculo.",
+        hints: [
+          "No es sobre número fijo, sino sobre 'adaptarse'...",
+          "El objetivo es lograr 'convergencia' estadística.",
+          "Se ajusta dinámicamente hasta que los resultados convergen."
+        ]
+      }
+    ];
+
+    // Variables del quiz
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedAnswer = -1;
+    let timeLeft = 50;
+    let timer = null;
+    let userAnswers = [];
+    let currentHintLevel = 0;
+    let hintsUsed = 0;
+    
+    // Elementos del DOM
+    const startScreen = document.getElementById('startScreen');
+    const questionScreen = document.getElementById('questionScreen');
+    const resultsScreen = document.getElementById('resultsScreen');
+    const progressFill = document.getElementById('progressFill');
+    const questionNumber = document.getElementById('questionNumber');
+    const topicBadge = document.getElementById('topicBadge');
+    const timerDisplay = document.getElementById('timer');
+    const questionText = document.getElementById('questionText');
+    const optionsGrid = document.getElementById('optionsGrid');
+    const hintSystem = document.getElementById('hintSystem');
+    const feedback = document.getElementById('feedback');
+    const nextBtn = document.getElementById('nextBtn');
+
+    // Iniciar quiz
+    function startQuiz() {
+      startScreen.style.display = 'none';
+      questionScreen.classList.add('active');
+      loadQuestion();
+      startTimer();
+    }
+
+    // Cargar pregunta actual
+    function loadQuestion() {
+      const question = questions[currentQuestionIndex];
+      
+      // Actualizar información
+      questionNumber.textContent = `Pregunta ${currentQuestionIndex + 1}/${questions.length}`;
+      topicBadge.textContent = question.topic;
+      questionText.textContent = question.question;
+      
+      // Actualizar progreso
+      const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+      progressFill.style.width = `${progress}%`;
+      
+      // Cargar opciones
+      optionsGrid.innerHTML = '';
+      question.options.forEach((option, index) => {
+        const optionElement = document.createElement('div');
+        optionElement.className = `option option-${String.fromCharCode(97 + index)}`;
+        optionElement.textContent = option;
+        optionElement.onclick = () => selectOption(index);
+        optionsGrid.appendChild(optionElement);
+      });
+      
+      // Reset estado
+      selectedAnswer = -1;
+      currentHintLevel = 0;
+      feedback.classList.remove('show', 'correct', 'incorrect');
+      hintSystem.classList.remove('show');
+      nextBtn.disabled = true;
+      timeLeft = 50;
+      
+      // Reset hints
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById(`hint${i}`).style.display = 'none';
+      }
+    }
+
+    // Mostrar pista
+    function showHint(level) {
+      const question = questions[currentQuestionIndex];
+      if (level <= question.hints.length) {
+        currentHintLevel = Math.max(currentHintLevel, level);
+        hintsUsed++;
+        
+        // Mostrar el sistema de pistas si no está visible
+        hintSystem.classList.add('show');
+        
+        // Mostrar la pista específica
+        const hintElement = document.getElementById(`hint${level}`);
+        hintElement.style.display = 'block';
+        hintElement.querySelector('.hint-text').textContent = question.hints[level - 1];
+        
+        // Animación de aparición
+        hintElement.style.animation = 'none';
+        hintElement.offsetHeight; // Trigger reflow
+        hintElement.style.animation = 'slideIn 0.5s ease';
+      }
+    }
+
+    // Seleccionar opción
+    function selectOption(index) {
+      if (selectedAnswer !== -1) return; // Ya seleccionó
+      
+      selectedAnswer = index;
+      const question = questions[currentQuestionIndex];
+      const options = optionsGrid.children;
+      
+      // Detener timer
+      clearInterval(timer);
+      
+      // Marcar opción seleccionada
+      options[index].classList.add('selected');
+      
+      setTimeout(() => {
+        // Mostrar respuesta correcta/incorrecta
+        const isCorrect = index === question.correct;
+        
+        if (isCorrect) {
+          options[index].classList.add('correct');
+          score++;
+          showFeedback(true, question.explanation);
+        } else {
+          options[index].classList.add('incorrect');
+          options[question.correct].classList.add('correct');
+          showFeedback(false, question.explanation);
+        }
+        
+        userAnswers.push({
+          question: question.question,
+          selectedIndex: index,
+          correctIndex: question.correct,
+          isCorrect: isCorrect,
+          hintsUsed: currentHintLevel
+        });
+        
+        nextBtn.disabled = false;
+      }, 1000);
+    }
+
+    // Mostrar feedback
+    function showFeedback(isCorrect, message) {
+      const feedbackEmoji = feedback.querySelector('.feedback-emoji');
+      const feedbackText = feedback.querySelector('.feedback-text');
+      const feedbackExplanation = feedback.querySelector('.feedback-explanation');
+      
+      if (isCorrect) {
+        feedback.className = 'feedback show correct';
+        feedbackEmoji.textContent = ['🎯', '⚡', '🛡️', '⭐', '🔥'][Math.floor(Math.random() * 5)];
+        feedbackText.textContent = ['¡Correcto!', '¡Excelente!', '¡Genial!', '¡Perfecto!'][Math.floor(Math.random() * 4)];
+      } else {
+        feedback.className = 'feedback show incorrect';
+        feedbackEmoji.textContent = ['🤔', '📚', '⚠️', '🎯', '📈'][Math.floor(Math.random() * 5)];
+        feedbackText.textContent = ['¡Aprende de esto!', '¡Casi!', '¡Interesante elección!', '¡Sigue mejorando!'][Math.floor(Math.random() * 4)];
+      }
+      
+      feedbackExplanation.textContent = message;
+    }
+
+    // Siguiente pregunta
+    function nextQuestion() {
+      currentQuestionIndex++;
+      
+      if (currentQuestionIndex >= questions.length) {
+        showResults();
+      } else {
+        loadQuestion();
+        startTimer();
+      }
+    }
+
+    // Timer
+    function startTimer() {
+      timerDisplay.textContent = `${timeLeft}s`;
+      
+      timer = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = `${timeLeft}s`;
+        
+        if (timeLeft <= 10) {
+          timerDisplay.style.color = 'var(--danger)';
+          timerDisplay.style.animation = 'timerPulse 0.5s ease-in-out infinite';
+        }
+        
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          if (selectedAnswer === -1) {
+            // Tiempo agotado, mostrar respuesta correcta
+            const question = questions[currentQuestionIndex];
+            const options = optionsGrid.children;
+            
+            options[question.correct].classList.add('correct');
+            showFeedback(false, "⏰ Tiempo agotado. " + question.explanation);
+            
+            userAnswers.push({
+              question: question.question,
+              selectedIndex: -1,
+              correctIndex: question.correct,
+              isCorrect: false,
+              hintsUsed: currentHintLevel
+            });
+            
+            nextBtn.disabled = false;
+          }
+        }
+      }, 1000);
+    }
+
+    // Mostrar resultados
+    function showResults() {
+      questionScreen.classList.remove('active');
+      resultsScreen.classList.add('active');
+      
+      const accuracy = Math.round((score / questions.length) * 100);
+      const incorrect = questions.length - score;
+      
+      document.getElementById('finalScore').textContent = `${score}/${questions.length}`;
+      document.getElementById('correctAnswers').textContent = score;
+      document.getElementById('incorrectAnswers').textContent = incorrect;
+      document.getElementById('accuracy').textContent = `${accuracy}%`;
+      
+      // Determinar nivel y mensaje
+      let level, message;
+      if (accuracy >= 95) {
+        level = "🥇 Chief Risk Officer";
+        message = "¡Impresionante! Podrías liderar la gestión de riesgos de cualquier organización. Tu dominio es excepcional ⚡";
+      } else if (accuracy >= 85) {
+        level = "🛡️ Senior Risk Manager";
+        message = "¡Excelente! Tienes un dominio sólido de la gestión de riesgos. Las organizaciones estarían seguras contigo 🎯";
+      } else if (accuracy >= 75) {
+        level = "⚙️ Risk Analyst";
+        message = "¡Muy bien! Comprendes los fundamentos y tienes potencial para crecer en gestión de riesgos 📈";
+      } else if (accuracy >= 65) {
+        level = "📋 Risk Coordinator";
+        message = "¡Buen trabajo! Tienes una base sólida. Con más práctica serás un experto en riesgos 📚";
+      } else {
+        level = "🎓 Risk Trainee";
+        message = "¡Sigue adelante! La gestión de riesgos es compleja, pero estás en el camino correcto 💪";
+      }
+      
+      document.getElementById('ranking').textContent = level;
+      document.getElementById('resultsMessage').textContent = message;
+      
+      // Mensaje personalizado
+      const personalizedMsg = generatePersonalizedMessage(accuracy);
+      document.getElementById('personalizedMessage').innerHTML = personalizedMsg;
+    }
+
+    // Generar mensaje personalizado
+    function generatePersonalizedMessage(accuracy) {
+      const topicStats = {};
+      questions.forEach((q, i) => {
+        if (!topicStats[q.topic]) {
+          topicStats[q.topic] = { correct: 0, total: 0 };
+        }
+        topicStats[q.topic].total++;
+        if (userAnswers[i] && userAnswers[i].isCorrect) {
+          topicStats[q.topic].correct++;
+        }
+      });
+      
+      let message = '<h4 style="color: var(--primary); margin-bottom: 15px;">⚡ Análisis de Gestión de Riesgos</h4>';
+      
+      // Mejor tema
+      let bestTopic = '', bestScore = 0;
+      let worstTopic = '', worstScore = 100;
+      
+      for (const [topic, stats] of Object.entries(topicStats)) {
+        const percentage = (stats.correct / stats.total) * 100;
+        if (percentage > bestScore) {
+          bestScore = percentage;
+          bestTopic = topic;
+        }
+        if (percentage < worstScore) {
+          worstScore = percentage;
+          worstTopic = topic;
+        }
+      }
+      
+      if (bestScore === 100) {
+        message += `<p>🏆 <strong>Dominio perfecto en:</strong> ${bestTopic}. ¡Podrías enseñar este tema!</p>`;
+      } else if (bestScore >= 75) {
+        message += `<p>⭐ <strong>Tu fortaleza es:</strong> ${bestTopic} (${bestScore.toFixed(0)}%). ¡Excelente comprensión!</p>`;
+      }
+      
+      if (worstScore < 50 && worstTopic !== bestTopic) {
+        message += `<p>📚 <strong>Área de mejora:</strong> ${worstTopic}. ¡Con más estudio lo dominarás!</p>`;
+      }
+      
+      // Estadísticas de pistas
+      const avgHints = hintsUsed / questions.length;
+      if (avgHints < 0.5) {
+        message += `<p>🧠 <strong>Autoaprendizaje:</strong> Usaste pocas pistas. ¡Excelente confianza en tu conocimiento!</p>`;
+      } else if (avgHints > 2) {
+        message += `<p>💡 <strong>Aprendizaje guiado:</strong> Las pistas te fueron muy útiles. ¡Aprovechaste bien los recursos!</p>`;
+      }
+      
+      // Comentarios específicos por precisión
+      if (accuracy >= 85) {
+        message += `<p>🛡️ <strong>Capacidad de mitigación:</strong> Tu conocimiento podría prevenir crisis organizacionales reales.</p>`;
+      }
+      
+      return message;
+    }
+
+    // Funciones adicionales
+    function restartQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      userAnswers = [];
+      hintsUsed = 0;
+      resultsScreen.classList.remove('active');
+      startScreen.style.display = 'block';
+    }
+
+    function showInstructions() {
+      alert(`⚡ INSTRUCCIONES DEL QUIZ GESTIÓN DE RIESGOS:
+
+🎯 20 preguntas sobre gestión integral de riesgos
+⏰ 50 segundos por pregunta
+💡 Sistema de 3 niveles de pistas inteligentes
+📊 Análisis detallado por tema al final
+🏆 Certificación virtual de competencias
+
+📚 TEMAS EVALUADOS:
+• Definición de riesgos y clasificación
+• Pensamiento basado en riesgos (ISO 9001:2015)
+• Proceso de gestión según ISO 31000:2018
+• Criterios para sistemas de gestión de riesgos
+• Directrices, técnicas y herramientas de apoyo
+
+💡 SISTEMA DE PISTAS:
+• Pista 1: Orientación conceptual general
+• Pista 2: Contexto específico y claves
+• Pista 3: Respuesta prácticamente directa
+
+⚠️ ¡Demuestra que puedes evaluar y mitigar riesgos organizacionales! 🛡️`);
+    }
+
+    function reviewAnswers() {
+      let review = "⚡ REVISIÓN DE RESPUESTAS - GESTIÓN DE RIESGOS:\n\n";
+      userAnswers.forEach((answer, index) => {
+        const question = questions[index];
+        const status = answer.isCorrect ? "✅" : "❌";
+        const hints = answer.hintsUsed > 0 ? ` (${answer.hintsUsed} pistas)` : "";
+        review += `${status} P${index + 1}: ${question.topic}${hints}\n`;
+        if (answer.selectedIndex === -1) {
+          review += `⏰ Tiempo agotado\n`;
+        } else {
+          review += `Tu respuesta: ${question.options[answer.selectedIndex]}\n`;
+        }
+        if (!answer.isCorrect) {
+          review += `✓ Correcta: ${question.options[answer.correctIndex]}\n`;
+        }
+        review += "\n";
+      });
+      
+      // Crear modal personalizado
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.8); display: flex; align-items: center;
+        justify-content: center; z-index: 1000; padding: 20px;
+      `;
+      
+      modal.innerHTML = `
+        <div style="background: var(--grad-panel); border: 1px solid var(--primary);
+                    border-radius: 20px; padding: 30px; max-width: 600px;
+                    max-height: 80vh; overflow-y: auto; color: var(--ink);">
+          <h3 style="color: var(--primary); margin-bottom: 20px;">⚡ Revisión Gestión de Riesgos</h3>
+          <pre style="white-space: pre-wrap; font-family: 'Inter', sans-serif;
+                      line-height: 1.6;">${review}</pre>
+          <button onclick="this.parentNode.parentNode.remove()" 
+                  style="background: var(--grad-primary); color: white; border: none;
+                         padding: 10px 20px; border-radius: 15px; cursor: pointer;
+                         margin-top: 20px;">Cerrar</button>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+    }
+
+    function shareResults() {
+      const accuracy = Math.round((score / questions.length) * 100);
+      const text = `⚡ ¡Completé el Quiz de Gestión de Riesgos!
+      
+🎯 Resultado: ${score}/${questions.length} (${accuracy}%)
+📚 Temas: Definición de Riesgos, Pensamiento Basado en Riesgos, ISO 31000
+🛡️ Con sistema de pistas inteligente y análisis personalizado
+
+${accuracy >= 85 ? '🏆 ¡Soy un experto en Gestión de Riesgos organizacionales!' : '📈 ¡Desarrollando competencias en Risk Management!'}
+
+#GestionRiesgos #ISO31000 #PensamientoBasadoEnRiesgos #RiskManagement`;
+
+      if (navigator.share) {
+        navigator.share({
+          title: 'Quiz Gestión de Riesgos - Resultados',
+          text: text
+        });
+      } else {
+        navigator.clipboard.writeText(text).then(() => {
+          alert('📋 ¡Resultados copiados! Comparte tu dominio en gestión de riesgos 🛡️');
+        });
+      }
+    }
+
+    // Theme toggle
+    function toggleTheme() {
+      const body = document.documentElement;
+      const currentTheme = body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme-risk', newTheme);
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (questionScreen.classList.contains('active')) {
+        if (e.key >= '1' && e.key <= '4') {
+          const index = parseInt(e.key) - 1;
+          if (index < optionsGrid.children.length) {
+            selectOption(index);
+          }
+        } else if (e.key === 'Enter' && !nextBtn.disabled) {
+          nextQuestion();
+        } else if (e.key === 'h' || e.key === 'H') {
+          // Mostrar siguiente pista disponible
+          if (currentHintLevel < 3) {
+            showHint(currentHintLevel + 1);
+          }
+        }
+      }
+    });
+
+    // Initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      // Load saved theme
+      const savedTheme = localStorage.getItem('theme-risk') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      
+      // Risk Management Easter egg
+      let riskSequence = [];
+      const riskCode = [82, 73, 83, 75]; // R-I-S-K
+      
+      document.addEventListener('keydown', (e) => {
+        riskSequence.push(e.keyCode);
+        if (riskSequence.length > riskCode.length) {
+          riskSequence.shift();
+        }
+        
+        if (riskSequence.toString() === riskCode.toString()) {
+          alert('🛡️ ¡Código RISK activado! Eres oficialmente un guardian de la continuidad del negocio ⚡🏢');
+          score += 3; // Bonus points
+        }
+      });
+    });
+  </script>
+</body>
+</html>

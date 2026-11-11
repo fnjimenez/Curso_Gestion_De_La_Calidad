@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🎯 Quiz Unidad I - Fundamentos de Gestión de Calidad</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+    
+    :root {
+      --bg: #f8fafc;
+      --panel: #ffffff;
+      --ink: #1a1a1a;
+      --muted: #6b7280;
+      --primary: #3b82f6;
+      --secondary: #8b5cf6;
+      --accent: #06b6d4;
+      --success: #10b981;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --steel: #475569;
+      --grad-primary: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      --grad-panel: linear-gradient(180deg, #ffffff, #f8fafc);
+      --shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --panel: #1e293b;
+      --ink: #f1f5f9;
+      --muted: #94a3b8;
+      --grad-panel: linear-gradient(180deg, #1e293b, #0f172a);
+      --shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      font: 16px/1.6 'Inter', system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+    
+    /* Patrón de fondo de calidad */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(90deg, rgba(59, 130, 246, 0.02) 1px, transparent 1px),
+        linear-gradient(rgba(139, 92, 246, 0.02) 1px, transparent 1px),
+        radial-gradient(circle at 25% 75%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 75% 25%, rgba(6, 182, 212, 0.05) 0%, transparent 50%);
+      background-size: 40px 40px, 40px 40px, 200px 200px, 200px 200px;
+      opacity: 0.4;
+      animation: qualityFlow 30s linear infinite;
+      z-index: 0;
+    }
+    
+    @keyframes qualityFlow {
+      from { transform: translate(0, 0); }
+      to { transform: translate(-40px, -40px); }
+    }
+    
+    /* Contenedor principal */
+    .quiz-container {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    /* Header del quiz */
+    .quiz-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 30px;
+      background: var(--grad-panel);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .quiz-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--grad-primary);
+      border-radius: 24px 24px 0 0;
+    }
+    
+    .quiz-title {
+      font: 900 clamp(2rem, 6vw, 3.5rem)/1.1 'Inter', sans-serif;
+      background: var(--grad-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 15px;
+      animation: titleGlow 3s ease-in-out infinite alternate;
+    }
+    
+    @keyframes titleGlow {
+      from { filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.3)); }
+      to { filter: drop-shadow(0 0 30px rgba(139, 92, 246, 0.4)); }
+    }
+    
+    .quiz-subtitle {
+      font: 600 1.3rem 'Inter', sans-serif;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    
+    /* Stats del quiz */
+    .quiz-stats {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    
+    .stat-box {
+      background: var(--panel);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 16px;
+      padding: 15px 20px;
+      text-align: center;
+      min-width: 120px;
+      box-shadow: var(--shadow);
+    }
+    
+    .stat-number {
+      font: 700 1.8rem 'JetBrains Mono', monospace;
+      color: var(--primary);
+      display: block;
+      text-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+    }
+    
+    /* Pantalla de pregunta */
+    .question-screen {
+      display: none;
+      background: var(--grad-panel);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      animation: slideIn 0.5s ease;
+    }
+    
+    .question-screen.active {
+      display: block;
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    
+    .question-screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--grad-primary);
+      border-radius: 24px 24px 0 0;
+    }
+    
+    /* Barra de progreso */
+    .progress-bar {
+      background: rgba(0,0,0,0.1);
+      border-radius: 999px;
+      height: 12px;
+      margin-bottom: 30px;
+      overflow: hidden;
+      border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--grad-primary);
+      width: 0;
+      transition: width 0.5s ease;
+      border-radius: inherit;
+      position: relative;
+    }
+    
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: -20px;
+      width: 20px;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
+      animation: progressGlow 2s ease-in-out infinite;
+    }
+    
+    @keyframes progressGlow {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+    
+    /* Información de la pregunta */
+    .question-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .question-number {
+      font: 700 1.1rem 'JetBrains Mono', monospace;
+      color: var(--primary);
+      background: rgba(59, 130, 246, 0.1);
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    
+    .topic-badge {
+      font: 600 0.9rem 'JetBrains Mono', monospace;
+      color: var(--secondary);
+      background: rgba(139, 92, 246, 0.1);
+      padding: 6px 12px;
+      border-radius: 15px;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .timer {
+      font: 700 1.2rem 'JetBrains Mono', monospace;
+      color: var(--warn);
+      background: rgba(245, 158, 11, 0.1);
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      animation: timerPulse 1s ease-in-out infinite;
+    }
+    
+    @keyframes timerPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    /* Pregunta */
+    .question-text {
+      font: 600 clamp(1.3rem, 3vw, 1.8rem)/1.4 'Inter', sans-serif;
+      color: var(--ink);
+      text-align: center;
+      margin-bottom: 35px;
+      padding: 20px;
+      background: rgba(59, 130, 246, 0.05);
+      border-radius: 16px;
+      border-left: 4px solid var(--primary);
+    }
+    
+    /* Opciones de respuesta */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .option {
+      background: var(--panel);
+      border: 2px solid rgba(59, 130, 246, 0.2);
+      border-radius: 16px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      font: 600 1.1rem 'Inter', sans-serif;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow);
+    }
+    
+    .option::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+      transition: 0.5s;
+    }
+    
+    .option:hover {
+      transform: translateY(-5px) scale(1.02);
+      border-color: var(--primary);
+      box-shadow: 0 15px 40px rgba(59, 130, 246, 0.3);
+      background: rgba(59, 130, 246, 0.05);
+    }
+    
+    .option:hover::before {
+      left: 100%;
+    }
+    
+    .option.selected {
+      border-color: var(--warn);
+      background: rgba(245, 158, 11, 0.1);
+      animation: optionSelected 0.5s ease;
+    }
+    
+    .option.correct {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+      animation: correctAnswer 0.6s ease;
+    }
+    
+    .option.incorrect {
+      border-color: var(--danger);
+      background: rgba(239, 68, 68, 0.1);
+      animation: incorrectAnswer 0.6s ease;
+    }
+    
+    @keyframes optionSelected {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes correctAnswer {
+      0% { transform: scale(1); }
+      25% { transform: scale(1.1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes incorrectAnswer {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      50% { transform: translateX(10px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+    
+    /* Colores neutrales para opciones */
+    .option.option-a { background: linear-gradient(145deg, #f8f9fa, #ffffff); border-color: #6c757d; }
+    .option.option-b { background: linear-gradient(145deg, #f1f3f4, #ffffff); border-color: #6c757d; }
+    .option.option-c { background: linear-gradient(145deg, #f3f4f6, #ffffff); border-color: #6c757d; }
+    .option.option-d { background: linear-gradient(145deg, #f9fafb, #ffffff); border-color: #6c757d; }
+    
+    .option.option-a:hover { background: linear-gradient(145deg, #e9ecef, #f8f9fa); border-color: var(--primary); }
+    .option.option-b:hover { background: linear-gradient(145deg, #e9ecef, #f8f9fa); border-color: var(--primary); }
+    .option.option-c:hover { background: linear-gradient(145deg, #e9ecef, #f8f9fa); border-color: var(--primary); }
+    .option.option-d:hover { background: linear-gradient(145deg, #e9ecef, #f8f9fa); border-color: var(--primary); }
+    
+    /* Sistema de pistas */
+    .hint-system {
+      background: var(--panel);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+      display: none;
+      animation: hintSlide 0.5s ease;
+      box-shadow: var(--shadow);
+    }
+    
+    .hint-system.show {
+      display: block;
+    }
+    
+    @keyframes hintSlide {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .hint-level {
+      margin-bottom: 15px;
+      padding: 10px;
+      background: rgba(245, 158, 11, 0.1);
+      border-radius: 8px;
+      border-left: 3px solid var(--warn);
+    }
+    
+    .hint-title {
+      font-weight: 700;
+      color: var(--warn);
+      margin-bottom: 5px;
+    }
+    
+    .hint-text {
+      color: var(--ink);
+      line-height: 1.4;
+    }
+    
+    /* Feedback */
+    .feedback {
+      background: var(--panel);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+      display: none;
+      animation: feedbackSlide 0.5s ease;
+      box-shadow: var(--shadow);
+    }
+    
+    .feedback.show {
+      display: block;
+    }
+    
+    @keyframes feedbackSlide {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .feedback.correct {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.05);
+    }
+    
+    .feedback.incorrect {
+      border-color: var(--danger);
+      background: rgba(239, 68, 68, 0.05);
+    }
+    
+    .feedback-emoji {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      display: block;
+      animation: bounce 0.6s ease;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .feedback-text {
+      font: 600 1.2rem 'Inter', sans-serif;
+      margin-bottom: 10px;
+    }
+    
+    .feedback-explanation {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    
+    /* Botones */
+    .btn {
+      background: var(--grad-primary);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font: 600 1.1rem 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
+    }
+    
+    .btn:hover::before {
+      left: 100%;
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(145deg, #6c7b95, #5a6b85);
+      box-shadow: 0 10px 30px rgba(108, 123, 149, 0.3);
+    }
+    
+    .btn-secondary:hover {
+      box-shadow: 0 15px 40px rgba(108, 123, 149, 0.4);
+    }
+    
+    .btn-hint {
+      background: linear-gradient(145deg, #f59e0b, #d97706);
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      margin: 0 10px;
+    }
+    
+    /* Pantalla de resultados */
+    .results-screen {
+      display: none;
+      text-align: center;
+      background: var(--grad-panel);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .results-screen.active {
+      display: block;
+      animation: slideIn 0.5s ease;
+    }
+    
+    .results-screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--grad-primary);
+      border-radius: 24px 24px 0 0;
+    }
+    
+    .final-score {
+      font: 900 4rem 'JetBrains Mono', monospace;
+      background: var(--grad-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 20px 0;
+      animation: scoreGlow 2s ease-in-out infinite alternate;
+    }
+    
+    @keyframes scoreGlow {
+      from { filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.5)); }
+      to { filter: drop-shadow(0 0 40px rgba(139, 92, 246, 0.7)); }
+    }
+    
+    .results-message {
+      font: 600 1.5rem 'Inter', sans-serif;
+      color: var(--ink);
+      margin: 20px 0;
+    }
+    
+    .results-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+    
+    /* Botones de acción */
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+    
+    .hint-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 15px 0;
+      flex-wrap: wrap;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .quiz-container {
+        padding: 10px;
+      }
+      
+      .quiz-header, .question-screen, .results-screen {
+        padding: 20px;
+        border-radius: 16px;
+      }
+      
+      .options-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      
+      .option {
+        padding: 15px;
+        min-height: 60px;
+        font-size: 1rem;
+      }
+      
+      .quiz-stats {
+        gap: 15px;
+      }
+      
+      .stat-box {
+        min-width: 100px;
+        padding: 10px 15px;
+      }
+      
+      .question-info {
+        justify-content: center;
+        text-align: center;
+      }
+      
+      .action-buttons, .hint-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .btn {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+    
+    /* Theme toggle */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--panel);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 50px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink);
+      z-index: 100;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+    }
+    
+    .theme-toggle:hover {
+      background: var(--primary);
+      color: white;
+    }
+    
+    /* Certificado Quality styling */
+    .quality-badge {
+      display: inline-block;
+      background: linear-gradient(145deg, #3b82f6, #2563eb);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-left: 10px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="theme-toggle" onclick="toggleTheme()">🌙 Tema</div>
+  
+  <div class="quiz-container">
+    <!-- Pantalla de inicio -->
+    <div class="quiz-header" id="startScreen">
+      <h1 class="quiz-title">🎯 Quiz Unidad I</h1>
+      <p class="quiz-subtitle">Fundamentos de Gestión de Calidad - Sistema de Gestión de la Calidad <span class="quality-badge">TGS + SGC</span></p>
+      
+      <div class="quiz-stats">
+        <div class="stat-box">
+          <span class="stat-number">20</span>
+          <div class="stat-label">Preguntas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">6</span>
+          <div class="stat-label">Temas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">45s</span>
+          <div class="stat-label">Por pregunta</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">🎯</span>
+          <div class="stat-label">Con pistas</div>
+        </div>
+      </div>
+      
+      <div style="margin: 30px 0;">
+        <p style="color: var(--muted); font-size: 1.1rem; margin-bottom: 20px;">
+          ¿Estás listo para dominar los fundamentos de la Gestión de Calidad? 🚀
+        </p>
+        <p style="color: var(--steel); font-size: 0.95rem;">
+          <strong>Temas:</strong> Teoría General de Sistemas • Estandarización • Historia de la Calidad • 7 Principios • Cambio Organizacional • Calidad Total
+        </p>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn" onclick="startQuiz()">🚀 Iniciar Quiz</button>
+        <button class="btn btn-secondary" onclick="showInstructions()">📋 Instrucciones</button>
+      </div>
+    </div>
+    
+    <!-- Pantalla de pregunta -->
+    <div class="question-screen" id="questionScreen">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      
+      <div class="question-info">
+        <div class="question-number" id="questionNumber">Pregunta 1/20</div>
+        <div class="topic-badge" id="topicBadge">TGS</div>
+        <div class="timer" id="timer">45s</div>
+      </div>
+      
+      <div class="question-text" id="questionText">
+        Según la Teoría General de Sistemas, ¿cómo se define un sistema?
+      </div>
+      
+      <div class="options-grid" id="optionsGrid">
+        <div class="option option-a" onclick="selectOption(0)">
+          Una colección de elementos sin relación específica
+        </div>
+        <div class="option option-b" onclick="selectOption(1)">
+          Un conjunto de elementos interrelacionados que trabajan para alcanzar un objetivo común
+        </div>
+        <div class="option option-c" onclick="selectOption(2)">
+          Una estructura organizacional jerárquica
+        </div>
+        <div class="option option-d" onclick="selectOption(3)">
+          Un proceso lineal de transformación de entradas a salidas
+        </div>
+      </div>
+      
+      <div class="hint-system" id="hintSystem">
+        <div class="hint-level" id="hint1" style="display:none;">
+          <div class="hint-title">💡 Pista Nivel 1</div>
+          <div class="hint-text">La palabra clave es 'interrelacionados' y que trabajan hacia algo específico...</div>
+        </div>
+        <div class="hint-level" id="hint2" style="display:none;">
+          <div class="hint-title">🎯 Pista Nivel 2</div>
+          <div class="hint-text">Un sistema no es solo una colección, sino elementos que se influyen mutuamente con propósito.</div>
+        </div>
+        <div class="hint-level" id="hint3" style="display:none;">
+          <div class="hint-title">🔑 Pista Nivel 3</div>
+          <div class="hint-text">La definición enfatiza 'objetivo común' como característica clave del sistema.</div>
+        </div>
+      </div>
+      
+      <div class="hint-buttons">
+        <button class="btn btn-hint" onclick="showHint(1)">💡 Pista 1</button>
+        <button class="btn btn-hint" onclick="showHint(2)">🎯 Pista 2</button>
+        <button class="btn btn-hint" onclick="showHint(3)">🔑 Pista 3</button>
+      </div>
+      
+      <div class="feedback" id="feedback">
+        <span class="feedback-emoji">🎉</span>
+        <div class="feedback-text">¡Correcto!</div>
+        <div class="feedback-explanation">Exacto, un sistema es un conjunto de elementos interrelacionados que trabajan en conjunto para alcanzar un objetivo común.</div>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Siguiente Pregunta</button>
+      </div>
+    </div>
+    
+    <!-- Pantalla de resultados -->
+    <div class="results-screen" id="resultsScreen">
+      <h2 style="color: var(--primary); font-family: 'Inter', sans-serif; margin-bottom: 20px;">
+        🏆 ¡Quiz Completado!
+      </h2>
+      
+      <div class="final-score" id="finalScore">17/20</div>
+      
+      <div class="results-message" id="resultsMessage">
+        ¡Excelente! Dominas los fundamentos de calidad 🎯
+      </div>
+      
+      <div class="results-details">
+        <div class="stat-box">
+          <span class="stat-number" id="correctAnswers">17</span>
+          <div class="stat-label">Correctas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="incorrectAnswers">3</span>
+          <div class="stat-label">Incorrectas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="accuracy">85%</span>
+          <div class="stat-label">Precisión</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="ranking">Quality Expert</span>
+          <div class="stat-label">Nivel</div>
+        </div>
+      </div>
+      
+      <div style="margin: 30px 0; padding: 20px; background: rgba(59, 130, 246, 0.1); border-radius: 16px; border: 1px solid rgba(59, 130, 246, 0.3);">
+        <div id="personalizedMessage"></div>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn" onclick="restartQuiz()">🔄 Reintentar</button>
+        <button class="btn btn-secondary" onclick="reviewAnswers()">📊 Revisar Respuestas</button>
+        <button class="btn btn-secondary" onclick="shareResults()">📤 Compartir</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Base de datos de preguntas
+    const questions = [
+      // Teoría General de Sistemas (4 preguntas)
+      {
+        topic: "TGS",
+        question: "Según la Teoría General de Sistemas, ¿cómo se define un sistema?",
+        options: [
+          "Una colección de elementos sin relación específica",
+          "Un conjunto de elementos interrelacionados que trabajan para alcanzar un objetivo común",
+          "Una estructura organizacional jerárquica",
+          "Un proceso lineal de transformación de entradas a salidas"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! Un sistema es un conjunto de elementos interrelacionados que trabajan en conjunto para alcanzar un objetivo común. Cada elemento influye en el funcionamiento del todo.",
+        hints: [
+          "La palabra clave es 'interrelacionados' y que trabajan hacia algo específico...",
+          "Un sistema no es solo una colección, sino elementos que se influyen mutuamente con propósito.",
+          "La definición enfatiza 'objetivo común' como característica clave del sistema."
+        ]
+      },
+      {
+        topic: "TGS",
+        question: "¿Cuál es la principal diferencia entre un sistema abierto y un sistema cerrado en gestión de la calidad?",
+        options: [
+          "Los sistemas abiertos son más costosos que los cerrados",
+          "Los sistemas abiertos interactúan con su entorno y reciben retroalimentación, los cerrados no",
+          "Los sistemas cerrados son más eficientes que los abiertos",
+          "No hay diferencia significativa entre ambos tipos"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! Los sistemas abiertos interactúan con su entorno, reciben retroalimentación de clientes y se adaptan. Los sistemas cerrados no incorporan retroalimentación externa significativa.",
+        hints: [
+          "Piensa en 'interacción con el entorno' y 'retroalimentación'...",
+          "Los sistemas abiertos se adaptan basándose en información externa.",
+          "La retroalimentación del cliente es clave en sistemas abiertos de calidad."
+        ]
+      },
+      {
+        topic: "TGS",
+        question: "¿Qué significa 'sinergia' en el contexto de la Teoría General de Sistemas?",
+        options: [
+          "La suma aritmética de las partes del sistema",
+          "El principio por el cual el todo es más que la suma de sus partes",
+          "La capacidad de cada elemento de funcionar independientemente",
+          "La jerarquía entre los elementos del sistema"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! La sinergia es el principio por el cual el todo es más que la suma de sus partes. Las interacciones entre elementos generan efectos que no podrían producirse individualmente.",
+        hints: [
+          "Se relaciona con el efecto combinado de los elementos trabajando juntos...",
+          "No es una suma simple, sino algo 'más' que resulta de la interacción.",
+          "Las interacciones generan efectos únicos que no existirían por separado."
+        ]
+      },
+      {
+        topic: "TGS",
+        question: "En las aplicaciones interdisciplinarias de la TGS, ¿cuál es un ejemplo de su aplicación en salud pública según el material?",
+        options: [
+          "Diagnóstico individual de pacientes únicamente",
+          "Análisis de epidemias considerando movilidad, cultura, economía y confianza institucional",
+          "Administración de medicamentos solamente",
+          "Gestión de inventarios hospitalarios exclusivamente"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! En salud pública, la TGS se aplica al análisis de epidemias considerando múltiples factores: movilidad, cultura, economía y confianza institucional como un sistema complejo.",
+        hints: [
+          "Se trata de ver las epidemias como sistemas complejos con múltiples factores...",
+          "Incluye aspectos sociales, económicos y culturales, no solo médicos.",
+          "Considera la interacción de factores como movilidad, cultura y economía."
+        ]
+      },
+      
+      // Estandarización de Procesos (3 preguntas)
+      {
+        topic: "Estandarización",
+        question: "Según el material del curso, ¿cuál es la definición de estandarización?",
+        options: [
+          "El uso exclusivo de tecnología avanzada en los procesos",
+          "El proceso de desarrollar y aplicar normas técnicas para lograr el mayor grado de orden",
+          "La reducción de personal en las organizaciones",
+          "La automatización completa de todas las actividades"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! Según Joseph Juran, la estandarización es el proceso de desarrollar y aplicar normas técnicas, con el fin de lograr el mayor grado posible de orden en un contexto dado.",
+        hints: [
+          "Se relaciona con 'normas técnicas' y 'orden' en un contexto...",
+          "No es sobre tecnología o automatización, sino sobre establecer normas.",
+          "La definición de Juran enfatiza 'orden' y 'normas técnicas'."
+        ]
+      },
+      {
+        topic: "Estandarización",
+        question: "¿Cuál NO es un beneficio directo de la estandarización de procesos según el contenido del curso?",
+        options: [
+          "Mejora de la eficiencia operativa",
+          "Reducción de errores y variabilidad",
+          "Aumento automático de las ventas",
+          "Facilita la capacitación del personal"
+        ],
+        correct: 2,
+        explanation: "¡Correcto! El aumento automático de ventas no es un beneficio directo de la estandarización. Los beneficios directos incluyen eficiencia, reducción de errores y mejor capacitación.",
+        hints: [
+          "Piensa en beneficios operativos internos vs. resultados comerciales externos...",
+          "La estandarización afecta directamente procesos, no automáticamente ventas.",
+          "Los beneficios directos están relacionados con eficiencia y consistencia interna."
+        ]
+      },
+      {
+        topic: "Estandarización",
+        question: "En el ejemplo de estandarización de gestión de pedidos mencionado en el curso, ¿cuál es el primer paso del proceso estandarizado?",
+        options: [
+          "Generar guía de envío",
+          "Confirmar pago",
+          "Embalar siguiendo el protocolo",
+          "Notificar al cliente"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! En el ejemplo del curso, el primer paso del proceso estandarizado para gestión de pedidos es confirmar el pago, seguido de generar guía de envío.",
+        hints: [
+          "Es lógico que antes de procesar un pedido se debe verificar algo importante...",
+          "El proceso inicia asegurándose de que la transacción sea válida.",
+          "Confirmar pago es el primer paso lógico antes de proceder con el envío."
+        ]
+      },
+      
+      // Evolución e Historia de la Gestión de la Calidad (3 preguntas)
+      {
+        topic: "Historia Calidad",
+        question: "¿Cuál era el objetivo principal durante la 'Era de la Inspección' (hasta 1930)?",
+        options: [
+          "Prevenir errores mediante análisis estadístico",
+          "Detectar productos defectuosos al final del proceso",
+          "Involucrar a toda la organización en la calidad",
+          "Implementar mejora continua"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! Durante la Era de la Inspección, el objetivo era detectar productos defectuosos al final del proceso, corrigiendo errores después de que ocurrían.",
+        hints: [
+          "Esta era se caracterizaba por actuar 'después' de la producción...",
+          "No era preventiva, sino reactiva para 'detectar' problemas.",
+          "Se enfocaba en encontrar defectos al 'final del proceso'."
+        ]
+      },
+      {
+        topic: "Historia Calidad",
+        question: "¿Quién introdujo el Control Estadístico de Procesos (CEP) durante 1930-1950?",
+        options: [
+          "W. Edwards Deming",
+          "Joseph Juran",
+          "Walter A. Shewhart",
+          "Armand Feigenbaum"
+        ],
+        correct: 2,
+        explanation: "¡Exacto! Walter A. Shewhart introdujo el Control Estadístico de Procesos (CEP) y las gráficas de control durante la Era del Control Estadístico (1930-1950).",
+        hints: [
+          "Este pionero desarrolló las famosas 'gráficas de control'...",
+          "Su apellido suena similar a 'chart' (gráfica en inglés).",
+          "Shewhart es conocido específicamente por el control estadístico."
+        ]
+      },
+      {
+        topic: "Historia Calidad",
+        question: "¿Cuál es una tendencia actual en la gestión de calidad según el material del curso?",
+        options: [
+          "Regreso a la inspección manual exclusivamente",
+          "Integración con tecnologías 4.0: IoT, Big Data, Inteligencia Artificial",
+          "Eliminación completa de los sistemas de gestión",
+          "Enfoque únicamente en reducción de costos"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! Las tendencias actuales incluyen integración con tecnologías 4.0: IoT, Big Data, Inteligencia Artificial, además de mayor orientación al cliente y sostenibilidad.",
+        hints: [
+          "La gestión moderna incorpora tecnologías de la Industria 4.0...",
+          "Incluye IoT (sensores), análisis de grandes datos e IA.",
+          "Es la evolución hacia la 'calidad digital' y automatización inteligente."
+        ]
+      },
+      
+      // Principios de Gestión de la Calidad (4 preguntas)
+      {
+        topic: "7 Principios",
+        question: "¿Cuántos principios de gestión de la calidad identifica la norma ISO 9000?",
+        options: [
+          "5 principios fundamentales",
+          "7 principios de gestión",
+          "8 principios básicos",
+          "10 principios operacionales"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! ISO 9000 identifica 7 principios de gestión de la calidad que forman la base del sistema de gestión de calidad ISO 9001.",
+        hints: [
+          "Es un número impar menor que 10...",
+          "Estos principios son la base de ISO 9001:2015.",
+          "Son exactamente 7 principios según la norma ISO 9000."
+        ]
+      },
+      {
+        topic: "7 Principios",
+        question: "¿Cuál de estos NO es uno de los 7 principios de gestión de la calidad?",
+        options: [
+          "Enfoque al cliente",
+          "Liderazgo",
+          "Maximización de beneficios económicos",
+          "Mejora continua"
+        ],
+        correct: 2,
+        explanation: "¡Correcto! 'Maximización de beneficios económicos' no es uno de los 7 principios. Los principios se enfocan en calidad, no directamente en ganancias económicas.",
+        hints: [
+          "Los principios se enfocan en gestión de calidad, no en aspectos financieros...",
+          "Busca la opción que no se relaciona directamente con calidad.",
+          "'Maximización de beneficios' no es parte de los principios de calidad."
+        ]
+      },
+      {
+        topic: "7 Principios",
+        question: "Según los principios de gestión de la calidad, ¿qué significa 'enfoque basado en procesos'?",
+        options: [
+          "Solo documentar todos los procedimientos",
+          "Comprender y gestionar las actividades como procesos interrelacionados",
+          "Automatizar todas las actividades operativas",
+          "Eliminar la participación humana en los procesos"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! El enfoque basado en procesos significa comprender y gestionar las actividades como procesos interrelacionados, lo que mejora la eficacia y eficiencia.",
+        hints: [
+          "Se trata de 'comprender y gestionar' las actividades de manera integral...",
+          "Los procesos están 'interrelacionados', no son actividades aisladas.",
+          "No es solo documentación, sino gestión de procesos como sistema."
+        ]
+      },
+      {
+        topic: "7 Principios",
+        question: "¿Qué principio enfatiza que 'las personas en todos los niveles son la esencia de una organización'?",
+        options: [
+          "Liderazgo",
+          "Compromiso de las personas",
+          "Gestión de las relaciones",
+          "Toma de decisiones basada en evidencias"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! El principio 'Compromiso de las personas' establece que las personas en todos los niveles son la esencia de una organización y su compromiso permite mejorar sus capacidades.",
+        hints: [
+          "Se refiere específicamente al 'compromiso' y participación del personal...",
+          "Reconoce a las personas como 'esencia' de la organización.",
+          "Este principio se enfoca en involucrar y comprometer a todo el personal."
+        ]
+      },
+      
+      // Gestión del Cambio Organizacional (3 preguntas)
+      {
+        topic: "Cambio Organizacional",
+        question: "Según el material del curso, ¿cuál es la definición de cambio organizacional?",
+        options: [
+          "Solo la implementación de nueva tecnología",
+          "Un proceso mediante el cual una organización modifica estructuras, estrategias, procedimientos, tecnologías o cultura",
+          "Únicamente el cambio de personal directivo",
+          "Solo la reubicación física de las instalaciones"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! El cambio organizacional es un proceso integral que puede modificar estructuras, estrategias, procedimientos, tecnologías o cultura para adaptarse a factores internos o externos.",
+        hints: [
+          "Es un proceso 'integral' que puede afectar múltiples aspectos...",
+          "Incluye estructuras, estrategias, procedimientos, tecnologías y cultura.",
+          "No se limita a un solo aspecto, sino que puede ser multidimensional."
+        ]
+      },
+      {
+        topic: "Cambio Organizacional",
+        question: "En el caso de Microsoft bajo el liderazgo de Satya Nadella (desde 2014), ¿cuál fue un cambio cultural clave mencionado?",
+        options: [
+          "Regreso al software propietario exclusivamente",
+          "Fomento de una cultura colaborativa y 'Growth Mindset'",
+          "Eliminación de todos los productos en la nube",
+          "Enfoque únicamente en hardware"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! Bajo Satya Nadella, Microsoft fomentó una cultura colaborativa y de 'Growth Mindset' (mentalidad de crecimiento), alejándose de la cultura competitiva interna anterior.",
+        hints: [
+          "El cambio fue hacia una mentalidad de 'crecimiento' y colaboración...",
+          "'Growth Mindset' es un concepto clave en este caso.",
+          "Cambió de cultura competitiva interna a cultura colaborativa."
+        ]
+      },
+      {
+        topic: "Cambio Organizacional",
+        question: "¿Cuál es el contracaso mencionado en el material sobre gestión del cambio?",
+        options: [
+          "IBM en los 1990s",
+          "LEGO en 2004-2010",
+          "Microsoft desde 2014",
+          "Kodak y el fallo en gestionar el cambio digital"
+        ],
+        correct: 3,
+        explanation: "¡Correcto! Kodak es el contracaso mencionado. A pesar de inventar la cámara digital en 1975, no se adaptó a tiempo al entorno digital y se declaró en bancarrota en 2012.",
+        hints: [
+          "Es el caso de una empresa que no logró adaptarse al cambio tecnológico...",
+          "Inventaron la tecnología pero no la adoptaron por temor a su negocio actual.",
+          "Se declaró en bancarrota por no adaptarse a la fotografía digital."
+        ]
+      },
+      
+      // Calidad Total y Competitividad (3 preguntas)
+      {
+        topic: "Calidad Total",
+        question: "¿Cómo se define la Calidad Total según el material del curso?",
+        options: [
+          "Solo el cumplimiento de especificaciones técnicas",
+          "Una estrategia de gestión centrada en la mejora continua que involucra a todos los miembros",
+          "Únicamente la reducción de defectos en productos",
+          "Solo la satisfacción de quejas de clientes"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! La Calidad Total es una estrategia de gestión centrada en la mejora continua, que involucra a todos los miembros de la organización con el objetivo de satisfacer las necesidades del cliente.",
+        hints: [
+          "Es una 'estrategia de gestión' integral, no solo técnica...",
+          "Involucra a 'todos los miembros' de la organización.",
+          "Se centra en 'mejora continua' y satisfacción del cliente."
+        ]
+      },
+      {
+        topic: "Calidad Total",
+        question: "¿Cuál es la relación entre Calidad Total y competitividad según el contenido del curso?",
+        options: [
+          "No tienen ninguna relación entre sí",
+          "Los principios del TQM mejoran la eficiencia y aumentan la competitividad organizacional",
+          "La calidad total reduce la competitividad",
+          "Solo se relacionan en empresas manufactureras"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! Los principios del TQM (Total Quality Management) como enfoque al cliente, mejora continua y decisiones basadas en datos mejoran la eficiencia operativa y aumentan la competitividad.",
+        hints: [
+          "TQM y competitividad se refuerzan mutuamente...",
+          "Los principios de calidad mejoran la 'eficiencia operativa'.",
+          "Mejor calidad conduce a mayor competitividad en el mercado."
+        ]
+      },
+      {
+        topic: "Calidad Total",
+        question: "Según Michael Porter, ¿cómo se define competitividad?",
+        options: [
+          "Solo tener los precios más bajos del mercado",
+          "La capacidad de diseñar, producir y vender bienes mejor y/o más eficientemente que los competidores",
+          "Únicamente tener la mayor cuota de mercado",
+          "Solo contar con la tecnología más avanzada"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! Según Michael Porter, la competitividad es la capacidad de una organización para diseñar, producir y vender bienes y servicios mejor y/o más eficientemente que sus competidores.",
+        hints: [
+          "Porter se refiere a hacer las cosas 'mejor' y 'más eficientemente'...",
+          "Incluye diseño, producción y venta de bienes y servicios.",
+          "No es solo precio o tecnología, sino capacidad integral superior."
+        ]
+      }
+    ];
+
+    // Variables del quiz
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedAnswer = -1;
+    let timeLeft = 45;
+    let timer = null;
+    let userAnswers = [];
+    let currentHintLevel = 0;
+    let hintsUsed = 0;
+    
+    // Elementos del DOM
+    const startScreen = document.getElementById('startScreen');
+    const questionScreen = document.getElementById('questionScreen');
+    const resultsScreen = document.getElementById('resultsScreen');
+    const progressFill = document.getElementById('progressFill');
+    const questionNumber = document.getElementById('questionNumber');
+    const topicBadge = document.getElementById('topicBadge');
+    const timerDisplay = document.getElementById('timer');
+    const questionText = document.getElementById('questionText');
+    const optionsGrid = document.getElementById('optionsGrid');
+    const hintSystem = document.getElementById('hintSystem');
+    const feedback = document.getElementById('feedback');
+    const nextBtn = document.getElementById('nextBtn');
+
+    // Iniciar quiz
+    function startQuiz() {
+      startScreen.style.display = 'none';
+      questionScreen.classList.add('active');
+      loadQuestion();
+      startTimer();
+    }
+
+    // Cargar pregunta actual
+    function loadQuestion() {
+      const question = questions[currentQuestionIndex];
+      
+      // Actualizar información
+      questionNumber.textContent = `Pregunta ${currentQuestionIndex + 1}/${questions.length}`;
+      topicBadge.textContent = question.topic;
+      questionText.textContent = question.question;
+      
+      // Actualizar progreso
+      const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+      progressFill.style.width = `${progress}%`;
+      
+      // Cargar opciones
+      optionsGrid.innerHTML = '';
+      question.options.forEach((option, index) => {
+        const optionElement = document.createElement('div');
+        optionElement.className = `option option-${String.fromCharCode(97 + index)}`;
+        optionElement.textContent = option;
+        optionElement.onclick = () => selectOption(index);
+        optionsGrid.appendChild(optionElement);
+      });
+      
+      // Reset estado
+      selectedAnswer = -1;
+      currentHintLevel = 0;
+      feedback.classList.remove('show', 'correct', 'incorrect');
+      hintSystem.classList.remove('show');
+      nextBtn.disabled = true;
+      timeLeft = 45;
+      
+      // Reset hints
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById(`hint${i}`).style.display = 'none';
+      }
+    }
+
+    // Mostrar pista
+    function showHint(level) {
+      const question = questions[currentQuestionIndex];
+      if (level <= question.hints.length) {
+        currentHintLevel = Math.max(currentHintLevel, level);
+        hintsUsed++;
+        
+        // Mostrar el sistema de pistas si no está visible
+        hintSystem.classList.add('show');
+        
+        // Mostrar la pista específica
+        const hintElement = document.getElementById(`hint${level}`);
+        hintElement.style.display = 'block';
+        hintElement.querySelector('.hint-text').textContent = question.hints[level - 1];
+        
+        // Animación de aparición
+        hintElement.style.animation = 'none';
+        hintElement.offsetHeight; // Trigger reflow
+        hintElement.style.animation = 'slideIn 0.5s ease';
+      }
+    }
+
+    // Seleccionar opción
+    function selectOption(index) {
+      if (selectedAnswer !== -1) return; // Ya seleccionó
+      
+      selectedAnswer = index;
+      const question = questions[currentQuestionIndex];
+      const options = optionsGrid.children;
+      
+      // Detener timer
+      clearInterval(timer);
+      
+      // Marcar opción seleccionada
+      options[index].classList.add('selected');
+      
+      setTimeout(() => {
+        // Mostrar respuesta correcta/incorrecta
+        const isCorrect = index === question.correct;
+        
+        if (isCorrect) {
+          options[index].classList.add('correct');
+          score++;
+          showFeedback(true, question.explanation);
+        } else {
+          options[index].classList.add('incorrect');
+          options[question.correct].classList.add('correct');
+          showFeedback(false, question.explanation);
+        }
+        
+        userAnswers.push({
+          question: question.question,
+          selectedIndex: index,
+          correctIndex: question.correct,
+          isCorrect: isCorrect,
+          hintsUsed: currentHintLevel
+        });
+        
+        nextBtn.disabled = false;
+      }, 1000);
+    }
+
+    // Mostrar feedback
+    function showFeedback(isCorrect, message) {
+      const feedbackEmoji = feedback.querySelector('.feedback-emoji');
+      const feedbackText = feedback.querySelector('.feedback-text');
+      const feedbackExplanation = feedback.querySelector('.feedback-explanation');
+      
+      if (isCorrect) {
+        feedback.className = 'feedback show correct';
+        feedbackEmoji.textContent = ['🎉', '🎯', '⚡', '⭐', '🔥'][Math.floor(Math.random() * 5)];
+        feedbackText.textContent = ['¡Correcto!', '¡Excelente!', '¡Genial!', '¡Perfecto!'][Math.floor(Math.random() * 4)];
+      } else {
+        feedback.className = 'feedback show incorrect';
+        feedbackEmoji.textContent = ['🤔', '📚', '💭', '🎯', '📈'][Math.floor(Math.random() * 5)];
+        feedbackText.textContent = ['¡Aprende de esto!', '¡Casi!', '¡Interesante elección!', '¡Sigue mejorando!'][Math.floor(Math.random() * 4)];
+      }
+      
+      feedbackExplanation.textContent = message;
+    }
+
+    // Siguiente pregunta
+    function nextQuestion() {
+      currentQuestionIndex++;
+      
+      if (currentQuestionIndex >= questions.length) {
+        showResults();
+      } else {
+        loadQuestion();
+        startTimer();
+      }
+    }
+
+    // Timer
+    function startTimer() {
+      timerDisplay.textContent = `${timeLeft}s`;
+      
+      timer = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = `${timeLeft}s`;
+        
+        if (timeLeft <= 10) {
+          timerDisplay.style.color = 'var(--danger)';
+          timerDisplay.style.animation = 'timerPulse 0.5s ease-in-out infinite';
+        }
+        
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          if (selectedAnswer === -1) {
+            // Tiempo agotado, mostrar respuesta correcta
+            const question = questions[currentQuestionIndex];
+            const options = optionsGrid.children;
+            
+            options[question.correct].classList.add('correct');
+            showFeedback(false, "⏰ Tiempo agotado. " + question.explanation);
+            
+            userAnswers.push({
+              question: question.question,
+              selectedIndex: -1,
+              correctIndex: question.correct,
+              isCorrect: false,
+              hintsUsed: currentHintLevel
+            });
+            
+            nextBtn.disabled = false;
+          }
+        }
+      }, 1000);
+    }
+
+    // Mostrar resultados
+    function showResults() {
+      questionScreen.classList.remove('active');
+      resultsScreen.classList.add('active');
+      
+      const accuracy = Math.round((score / questions.length) * 100);
+      const incorrect = questions.length - score;
+      
+      document.getElementById('finalScore').textContent = `${score}/${questions.length}`;
+      document.getElementById('correctAnswers').textContent = score;
+      document.getElementById('incorrectAnswers').textContent = incorrect;
+      document.getElementById('accuracy').textContent = `${accuracy}%`;
+      
+      // Determinar nivel y mensaje
+      let level, message;
+      if (accuracy >= 95) {
+        level = "🏆 Maestro en Calidad";
+        message = "¡Impresionante! Dominas completamente los fundamentos de gestión de calidad. Podrías enseñar estos conceptos 🎓";
+      } else if (accuracy >= 85) {
+        level = "⭐ Experto en SGC";
+        message = "¡Excelente! Tienes un dominio sólido de los sistemas de gestión de calidad. ¡Felicitaciones! 🎯";
+      } else if (accuracy >= 75) {
+        level = "🎯 Especialista Quality";
+        message = "¡Muy bien! Comprendes bien los fundamentos. Con un poco más de práctica serás un experto 📈";
+      } else if (accuracy >= 65) {
+        level = "📊 Analista Calidad";
+        message = "¡Buen trabajo! Tienes una base sólida. Revisa los temas donde tuviste dificultades 📚";
+      } else {
+        level = "🎓 Estudiante Calidad";
+        message = "¡Sigue adelante! Los fundamentos de calidad son complejos, pero con estudio los dominarás 💪";
+      }
+      
+      document.getElementById('ranking').textContent = level;
+      document.getElementById('resultsMessage').textContent = message;
+      
+      // Mensaje personalizado
+      const personalizedMsg = generatePersonalizedMessage(accuracy);
+      document.getElementById('personalizedMessage').innerHTML = personalizedMsg;
+    }
+
+    // Generar mensaje personalizado
+    function generatePersonalizedMessage(accuracy) {
+      const topicStats = {};
+      questions.forEach((q, i) => {
+        if (!topicStats[q.topic]) {
+          topicStats[q.topic] = { correct: 0, total: 0 };
+        }
+        topicStats[q.topic].total++;
+        if (userAnswers[i] && userAnswers[i].isCorrect) {
+          topicStats[q.topic].correct++;
+        }
+      });
+      
+      let message = '<h4 style="color: var(--primary); margin-bottom: 15px;">🎯 Análisis de Fundamentos de Calidad</h4>';
+      
+      // Mejor tema
+      let bestTopic = '', bestScore = 0;
+      let worstTopic = '', worstScore = 100;
+      
+      for (const [topic, stats] of Object.entries(topicStats)) {
+        const percentage = (stats.correct / stats.total) * 100;
+        if (percentage > bestScore) {
+          bestScore = percentage;
+          bestTopic = topic;
+        }
+        if (percentage < worstScore) {
+          worstScore = percentage;
+          worstTopic = topic;
+        }
+      }
+      
+      if (bestScore === 100) {
+        message += `<p>🏆 <strong>Dominio perfecto en:</strong> ${bestTopic}. ¡Podrías ser consultor en este tema!</p>`;
+      } else if (bestScore >= 75) {
+        message += `<p>⭐ <strong>Tu fortaleza es:</strong> ${bestTopic} (${bestScore.toFixed(0)}%). ¡Excelente comprensión!</p>`;
+      }
+      
+      if (worstScore < 50 && worstTopic !== bestTopic) {
+        message += `<p>📚 <strong>Área de mejora:</strong> ${worstTopic}. ¡Revisa este tema para dominar completamente los fundamentos!</p>`;
+      }
+      
+      // Estadísticas de pistas
+      const avgHints = hintsUsed / questions.length;
+      if (avgHints < 0.5) {
+        message += `<p>🧠 <strong>Aprendizaje autónomo:</strong> Usaste pocas pistas. ¡Excelente confianza en tu conocimiento!</p>`;
+      } else if (avgHints > 2) {
+        message += `<p>💡 <strong>Aprendizaje guiado:</strong> Las pistas te fueron muy útiles. ¡Aprovechaste bien los recursos disponibles!</p>`;
+      }
+      
+      // Análisis por precisión
+      if (accuracy >= 85) {
+        message += `<p>🎯 <strong>Fundamentos sólidos:</strong> Tienes una base excelente para avanzar a temas más complejos de calidad.</p>`;
+      } else if (accuracy >= 70) {
+        message += `<p>📈 <strong>En crecimiento:</strong> Estás desarrollando una buena comprensión de los fundamentos. ¡Sigue así!</p>`;
+      }
+      
+      return message;
+    }
+
+    // Funciones adicionales
+    function restartQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      userAnswers = [];
+      hintsUsed = 0;
+      resultsScreen.classList.remove('active');
+      startScreen.style.display = 'block';
+    }
+
+    function showInstructions() {
+      alert(`🎯 INSTRUCCIONES DEL QUIZ UNIDAD I:
+
+📚 20 preguntas sobre Fundamentos de Gestión de Calidad
+⏰ 45 segundos por pregunta
+💡 Sistema de 3 niveles de pistas inteligentes
+📊 Análisis detallado por tema al final
+🏆 Certificación virtual de conocimiento
+
+📖 TEMAS EVALUADOS:
+• Teoría General de Sistemas (TGS)
+• Estandarización de procesos
+• Evolución e historia de la gestión de calidad
+• 7 Principios de gestión de la calidad (ISO 9000)
+• Gestión del cambio organizacional (GCO)
+• Calidad total y competitividad
+
+💡 SISTEMA DE PISTAS:
+• Pista 1: Orientación conceptual general
+• Pista 2: Contexto específico y claves importantes
+• Pista 3: Respuesta prácticamente directa
+
+🎯 ¡Demuestra tu dominio de los fundamentos que sustentan toda la gestión de calidad! 🚀`);
+    }
+
+    function reviewAnswers() {
+      let review = "🎯 REVISIÓN DE RESPUESTAS - FUNDAMENTOS DE CALIDAD:\n\n";
+      userAnswers.forEach((answer, index) => {
+        const question = questions[index];
+        const status = answer.isCorrect ? "✅" : "❌";
+        const hints = answer.hintsUsed > 0 ? ` (${answer.hintsUsed} pistas)` : "";
+        review += `${status} P${index + 1}: ${question.topic}${hints}\n`;
+        if (answer.selectedIndex === -1) {
+          review += `⏰ Tiempo agotado\n`;
+        } else {
+          review += `Tu respuesta: ${question.options[answer.selectedIndex]}\n`;
+        }
+        if (!answer.isCorrect) {
+          review += `✓ Correcta: ${question.options[answer.correctIndex]}\n`;
+        }
+        review += "\n";
+      });
+      
+      // Crear modal personalizado
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.8); display: flex; align-items: center;
+        justify-content: center; z-index: 1000; padding: 20px;
+      `;
+      
+      modal.innerHTML = `
+        <div style="background: var(--grad-panel); border: 1px solid var(--primary);
+                    border-radius: 20px; padding: 30px; max-width: 600px;
+                    max-height: 80vh; overflow-y: auto; color: var(--ink);">
+          <h3 style="color: var(--primary); margin-bottom: 20px;">🎯 Revisión Fundamentos de Calidad</h3>
+          <pre style="white-space: pre-wrap; font-family: 'Inter', sans-serif;
+                      line-height: 1.6;">${review}</pre>
+          <button onclick="this.parentNode.parentNode.remove()" 
+                  style="background: var(--grad-primary); color: white; border: none;
+                         padding: 10px 20px; border-radius: 15px; cursor: pointer;
+                         margin-top: 20px;">Cerrar</button>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+    }
+
+    function shareResults() {
+      const accuracy = Math.round((score / questions.length) * 100);
+      const text = `🎯 ¡Completé el Quiz de Fundamentos de Gestión de Calidad!
+      
+📊 Resultado: ${score}/${questions.length} (${accuracy}%)
+📚 Temas: TGS, Estandarización, Historia, 7 Principios, Cambio, Calidad Total
+💡 Con sistema de pistas inteligente y análisis personalizado
+
+${accuracy >= 85 ? '🏆 ¡Soy un experto en fundamentos de gestión de calidad!' : '📈 ¡Desarrollando competencias en calidad total!'}
+
+#GestionCalidad #CalidadTotal #TGS #ISO9000 #CambioOrganizacional`;
+
+      if (navigator.share) {
+        navigator.share({
+          title: 'Quiz Unidad I - Resultados Fundamentos',
+          text: text
+        });
+      } else {
+        navigator.clipboard.writeText(text).then(() => {
+          alert('📋 ¡Resultados copiados! Comparte tu dominio de los fundamentos de calidad 🚀');
+        });
+      }
+    }
+
+    // Theme toggle
+    function toggleTheme() {
+      const body = document.documentElement;
+      const currentTheme = body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme-quality', newTheme);
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (questionScreen.classList.contains('active')) {
+        if (e.key >= '1' && e.key <= '4') {
+          const index = parseInt(e.key) - 1;
+          if (index < optionsGrid.children.length) {
+            selectOption(index);
+          }
+        } else if (e.key === 'Enter' && !nextBtn.disabled) {
+          nextQuestion();
+        } else if (e.key === 'h' || e.key === 'H') {
+          // Mostrar siguiente pista disponible
+          if (currentHintLevel < 3) {
+            showHint(currentHintLevel + 1);
+          }
+        }
+      }
+    });
+
+    // Initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      // Load saved theme
+      const savedTheme = localStorage.getItem('theme-quality') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      
+      // Quality Easter egg
+      let qualitySequence = [];
+      const qualityCode = [81, 85, 65, 76]; // Q-U-A-L
+      
+      document.addEventListener('keydown', (e) => {
+        qualitySequence.push(e.keyCode);
+        if (qualitySequence.length > qualityCode.length) {
+          qualitySequence.shift();
+        }
+        
+        if (qualitySequence.toString() === qualityCode.toString()) {
+          alert('🏆 ¡Código QUAL activado! Eres oficialmente un guardián de la calidad total 🎯🔥');
+          score += 3; // Bonus points
+        }
+      });
+    });
+  </script>
+</body>
+</html>

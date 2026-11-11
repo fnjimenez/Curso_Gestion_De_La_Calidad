@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>📊 Quiz ISO 9000 - Gestión de la Calidad</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+    
+    :root {
+      --bg: #f8f9fa;
+      --panel: #ffffff;
+      --ink: #1a1a1a;
+      --muted: #6c757d;
+      --primary: #0066cc;
+      --secondary: #2563eb;
+      --accent: #059669;
+      --success: #10b981;
+      --warn: #f59e0b;
+      --danger: #dc2626;
+      --steel: #475569;
+      --grad-primary: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      --grad-panel: linear-gradient(180deg, #ffffff, #f8fafc);
+      --shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --panel: #1e293b;
+      --ink: #f1f5f9;
+      --muted: #94a3b8;
+      --grad-panel: linear-gradient(180deg, #1e293b, #0f172a);
+      --shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      font: 16px/1.6 'Inter', system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+    
+    /* Patrón de fondo ISO */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(90deg, rgba(0, 102, 204, 0.02) 1px, transparent 1px),
+        linear-gradient(rgba(37, 99, 235, 0.02) 1px, transparent 1px),
+        radial-gradient(circle at 25% 75%, rgba(0, 102, 204, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 75% 25%, rgba(5, 150, 105, 0.05) 0%, transparent 50%);
+      background-size: 40px 40px, 40px 40px, 200px 200px, 200px 200px;
+      opacity: 0.4;
+      animation: qualityFlow 30s linear infinite;
+      z-index: 0;
+    }
+    
+    @keyframes qualityFlow {
+      from { transform: translate(0, 0); }
+      to { transform: translate(-40px, -40px); }
+    }
+    
+    /* Contenedor principal */
+    .quiz-container {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    /* Header del quiz */
+    .quiz-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 30px;
+      background: var(--grad-panel);
+      border: 1px solid rgba(0, 102, 204, 0.2);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .quiz-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--grad-primary);
+      border-radius: 24px 24px 0 0;
+    }
+    
+    .quiz-title {
+      font: 900 clamp(2rem, 6vw, 3.5rem)/1.1 'Inter', sans-serif;
+      background: var(--grad-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 15px;
+      animation: titleGlow 3s ease-in-out infinite alternate;
+    }
+    
+    @keyframes titleGlow {
+      from { filter: drop-shadow(0 0 20px rgba(0, 102, 204, 0.3)); }
+      to { filter: drop-shadow(0 0 30px rgba(37, 99, 235, 0.4)); }
+    }
+    
+    .quiz-subtitle {
+      font: 600 1.3rem 'Inter', sans-serif;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    
+    /* Stats del quiz */
+    .quiz-stats {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    
+    .stat-box {
+      background: var(--panel);
+      border: 1px solid rgba(0, 102, 204, 0.2);
+      border-radius: 16px;
+      padding: 15px 20px;
+      text-align: center;
+      min-width: 120px;
+      box-shadow: var(--shadow);
+    }
+    
+    .stat-number {
+      font: 700 1.8rem 'JetBrains Mono', monospace;
+      color: var(--primary);
+      display: block;
+      text-shadow: 0 0 15px rgba(0, 102, 204, 0.5);
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+    }
+    
+    /* Pantalla de pregunta */
+    .question-screen {
+      display: none;
+      background: var(--grad-panel);
+      border: 1px solid rgba(0, 102, 204, 0.2);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      animation: slideIn 0.5s ease;
+    }
+    
+    .question-screen.active {
+      display: block;
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    
+    .question-screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--grad-primary);
+      border-radius: 24px 24px 0 0;
+    }
+    
+    /* Barra de progreso */
+    .progress-bar {
+      background: rgba(0,0,0,0.1);
+      border-radius: 999px;
+      height: 12px;
+      margin-bottom: 30px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 102, 204, 0.2);
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--grad-primary);
+      width: 0;
+      transition: width 0.5s ease;
+      border-radius: inherit;
+      position: relative;
+    }
+    
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: -20px;
+      width: 20px;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
+      animation: progressGlow 2s ease-in-out infinite;
+    }
+    
+    @keyframes progressGlow {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+    
+    /* Información de la pregunta */
+    .question-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .question-number {
+      font: 700 1.1rem 'JetBrains Mono', monospace;
+      color: var(--primary);
+      background: rgba(0, 102, 204, 0.1);
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(0, 102, 204, 0.3);
+    }
+    
+    .topic-badge {
+      font: 600 0.9rem 'JetBrains Mono', monospace;
+      color: var(--secondary);
+      background: rgba(37, 99, 235, 0.1);
+      padding: 6px 12px;
+      border-radius: 15px;
+      border: 1px solid rgba(37, 99, 235, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .timer {
+      font: 700 1.2rem 'JetBrains Mono', monospace;
+      color: var(--warn);
+      background: rgba(245, 158, 11, 0.1);
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      animation: timerPulse 1s ease-in-out infinite;
+    }
+    
+    @keyframes timerPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    /* Pregunta */
+    .question-text {
+      font: 600 clamp(1.3rem, 3vw, 1.8rem)/1.4 'Inter', sans-serif;
+      color: var(--ink);
+      text-align: center;
+      margin-bottom: 35px;
+      padding: 20px;
+      background: rgba(0, 102, 204, 0.05);
+      border-radius: 16px;
+      border-left: 4px solid var(--primary);
+    }
+    
+    /* Opciones de respuesta */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .option {
+      background: var(--panel);
+      border: 2px solid rgba(0, 102, 204, 0.2);
+      border-radius: 16px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      font: 600 1.1rem 'Inter', sans-serif;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow);
+    }
+    
+    .option::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 102, 204, 0.1), transparent);
+      transition: 0.5s;
+    }
+    
+    .option:hover {
+      transform: translateY(-5px) scale(1.02);
+      border-color: var(--primary);
+      box-shadow: 0 15px 40px rgba(0, 102, 204, 0.3);
+      background: rgba(0, 102, 204, 0.05);
+    }
+    
+    .option:hover::before {
+      left: 100%;
+    }
+    
+    .option.selected {
+      border-color: var(--warn);
+      background: rgba(245, 158, 11, 0.1);
+      animation: optionSelected 0.5s ease;
+    }
+    
+    .option.correct {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+      animation: correctAnswer 0.6s ease;
+    }
+    
+    .option.incorrect {
+      border-color: var(--danger);
+      background: rgba(220, 38, 38, 0.1);
+      animation: incorrectAnswer 0.6s ease;
+    }
+    
+    @keyframes optionSelected {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes correctAnswer {
+      0% { transform: scale(1); }
+      25% { transform: scale(1.1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes incorrectAnswer {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      50% { transform: translateX(10px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+    
+    /* Colores neutrales para opciones */
+    .option.option-a { background: linear-gradient(145deg, #f8f9fa, #ffffff); border-color: #6c757d; }
+    .option.option-b { background: linear-gradient(145deg, #f1f3f4, #ffffff); border-color: #6c757d; }
+    .option.option-c { background: linear-gradient(145deg, #f3f4f6, #ffffff); border-color: #6c757d; }
+    .option.option-d { background: linear-gradient(145deg, #f9fafb, #ffffff); border-color: #6c757d; }
+    
+    .option.option-a:hover { background: linear-gradient(145deg, #e9ecef, #f8f9fa); border-color: var(--primary); }
+    .option.option-b:hover { background: linear-gradient(145deg, #e9ecef, #f8f9fa); border-color: var(--primary); }
+    .option.option-c:hover { background: linear-gradient(145deg, #e9ecef, #f8f9fa); border-color: var(--primary); }
+    .option.option-d:hover { background: linear-gradient(145deg, #e9ecef, #f8f9fa); border-color: var(--primary); }
+    
+    /* Sistema de pistas */
+    .hint-system {
+      background: var(--panel);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+      display: none;
+      animation: hintSlide 0.5s ease;
+      box-shadow: var(--shadow);
+    }
+    
+    .hint-system.show {
+      display: block;
+    }
+    
+    @keyframes hintSlide {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .hint-level {
+      margin-bottom: 15px;
+      padding: 10px;
+      background: rgba(245, 158, 11, 0.1);
+      border-radius: 8px;
+      border-left: 3px solid var(--warn);
+    }
+    
+    .hint-title {
+      font-weight: 700;
+      color: var(--warn);
+      margin-bottom: 5px;
+    }
+    
+    .hint-text {
+      color: var(--ink);
+      line-height: 1.4;
+    }
+    
+    /* Feedback */
+    .feedback {
+      background: var(--panel);
+      border: 1px solid rgba(0, 102, 204, 0.3);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+      display: none;
+      animation: feedbackSlide 0.5s ease;
+      box-shadow: var(--shadow);
+    }
+    
+    .feedback.show {
+      display: block;
+    }
+    
+    @keyframes feedbackSlide {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .feedback.correct {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.05);
+    }
+    
+    .feedback.incorrect {
+      border-color: var(--danger);
+      background: rgba(220, 38, 38, 0.05);
+    }
+    
+    .feedback-emoji {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      display: block;
+      animation: bounce 0.6s ease;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .feedback-text {
+      font: 600 1.2rem 'Inter', sans-serif;
+      margin-bottom: 10px;
+    }
+    
+    .feedback-explanation {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    
+    /* Botones */
+    .btn {
+      background: var(--grad-primary);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font: 600 1.1rem 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      box-shadow: 0 10px 30px rgba(0, 102, 204, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(0, 102, 204, 0.4);
+    }
+    
+    .btn:hover::before {
+      left: 100%;
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(145deg, #6c7b95, #5a6b85);
+      box-shadow: 0 10px 30px rgba(108, 123, 149, 0.3);
+    }
+    
+    .btn-secondary:hover {
+      box-shadow: 0 15px 40px rgba(108, 123, 149, 0.4);
+    }
+    
+    .btn-hint {
+      background: linear-gradient(145deg, #f59e0b, #d97706);
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      margin: 0 10px;
+    }
+    
+    /* Pantalla de resultados */
+    .results-screen {
+      display: none;
+      text-align: center;
+      background: var(--grad-panel);
+      border: 1px solid rgba(0, 102, 204, 0.2);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .results-screen.active {
+      display: block;
+      animation: slideIn 0.5s ease;
+    }
+    
+    .results-screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--grad-primary);
+      border-radius: 24px 24px 0 0;
+    }
+    
+    .final-score {
+      font: 900 4rem 'JetBrains Mono', monospace;
+      background: var(--grad-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 20px 0;
+      animation: scoreGlow 2s ease-in-out infinite alternate;
+    }
+    
+    @keyframes scoreGlow {
+      from { filter: drop-shadow(0 0 20px rgba(0, 102, 204, 0.5)); }
+      to { filter: drop-shadow(0 0 40px rgba(37, 99, 235, 0.7)); }
+    }
+    
+    .results-message {
+      font: 600 1.5rem 'Inter', sans-serif;
+      color: var(--ink);
+      margin: 20px 0;
+    }
+    
+    .results-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+    
+    /* Botones de acción */
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+    
+    .hint-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 15px 0;
+      flex-wrap: wrap;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .quiz-container {
+        padding: 10px;
+      }
+      
+      .quiz-header, .question-screen, .results-screen {
+        padding: 20px;
+        border-radius: 16px;
+      }
+      
+      .options-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      
+      .option {
+        padding: 15px;
+        min-height: 60px;
+        font-size: 1rem;
+      }
+      
+      .quiz-stats {
+        gap: 15px;
+      }
+      
+      .stat-box {
+        min-width: 100px;
+        padding: 10px 15px;
+      }
+      
+      .question-info {
+        justify-content: center;
+        text-align: center;
+      }
+      
+      .action-buttons, .hint-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .btn {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+    
+    /* Theme toggle */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--panel);
+      border: 1px solid rgba(0, 102, 204, 0.2);
+      border-radius: 50px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink);
+      z-index: 100;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+    }
+    
+    .theme-toggle:hover {
+      background: var(--primary);
+      color: white;
+    }
+    
+    /* Certificado ISO styling */
+    .iso-badge {
+      display: inline-block;
+      background: linear-gradient(145deg, #0066cc, #004499);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-left: 10px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="theme-toggle" onclick="toggleTheme()">🌓 Tema</div>
+  
+  <div class="quiz-container">
+    <!-- Pantalla de inicio -->
+    <div class="quiz-header" id="startScreen">
+      <h1 class="quiz-title">📊 Quiz ISO 9000</h1>
+      <p class="quiz-subtitle">Gestión de la Calidad - Familia de Normas ISO 9000 <span class="iso-badge">ISO 9001:2015</span></p>
+      
+      <div class="quiz-stats">
+        <div class="stat-box">
+          <span class="stat-number">18</span>
+          <div class="stat-label">Preguntas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">6</span>
+          <div class="stat-label">Temas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">45s</span>
+          <div class="stat-label">Por pregunta</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">🎯</span>
+          <div class="stat-label">Con pistas</div>
+        </div>
+      </div>
+      
+      <div style="margin: 30px 0;">
+        <p style="color: var(--muted); font-size: 1.1rem; margin-bottom: 20px;">
+          ¿Estás listo para demostrar tu dominio de los Sistemas de Gestión de la Calidad? 🎯
+        </p>
+        <p style="color: var(--steel); font-size: 0.95rem;">
+          <strong>Temas:</strong> ISO 9000/9001/9004 • Términos SGC • Estructura 9001 • Implementación • SIG • Mejora Continua
+        </p>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn" onclick="startQuiz()">🚀 Iniciar Quiz</button>
+        <button class="btn btn-secondary" onclick="showInstructions()">📋 Instrucciones</button>
+      </div>
+    </div>
+    
+    <!-- Pantalla de pregunta -->
+    <div class="question-screen" id="questionScreen">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      
+      <div class="question-info">
+        <div class="question-number" id="questionNumber">Pregunta 1/18</div>
+        <div class="topic-badge" id="topicBadge">Fundamentos ISO</div>
+        <div class="timer" id="timer">45s</div>
+      </div>
+      
+      <div class="question-text" id="questionText">
+        ¿Cuál es el propósito principal de la norma ISO 9000:2015?
+      </div>
+      
+      <div class="options-grid" id="optionsGrid">
+        <div class="option option-a" onclick="selectOption(0)">
+          Establecer requisitos certificables para SGC
+        </div>
+        <div class="option option-b" onclick="selectOption(1)">
+          Proporcionar fundamentos y vocabulario para SGC
+        </div>
+        <div class="option option-c" onclick="selectOption(2)">
+          Definir procesos de auditoría interna
+        </div>
+        <div class="option option-d" onclick="selectOption(3)">
+          Orientar hacia el éxito sostenido
+        </div>
+      </div>
+      
+      <div class="hint-system" id="hintSystem">
+        <div class="hint-level" id="hint1" style="display:none;">
+          <div class="hint-title">💡 Pista Nivel 1</div>
+          <div class="hint-text">Piensa en la diferencia entre las normas de la familia. Una establece fundamentos...</div>
+        </div>
+        <div class="hint-level" id="hint2" style="display:none;">
+          <div class="hint-title">🎯 Pista Nivel 2</div>
+          <div class="hint-text">ISO 9000 es la base conceptual, ISO 9001 tiene requisitos, ISO 9004 es para excelencia.</div>
+        </div>
+        <div class="hint-level" id="hint3" style="display:none;">
+          <div class="hint-title">🔑 Pista Nivel 3</div>
+          <div class="hint-text">La 9000 define 138 términos y los 7 principios de gestión de la calidad.</div>
+        </div>
+      </div>
+      
+      <div class="hint-buttons">
+        <button class="btn btn-hint" onclick="showHint(1)">💡 Pista 1</button>
+        <button class="btn btn-hint" onclick="showHint(2)">🎯 Pista 2</button>
+        <button class="btn btn-hint" onclick="showHint(3)">🔑 Pista 3</button>
+      </div>
+      
+      <div class="feedback" id="feedback">
+        <span class="feedback-emoji">🎉</span>
+        <div class="feedback-text">¡Correcto!</div>
+        <div class="feedback-explanation">Exacto, ISO 9000:2015 establece los fundamentos y vocabulario para los SGC.</div>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Siguiente Pregunta</button>
+      </div>
+    </div>
+    
+    <!-- Pantalla de resultados -->
+    <div class="results-screen" id="resultsScreen">
+      <h2 style="color: var(--primary); font-family: 'Inter', sans-serif; margin-bottom: 20px;">
+        🏆 ¡Quiz Completado!
+      </h2>
+      
+      <div class="final-score" id="finalScore">15/18</div>
+      
+      <div class="results-message" id="resultsMessage">
+        ¡Excelente! Eres un experto en SGC 📈
+      </div>
+      
+      <div class="results-details">
+        <div class="stat-box">
+          <span class="stat-number" id="correctAnswers">15</span>
+          <div class="stat-label">Correctas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="incorrectAnswers">3</span>
+          <div class="stat-label">Incorrectas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="accuracy">83%</span>
+          <div class="stat-label">Precisión</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="ranking">Auditor</span>
+          <div class="stat-label">Nivel ISO</div>
+        </div>
+      </div>
+      
+      <div style="margin: 30px 0; padding: 20px; background: rgba(0, 102, 204, 0.1); border-radius: 16px; border: 1px solid rgba(0, 102, 204, 0.3);">
+        <div id="personalizedMessage"></div>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn" onclick="restartQuiz()">🔄 Reintentar</button>
+        <button class="btn btn-secondary" onclick="reviewAnswers()">📊 Revisar Respuestas</button>
+        <button class="btn btn-secondary" onclick="shareResults()">📤 Compartir</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Base de datos de preguntas
+    const questions = [
+      // Fundamentos ISO 9000 (3 preguntas)
+      {
+        topic: "Fundamentos ISO",
+        question: "¿Cuál es el propósito principal de la norma ISO 9000:2015?",
+        options: [
+          "Establecer requisitos certificables para SGC",
+          "Proporcionar fundamentos y vocabulario para SGC",
+          "Definir procesos de auditoría interna",
+          "Orientar hacia el éxito sostenido"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! ISO 9000:2015 establece los conceptos fundamentales y la terminología aplicable a los sistemas de gestión de la calidad.",
+        hints: [
+          "Piensa en la diferencia entre las normas de la familia. Una establece fundamentos...",
+          "ISO 9000 es la base conceptual, ISO 9001 tiene requisitos, ISO 9004 es para excelencia.",
+          "La 9000 define 138 términos y los 7 principios de gestión de la calidad."
+        ]
+      },
+      {
+        topic: "Fundamentos ISO",
+        question: "¿Cuántos principios de gestión de la calidad establece ISO 9000:2015?",
+        options: [
+          "5 principios fundamentales",
+          "7 principios de gestión",
+          "8 principios básicos",
+          "10 principios operacionales"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! Son 7 principios: enfoque al cliente, liderazgo, compromiso de las personas, enfoque basado en procesos, mejora, decisiones basadas en evidencia y gestión de las relaciones.",
+        hints: [
+          "Es un número impar menor que 10...",
+          "Incluye: enfoque al cliente, liderazgo, compromiso de las personas...",
+          "Los 7 principios son la base de todas las normas ISO de gestión."
+        ]
+      },
+      {
+        topic: "Fundamentos ISO",
+        question: "¿Cuál NO es una característica de ISO 9004:2018?",
+        options: [
+          "Es certificable como ISO 9001",
+          "Proporciona orientación para el éxito sostenido",
+          "Incluye herramientas de autoevaluación",
+          "Considera todas las partes interesadas"
+        ],
+        correct: 0,
+        explanation: "¡Correcto! ISO 9004 NO es certificable, a diferencia de ISO 9001. Se enfoca en la excelencia y sostenibilidad a largo plazo.",
+        hints: [
+          "Una de las principales diferencias con ISO 9001 es...",
+          "ISO 9004 es solo para orientación, no para certificación.",
+          "Solo ISO 9001 es la norma certificable de la familia."
+        ]
+      },
+      
+      // Términos y Definiciones (3 preguntas)
+      {
+        topic: "Términos SGC",
+        question: "Según ISO 9000, ¿cómo se define 'proceso'?",
+        options: [
+          "Secuencia de actividades relacionadas",
+          "Conjunto de actividades que transforman entradas en salidas",
+          "Método sistemático de trabajo",
+          "Procedimiento documentado"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! Un proceso es un conjunto de actividades mutuamente relacionadas que utilizan las entradas para proporcionar un resultado previsto.",
+        hints: [
+          "Piensa en términos de transformación: entradas → actividades → ...",
+          "Los procesos siempre tienen inputs y outputs.",
+          "Las actividades están 'mutuamente relacionadas' según la norma."
+        ]
+      },
+      {
+        topic: "Términos SGC",
+        question: "¿Qué significa 'parte interesada' en el contexto de ISO 9000?",
+        options: [
+          "Solo los accionistas de la empresa",
+          "Únicamente los clientes externos",
+          "Persona u organización que puede afectar o verse afectada por las decisiones",
+          "Solo el personal interno de la organización"
+        ],
+        correct: 2,
+        explanation: "¡Exacto! Parte interesada es cualquier persona u organización que puede afectar, verse afectada o percibirse como afectada por una decisión o actividad.",
+        hints: [
+          "El concepto es muy amplio, no se limita a un grupo específico...",
+          "Incluye tanto quienes afectan como quienes son afectados por la organización.",
+          "Pueden ser internas o externas: empleados, clientes, proveedores, comunidad..."
+        ]
+      },
+      {
+        topic: "Términos SGC",
+        question: "En ISO 9000, 'no conformidad' se define como:",
+        options: [
+          "Falta de cumplimiento de un procedimiento",
+          "Incumplimiento de un requisito",
+          "Error en la documentación",
+          "Desviación de un proceso"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! No conformidad es el incumplimiento de un requisito. Es una definición precisa y específica en la norma.",
+        hints: [
+          "Se relaciona directamente con 'requisitos', no con procedimientos...",
+          "Es más específico que solo una 'desviación' o 'error'.",
+          "La palabra clave es 'incumplimiento' de algo específico."
+        ]
+      },
+      
+      // Estructura ISO 9001 (3 preguntas)
+      {
+        topic: "Estructura 9001",
+        question: "¿Cuántas cláusulas principales tiene la estructura de ISO 9001:2015?",
+        options: [
+          "8 cláusulas operativas",
+          "10 cláusulas totales",
+          "7 cláusulas de requisitos",
+          "12 cláusulas completas"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! ISO 9001:2015 tiene 10 cláusulas: 3 introductorias (1-3) y 7 de requisitos (4-10), siguiendo la Estructura de Alto Nivel (HLS).",
+        hints: [
+          "Incluye tanto cláusulas introductorias como de requisitos...",
+          "La Estructura de Alto Nivel (HLS) define este número total.",
+          "Cláusulas 1-3 son introductorias, 4-10 son de requisitos = 10 total."
+        ]
+      },
+      {
+        topic: "Estructura 9001",
+        question: "¿Qué representa el concepto 'HLS' en ISO 9001:2015?",
+        options: [
+          "High Level Standards (Estándares de Alto Nivel)",
+          "High Level Structure (Estructura de Alto Nivel)",
+          "Hierarchical Level System (Sistema de Niveles Jerárquicos)",
+          "Holistic Leadership System (Sistema de Liderazgo Holístico)"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! HLS significa High Level Structure (Estructura de Alto Nivel), que facilita la integración con otros sistemas de gestión.",
+        hints: [
+          "Es una 'Structure' que permite integración...",
+          "HLS facilita combinar ISO 9001 con ISO 14001, ISO 45001, etc.",
+          "La 'S' final es de 'Structure', no de 'Standards' o 'System'."
+        ]
+      },
+      {
+        topic: "Estructura 9001",
+        question: "¿En qué cláusula de ISO 9001:2015 se introduce el pensamiento basado en riesgos?",
+        options: [
+          "Cláusula 4: Contexto de la organización",
+          "Cláusula 6: Planificación",
+          "Cláusula 8: Operación",
+          "Se introduce de manera transversal en toda la norma"
+        ],
+        correct: 3,
+        explanation: "¡Correcto! El pensamiento basado en riesgos se integra de manera transversal en toda ISO 9001:2015, no solo en una cláusula específica.",
+        hints: [
+          "No está limitado a una sola cláusula...",
+          "Es uno de los cambios principales de la versión 2015.",
+          "Se aplica 'transversalmente' en planificación, operación, mejora..."
+        ]
+      },
+      
+      // Implementación SGC (3 preguntas)
+      {
+        topic: "Implementación",
+        question: "Según el contenido del curso, ¿cuál es la primera etapa en la implementación de ISO 9001?",
+        options: [
+          "Diseño del sistema de gestión",
+          "Diagnóstico y preparación organizacional",
+          "Implementación piloto",
+          "Capacitación del personal"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! La primera etapa es el diagnóstico y preparación organizacional, incluyendo evaluación de madurez digital y análisis de brechas.",
+        hints: [
+          "Antes de diseñar hay que saber dónde estamos...",
+          "Incluye evaluación de madurez y análisis de brechas.",
+          "Es la etapa de 'preparación' antes de la acción."
+        ]
+      },
+      {
+        topic: "Implementación",
+        question: "¿Qué herramienta se recomienda para el análisis de brechas en ISO 9001?",
+        options: [
+          "Matriz FODA",
+          "Diagrama de Ishikawa",
+          "ISO 9001:2015 Self-Assessment Checklist",
+          "Análisis de Pareto"
+        ],
+        correct: 2,
+        explanation: "¡Exacto! El Self-Assessment Checklist de ISO 9001:2015 permite identificar brechas entre el estado actual y los requisitos normativos.",
+        hints: [
+          "Es específico para ISO 9001:2015...",
+          "Permite comparar estado actual vs. requisitos normativos.",
+          "Es una herramienta de 'autoevaluación' específica."
+        ]
+      },
+      {
+        topic: "Implementación",
+        question: "¿Cuál es el modelo recomendado para la gestión del cambio en implementación de SGC?",
+        options: [
+          "Modelo PDCA",
+          "Modelo ADKAR",
+          "Modelo Kotter de 8 pasos",
+          "Modelo de Lewin"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! El modelo ADKAR (Awareness, Desire, Knowledge, Ability, Reinforcement) es específicamente recomendado para implementación de SGC.",
+        hints: [
+          "Es un acrónimo de 5 elementos en inglés...",
+          "Incluye: concienciación, deseo, conocimiento, habilidad y refuerzo.",
+          "ADKAR es específico para gestión del cambio organizacional."
+        ]
+      },
+      
+      // Sistemas Integrados de Gestión (3 preguntas)
+      {
+        topic: "SIG",
+        question: "¿Cuál es la principal ventaja de implementar un Sistema Integrado de Gestión (SIG)?",
+        options: [
+          "Reducir costos de certificación únicamente",
+          "Optimizar recursos y reducir duplicaciones",
+          "Simplificar la documentación solamente",
+          "Acelerar los procesos de auditoría"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! La principal ventaja es optimizar recursos y reducir duplicaciones, generando eficiencia operacional y coherencia estratégica.",
+        hints: [
+          "Va más allá de solo costos o documentación...",
+          "Se enfoca en 'optimización' y eliminación de redundancias.",
+          "Incluye eficiencia operacional y coherencia estratégica."
+        ]
+      },
+      {
+        topic: "SIG",
+        question: "¿Qué facilita la Estructura de Alto Nivel (HLS) en los SIG?",
+        options: [
+          "La certificación simultánea de todas las normas",
+          "La integración natural de diferentes normas ISO",
+          "La reducción del número de auditorías",
+          "La eliminación de requisitos duplicados"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! La HLS facilita la integración natural al proporcionar la misma estructura para ISO 9001, ISO 14001, ISO 45001, etc.",
+        hints: [
+          "Se relaciona con tener la misma 'estructura' base...",
+          "Permite que las normas se 'integren naturalmente'.",
+          "ISO 9001, 14001, 45001 comparten la misma estructura gracias a HLS."
+        ]
+      },
+      {
+        topic: "SIG",
+        question: "Según el material del curso, ¿cuál es el ROI típico de un SIG en el tercer año?",
+        options: [
+          "15-25% de retorno",
+          "32.5% de retorno",
+          "50-60% de retorno",
+          "67% de retorno acumulado"
+        ],
+        correct: 3,
+        explanation: "¡Correcto! Según la tabla del curso, el ROI acumulado en 3 años es del 67%, con 32.5% en el año 3 específicamente.",
+        hints: [
+          "Es el valor 'acumulado' después de 3 años...",
+          "Supera el 50% pero no llega al 70%.",
+          "En el material aparece como ROI 'acumulado' después de implementación completa."
+        ]
+      },
+      
+      // Mejora Continua y PDCA (3 preguntas)
+      {
+        topic: "Mejora Continua",
+        question: "En el contexto de ISO 9001, ¿qué significa 'mejora continua'?",
+        options: [
+          "Actividad recurrente para aumentar la capacidad de cumplir requisitos",
+          "Cambios revolucionarios en los procesos",
+          "Implementación de nuevas tecnologías",
+          "Reducción constante de costos operativos"
+        ],
+        correct: 0,
+        explanation: "¡Correcto! Mejora continua es una actividad recurrente para aumentar la capacidad de cumplir los requisitos según ISO 9000.",
+        hints: [
+          "Es una 'actividad recurrente', no cambios revolucionarios...",
+          "Se enfoca en 'aumentar la capacidad' de algo específico.",
+          "Está relacionada directamente con 'cumplir requisitos'."
+        ]
+      },
+      {
+        topic: "Mejora Continua",
+        question: "¿En qué cláusula de ISO 9001:2015 se establece el requisito de mejora continua?",
+        options: [
+          "Cláusula 8: Operación",
+          "Cláusula 9: Evaluación del desempeño",
+          "Cláusula 10: Mejora",
+          "Cláusula 6: Planificación"
+        ],
+        correct: 2,
+        explanation: "¡Exacto! La Cláusula 10: Mejora establece específicamente los requisitos de mejora continua del SGC.",
+        hints: [
+          "Está en la cláusula que tiene 'Mejora' en su nombre...",
+          "Es la última cláusula de requisitos (4-10).",
+          "Se enfoca específicamente en mejora continua, no conformidades y acciones correctivas."
+        ]
+      },
+      {
+        topic: "Mejora Continua",
+        question: "Según el enfoque moderno presentado en el curso, ¿cómo evoluciona la mejora continua con tecnologías digitales?",
+        options: [
+          "Se limita a automatización de procesos",
+          "Incorpora análisis de datos en tiempo real y machine learning",
+          "Solo mejora la documentación digital",
+          "Reduce la necesidad de participación humana"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! El enfoque moderno incorpora análisis de datos en tiempo real, machine learning y automatización inteligente según el material del curso.",
+        hints: [
+          "Va más allá de solo automatización o documentación...",
+          "Incluye tecnologías de 'análisis' e 'inteligencia artificial'.",
+          "Menciona específicamente 'tiempo real' y 'machine learning'."
+        ]
+      }
+    ];
+
+    // Variables del quiz
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedAnswer = -1;
+    let timeLeft = 45;
+    let timer = null;
+    let userAnswers = [];
+    let currentHintLevel = 0;
+    let hintsUsed = 0;
+    
+    // Elementos del DOM
+    const startScreen = document.getElementById('startScreen');
+    const questionScreen = document.getElementById('questionScreen');
+    const resultsScreen = document.getElementById('resultsScreen');
+    const progressFill = document.getElementById('progressFill');
+    const questionNumber = document.getElementById('questionNumber');
+    const topicBadge = document.getElementById('topicBadge');
+    const timerDisplay = document.getElementById('timer');
+    const questionText = document.getElementById('questionText');
+    const optionsGrid = document.getElementById('optionsGrid');
+    const hintSystem = document.getElementById('hintSystem');
+    const feedback = document.getElementById('feedback');
+    const nextBtn = document.getElementById('nextBtn');
+
+    // Iniciar quiz
+    function startQuiz() {
+      startScreen.style.display = 'none';
+      questionScreen.classList.add('active');
+      loadQuestion();
+      startTimer();
+    }
+
+    // Cargar pregunta actual
+    function loadQuestion() {
+      const question = questions[currentQuestionIndex];
+      
+      // Actualizar información
+      questionNumber.textContent = `Pregunta ${currentQuestionIndex + 1}/${questions.length}`;
+      topicBadge.textContent = question.topic;
+      questionText.textContent = question.question;
+      
+      // Actualizar progreso
+      const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+      progressFill.style.width = `${progress}%`;
+      
+      // Cargar opciones
+      optionsGrid.innerHTML = '';
+      question.options.forEach((option, index) => {
+        const optionElement = document.createElement('div');
+        optionElement.className = `option option-${String.fromCharCode(97 + index)}`;
+        optionElement.textContent = option;
+        optionElement.onclick = () => selectOption(index);
+        optionsGrid.appendChild(optionElement);
+      });
+      
+      // Reset estado
+      selectedAnswer = -1;
+      currentHintLevel = 0;
+      feedback.classList.remove('show', 'correct', 'incorrect');
+      hintSystem.classList.remove('show');
+      nextBtn.disabled = true;
+      timeLeft = 45;
+      
+      // Reset hints
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById(`hint${i}`).style.display = 'none';
+      }
+    }
+
+    // Mostrar pista
+    function showHint(level) {
+      const question = questions[currentQuestionIndex];
+      if (level <= question.hints.length) {
+        currentHintLevel = Math.max(currentHintLevel, level);
+        hintsUsed++;
+        
+        // Mostrar el sistema de pistas si no está visible
+        hintSystem.classList.add('show');
+        
+        // Mostrar la pista específica
+        const hintElement = document.getElementById(`hint${level}`);
+        hintElement.style.display = 'block';
+        hintElement.querySelector('.hint-text').textContent = question.hints[level - 1];
+        
+        // Animación de aparición
+        hintElement.style.animation = 'none';
+        hintElement.offsetHeight; // Trigger reflow
+        hintElement.style.animation = 'slideIn 0.5s ease';
+      }
+    }
+
+    // Seleccionar opción
+    function selectOption(index) {
+      if (selectedAnswer !== -1) return; // Ya seleccionó
+      
+      selectedAnswer = index;
+      const question = questions[currentQuestionIndex];
+      const options = optionsGrid.children;
+      
+      // Detener timer
+      clearInterval(timer);
+      
+      // Marcar opción seleccionada
+      options[index].classList.add('selected');
+      
+      setTimeout(() => {
+        // Mostrar respuesta correcta/incorrecta
+        const isCorrect = index === question.correct;
+        
+        if (isCorrect) {
+          options[index].classList.add('correct');
+          score++;
+          showFeedback(true, question.explanation);
+        } else {
+          options[index].classList.add('incorrect');
+          options[question.correct].classList.add('correct');
+          showFeedback(false, question.explanation);
+        }
+        
+        userAnswers.push({
+          question: question.question,
+          selectedIndex: index,
+          correctIndex: question.correct,
+          isCorrect: isCorrect,
+          hintsUsed: currentHintLevel
+        });
+        
+        nextBtn.disabled = false;
+      }, 1000);
+    }
+
+    // Mostrar feedback
+    function showFeedback(isCorrect, message) {
+      const feedbackEmoji = feedback.querySelector('.feedback-emoji');
+      const feedbackText = feedback.querySelector('.feedback-text');
+      const feedbackExplanation = feedback.querySelector('.feedback-explanation');
+      
+      if (isCorrect) {
+        feedback.className = 'feedback show correct';
+        feedbackEmoji.textContent = ['🎉', '🎯', '📊', '⭐', '🔥'][Math.floor(Math.random() * 5)];
+        feedbackText.textContent = ['¡Correcto!', '¡Excelente!', '¡Genial!', '¡Perfecto!'][Math.floor(Math.random() * 4)];
+      } else {
+        feedback.className = 'feedback show incorrect';
+        feedbackEmoji.textContent = ['🤔', '📚', '💭', '🎯', '📈'][Math.floor(Math.random() * 5)];
+        feedbackText.textContent = ['¡Aprende de esto!', '¡Casi!', '¡Interesante elección!', '¡Sigue mejorando!'][Math.floor(Math.random() * 4)];
+      }
+      
+      feedbackExplanation.textContent = message;
+    }
+
+    // Siguiente pregunta
+    function nextQuestion() {
+      currentQuestionIndex++;
+      
+      if (currentQuestionIndex >= questions.length) {
+        showResults();
+      } else {
+        loadQuestion();
+        startTimer();
+      }
+    }
+
+    // Timer
+    function startTimer() {
+      timerDisplay.textContent = `${timeLeft}s`;
+      
+      timer = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = `${timeLeft}s`;
+        
+        if (timeLeft <= 10) {
+          timerDisplay.style.color = 'var(--danger)';
+          timerDisplay.style.animation = 'timerPulse 0.5s ease-in-out infinite';
+        }
+        
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          if (selectedAnswer === -1) {
+            // Tiempo agotado, mostrar respuesta correcta
+            const question = questions[currentQuestionIndex];
+            const options = optionsGrid.children;
+            
+            options[question.correct].classList.add('correct');
+            showFeedback(false, "⏰ Tiempo agotado. " + question.explanation);
+            
+            userAnswers.push({
+              question: question.question,
+              selectedIndex: -1,
+              correctIndex: question.correct,
+              isCorrect: false,
+              hintsUsed: currentHintLevel
+            });
+            
+            nextBtn.disabled = false;
+          }
+        }
+      }, 1000);
+    }
+
+    // Mostrar resultados
+    function showResults() {
+      questionScreen.classList.remove('active');
+      resultsScreen.classList.add('active');
+      
+      const accuracy = Math.round((score / questions.length) * 100);
+      const incorrect = questions.length - score;
+      
+      document.getElementById('finalScore').textContent = `${score}/${questions.length}`;
+      document.getElementById('correctAnswers').textContent = score;
+      document.getElementById('incorrectAnswers').textContent = incorrect;
+      document.getElementById('accuracy').textContent = `${accuracy}%`;
+      
+      // Determinar nivel y mensaje
+      let level, message;
+      if (accuracy >= 95) {
+        level = "🥇 Auditor Líder";
+        message = "¡Impresionante! Podrías liderar auditorías ISO 9001 ahora mismo. Tu conocimiento es excepcional 🏆";
+      } else if (accuracy >= 85) {
+        level = "📊 Especialista SGC";
+        message = "¡Excelente! Dominas los SGC mejor que muchos consultores. ISO estaría orgulloso 🎯";
+      } else if (accuracy >= 75) {
+        level: "⚙️ Coordinador de Calidad";
+        message = "¡Muy bien! Tienes una base sólida en ISO 9001. Solo necesitas un poco más de práctica 📈";
+      } else if (accuracy >= 65) {
+        level = "📋 Analista Junior";
+        message = "¡Buen trabajo! Estás en el camino correcto. Sigue estudiando y dominarás los SGC 📚";
+      } else {
+        level = "🎓 Aprendiz ISO";
+        message = "¡No te desanimes! Todos empezamos así. Los SGC son complejos, pero con práctica los dominarás 💪";
+      }
+      
+      document.getElementById('ranking').textContent = level;
+      document.getElementById('resultsMessage').textContent = message;
+      
+      // Mensaje personalizado
+      const personalizedMsg = generatePersonalizedMessage(accuracy);
+      document.getElementById('personalizedMessage').innerHTML = personalizedMsg;
+    }
+
+    // Generar mensaje personalizado
+    function generatePersonalizedMessage(accuracy) {
+      const topicStats = {};
+      questions.forEach((q, i) => {
+        if (!topicStats[q.topic]) {
+          topicStats[q.topic] = { correct: 0, total: 0 };
+        }
+        topicStats[q.topic].total++;
+        if (userAnswers[i] && userAnswers[i].isCorrect) {
+          topicStats[q.topic].correct++;
+        }
+      });
+      
+      let message = '<h4 style="color: var(--primary); margin-bottom: 15px;">📊 Análisis Personalizado SGC</h4>';
+      
+      // Mejor tema
+      let bestTopic = '', bestScore = 0;
+      let worstTopic = '', worstScore = 100;
+      
+      for (const [topic, stats] of Object.entries(topicStats)) {
+        const percentage = (stats.correct / stats.total) * 100;
+        if (percentage > bestScore) {
+          bestScore = percentage;
+          bestTopic = topic;
+        }
+        if (percentage < worstScore) {
+          worstScore = percentage;
+          worstTopic = topic;
+        }
+      }
+      
+      if (bestScore === 100) {
+        message += `<p>🏆 <strong>Dominas completamente:</strong> ${bestTopic}. ¡Podrías ser consultor en este tema!</p>`;
+      } else if (bestScore >= 75) {
+        message += `<p>⭐ <strong>Tu fuerte es:</strong> ${bestTopic} (${bestScore.toFixed(0)}%). ¡Excelente conocimiento!</p>`;
+      }
+      
+      if (worstScore < 50 && worstTopic !== bestTopic) {
+        message += `<p>📚 <strong>Área de mejora:</strong> ${worstTopic}. ¡Un poco más de estudio y lo tendrás!</p>`;
+      }
+      
+      // Estadísticas de pistas
+      const avgHints = hintsUsed / questions.length;
+      if (avgHints < 0.5) {
+        message += `<p>🧠 <strong>Aprendizaje independiente:</strong> Usaste pocas pistas. ¡Excelente confianza!</p>`;
+      } else if (avgHints > 2) {
+        message += `<p>💡 <strong>Aprendizaje guiado:</strong> Las pistas te ayudaron mucho. ¡Buen uso de recursos!</p>`;
+      }
+      
+      return message;
+    }
+
+    // Funciones adicionales
+    function restartQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      userAnswers = [];
+      hintsUsed = 0;
+      resultsScreen.classList.remove('active');
+      startScreen.style.display = 'block';
+    }
+
+    function showInstructions() {
+      alert(`📋 INSTRUCCIONES DEL QUIZ ISO 9000:
+
+🎯 18 preguntas sobre Sistemas de Gestión de la Calidad
+⏰ 45 segundos por pregunta
+💡 Sistema de 3 niveles de pistas disponibles
+📊 Análisis personalizado al final
+🏆 Certificación virtual de conocimiento
+
+📚 TEMAS CUBIERTOS:
+• Fundamentos de ISO 9000/9001/9004
+• Términos y definiciones de SGC
+• Estructura de ISO 9001:2015
+• Implementación de Sistemas de Gestión
+• Sistemas Integrados de Gestión (SIG)
+• Mejora continua y PDCA
+
+💡 SISTEMA DE PISTAS:
+• Pista 1: Orientación general
+• Pista 2: Contexto más específico
+• Pista 3: Pista directa
+
+¡Demuestra tu dominio de los SGC ISO! 📈`);
+    }
+
+    function reviewAnswers() {
+      let review = "📊 REVISIÓN DE RESPUESTAS ISO 9000:\n\n";
+      userAnswers.forEach((answer, index) => {
+        const question = questions[index];
+        const status = answer.isCorrect ? "✅" : "❌";
+        const hints = answer.hintsUsed > 0 ? ` (${answer.hintsUsed} pistas)` : "";
+        review += `${status} P${index + 1}: ${question.topic}${hints}\n`;
+        if (answer.selectedIndex === -1) {
+          review += `⏰ Tiempo agotado\n`;
+        } else {
+          review += `Tu respuesta: ${question.options[answer.selectedIndex]}\n`;
+        }
+        if (!answer.isCorrect) {
+          review += `✓ Correcta: ${question.options[answer.correctIndex]}\n`;
+        }
+        review += "\n";
+      });
+      
+      // Crear modal personalizado
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.8); display: flex; align-items: center;
+        justify-content: center; z-index: 1000; padding: 20px;
+      `;
+      
+      modal.innerHTML = `
+        <div style="background: var(--grad-panel); border: 1px solid var(--primary);
+                    border-radius: 20px; padding: 30px; max-width: 600px;
+                    max-height: 80vh; overflow-y: auto; color: var(--ink);">
+          <h3 style="color: var(--primary); margin-bottom: 20px;">📊 Revisión Detallada ISO 9000</h3>
+          <pre style="white-space: pre-wrap; font-family: 'Inter', sans-serif;
+                      line-height: 1.6;">${review}</pre>
+          <button onclick="this.parentNode.parentNode.remove()" 
+                  style="background: var(--grad-primary); color: white; border: none;
+                         padding: 10px 20px; border-radius: 15px; cursor: pointer;
+                         margin-top: 20px;">Cerrar</button>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+    }
+
+    function shareResults() {
+      const accuracy = Math.round((score / questions.length) * 100);
+      const text = `📊 ¡Completé el Quiz ISO 9000 - SGC!
+      
+🎯 Resultado: ${score}/${questions.length} (${accuracy}%)
+📚 Temas: ISO 9000/9001/9004, SGC, Implementación, SIG
+💡 Con sistema de pistas inteligente
+
+${accuracy >= 85 ? '🏆 ¡Soy un experto en Sistemas de Gestión de Calidad!' : '📈 ¡Desarrollando expertise en SGC!'}
+
+#ISO9001 #GestionCalidad #SGC #ISO9000 #CalidadTotal`;
+
+      if (navigator.share) {
+        navigator.share({
+          title: 'Quiz ISO 9000 - Resultados SGC',
+          text: text
+        });
+      } else {
+        navigator.clipboard.writeText(text).then(() => {
+          alert('📋 ¡Resultados copiados al portapapeles! Compártelos para mostrar tu dominio de SGC 🚀');
+        });
+      }
+    }
+
+    // Theme toggle
+    function toggleTheme() {
+      const body = document.documentElement;
+      const currentTheme = body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme-iso', newTheme);
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (questionScreen.classList.contains('active')) {
+        if (e.key >= '1' && e.key <= '4') {
+          const index = parseInt(e.key) - 1;
+          if (index < optionsGrid.children.length) {
+            selectOption(index);
+          }
+        } else if (e.key === 'Enter' && !nextBtn.disabled) {
+          nextQuestion();
+        } else if (e.key === 'h' || e.key === 'H') {
+          // Mostrar siguiente pista disponible
+          if (currentHintLevel < 3) {
+            showHint(currentHintLevel + 1);
+          }
+        }
+      }
+    });
+
+    // Initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      // Load saved theme
+      const savedTheme = localStorage.getItem('theme-iso') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      
+      // ISO Easter egg
+      let isoSequence = [];
+      const isoCode = [73, 83, 79]; // I-S-O
+      
+      document.addEventListener('keydown', (e) => {
+        isoSequence.push(e.keyCode);
+        if (isoSequence.length > isoCode.length) {
+          isoSequence.shift();
+        }
+        
+        if (isoSequence.toString() === isoCode.toString()) {
+          alert('🏆 ¡Código ISO activado! Eres oficialmente un guardiáné de la calidad internacional 📊🌍');
+          score += 2; // Bonus points
+        }
+      });
+    });
+  </script>
+</body>
+</html>

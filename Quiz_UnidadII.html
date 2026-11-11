@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🔄 Quiz Unidad II - Modelos de Gestión de Calidad</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+    
+    :root {
+      --bg: #f1f5f9;
+      --panel: #ffffff;
+      --ink: #1a1a1a;
+      --muted: #64748b;
+      --primary: #10b981;
+      --secondary: #f59e0b;
+      --accent: #3b82f6;
+      --success: #059669;
+      --warn: #d97706;
+      --danger: #dc2626;
+      --steel: #475569;
+      --grad-primary: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      --grad-panel: linear-gradient(180deg, #ffffff, #f1f5f9);
+      --shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --panel: #1e293b;
+      --ink: #f1f5f9;
+      --muted: #94a3b8;
+      --grad-panel: linear-gradient(180deg, #1e293b, #0f172a);
+      --shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      font: 16px/1.6 'Inter', system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+    
+    /* Patrón de fondo de mejora continua */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(90deg, rgba(16, 185, 129, 0.02) 1px, transparent 1px),
+        linear-gradient(rgba(245, 158, 11, 0.02) 1px, transparent 1px),
+        radial-gradient(circle at 25% 75%, rgba(16, 185, 129, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 75% 25%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+      background-size: 40px 40px, 40px 40px, 200px 200px, 200px 200px;
+      opacity: 0.4;
+      animation: continuousFlow 30s linear infinite;
+      z-index: 0;
+    }
+    
+    @keyframes continuousFlow {
+      from { transform: translate(0, 0) rotate(0deg); }
+      to { transform: translate(-40px, -40px) rotate(360deg); }
+    }
+    
+    /* Contenedor principal */
+    .quiz-container {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    /* Header del quiz */
+    .quiz-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 30px;
+      background: var(--grad-panel);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .quiz-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--grad-primary);
+      border-radius: 24px 24px 0 0;
+    }
+    
+    .quiz-title {
+      font: 900 clamp(2rem, 6vw, 3.5rem)/1.1 'Inter', sans-serif;
+      background: var(--grad-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 15px;
+      animation: titleGlow 3s ease-in-out infinite alternate;
+    }
+    
+    @keyframes titleGlow {
+      from { filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.3)); }
+      to { filter: drop-shadow(0 0 30px rgba(245, 158, 11, 0.4)); }
+    }
+    
+    .quiz-subtitle {
+      font: 600 1.3rem 'Inter', sans-serif;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    
+    /* Stats del quiz */
+    .quiz-stats {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    
+    .stat-box {
+      background: var(--panel);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 16px;
+      padding: 15px 20px;
+      text-align: center;
+      min-width: 120px;
+      box-shadow: var(--shadow);
+    }
+    
+    .stat-number {
+      font: 700 1.8rem 'JetBrains Mono', monospace;
+      color: var(--primary);
+      display: block;
+      text-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+    }
+    
+    /* Pantalla de pregunta */
+    .question-screen {
+      display: none;
+      background: var(--grad-panel);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      animation: slideIn 0.5s ease;
+    }
+    
+    .question-screen.active {
+      display: block;
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    
+    .question-screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--grad-primary);
+      border-radius: 24px 24px 0 0;
+    }
+    
+    /* Barra de progreso */
+    .progress-bar {
+      background: rgba(0,0,0,0.1);
+      border-radius: 999px;
+      height: 12px;
+      margin-bottom: 30px;
+      overflow: hidden;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--grad-primary);
+      width: 0;
+      transition: width 0.5s ease;
+      border-radius: inherit;
+      position: relative;
+    }
+    
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: -20px;
+      width: 20px;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
+      animation: progressGlow 2s ease-in-out infinite;
+    }
+    
+    @keyframes progressGlow {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+    
+    /* Información de la pregunta */
+    .question-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .question-number {
+      font: 700 1.1rem 'JetBrains Mono', monospace;
+      color: var(--primary);
+      background: rgba(16, 185, 129, 0.1);
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    
+    .topic-badge {
+      font: 600 0.9rem 'JetBrains Mono', monospace;
+      color: var(--secondary);
+      background: rgba(245, 158, 11, 0.1);
+      padding: 6px 12px;
+      border-radius: 15px;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .timer {
+      font: 700 1.2rem 'JetBrains Mono', monospace;
+      color: var(--warn);
+      background: rgba(217, 119, 6, 0.1);
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(217, 119, 6, 0.3);
+      animation: timerPulse 1s ease-in-out infinite;
+    }
+    
+    @keyframes timerPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    /* Pregunta */
+    .question-text {
+      font: 600 clamp(1.3rem, 3vw, 1.8rem)/1.4 'Inter', sans-serif;
+      color: var(--ink);
+      text-align: center;
+      margin-bottom: 35px;
+      padding: 20px;
+      background: rgba(16, 185, 129, 0.05);
+      border-radius: 16px;
+      border-left: 4px solid var(--primary);
+    }
+    
+    /* Opciones de respuesta */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .option {
+      background: var(--panel);
+      border: 2px solid rgba(16, 185, 129, 0.2);
+      border-radius: 16px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      font: 600 1.1rem 'Inter', sans-serif;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow);
+    }
+    
+    .option::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.1), transparent);
+      transition: 0.5s;
+    }
+    
+    .option:hover {
+      transform: translateY(-5px) scale(1.02);
+      border-color: var(--primary);
+      box-shadow: 0 15px 40px rgba(16, 185, 129, 0.3);
+      background: rgba(16, 185, 129, 0.05);
+    }
+    
+    .option:hover::before {
+      left: 100%;
+    }
+    
+    .option.selected {
+      border-color: var(--warn);
+      background: rgba(245, 158, 11, 0.1);
+      animation: optionSelected 0.5s ease;
+    }
+    
+    .option.correct {
+      border-color: var(--success);
+      background: rgba(5, 150, 105, 0.1);
+      animation: correctAnswer 0.6s ease;
+    }
+    
+    .option.incorrect {
+      border-color: var(--danger);
+      background: rgba(220, 38, 38, 0.1);
+      animation: incorrectAnswer 0.6s ease;
+    }
+    
+    @keyframes optionSelected {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes correctAnswer {
+      0% { transform: scale(1); }
+      25% { transform: scale(1.1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes incorrectAnswer {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      50% { transform: translateX(10px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+    
+    /* Colores neutrales para opciones */
+    .option.option-a { background: linear-gradient(145deg, #f8f9fa, #ffffff); border-color: #6c757d; }
+    .option.option-b { background: linear-gradient(145deg, #f1f3f4, #ffffff); border-color: #6c757d; }
+    .option.option-c { background: linear-gradient(145deg, #f3f4f6, #ffffff); border-color: #6c757d; }
+    .option.option-d { background: linear-gradient(145deg, #f9fafb, #ffffff); border-color: #6c757d; }
+    
+    .option.option-a:hover { background: linear-gradient(145deg, #e9ecef, #f8f9fa); border-color: var(--primary); }
+    .option.option-b:hover { background: linear-gradient(145deg, #e9ecef, #f8f9fa); border-color: var(--primary); }
+    .option.option-c:hover { background: linear-gradient(145deg, #e9ecef, #f8f9fa); border-color: var(--primary); }
+    .option.option-d:hover { background: linear-gradient(145deg, #e9ecef, #f8f9fa); border-color: var(--primary); }
+    
+    /* Sistema de pistas */
+    .hint-system {
+      background: var(--panel);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+      display: none;
+      animation: hintSlide 0.5s ease;
+      box-shadow: var(--shadow);
+    }
+    
+    .hint-system.show {
+      display: block;
+    }
+    
+    @keyframes hintSlide {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .hint-level {
+      margin-bottom: 15px;
+      padding: 10px;
+      background: rgba(245, 158, 11, 0.1);
+      border-radius: 8px;
+      border-left: 3px solid var(--warn);
+    }
+    
+    .hint-title {
+      font-weight: 700;
+      color: var(--warn);
+      margin-bottom: 5px;
+    }
+    
+    .hint-text {
+      color: var(--ink);
+      line-height: 1.4;
+    }
+    
+    /* Feedback */
+    .feedback {
+      background: var(--panel);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+      display: none;
+      animation: feedbackSlide 0.5s ease;
+      box-shadow: var(--shadow);
+    }
+    
+    .feedback.show {
+      display: block;
+    }
+    
+    @keyframes feedbackSlide {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .feedback.correct {
+      border-color: var(--success);
+      background: rgba(5, 150, 105, 0.05);
+    }
+    
+    .feedback.incorrect {
+      border-color: var(--danger);
+      background: rgba(220, 38, 38, 0.05);
+    }
+    
+    .feedback-emoji {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      display: block;
+      animation: bounce 0.6s ease;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .feedback-text {
+      font: 600 1.2rem 'Inter', sans-serif;
+      margin-bottom: 10px;
+    }
+    
+    .feedback-explanation {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    
+    /* Botones */
+    .btn {
+      background: var(--grad-primary);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font: 600 1.1rem 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(16, 185, 129, 0.4);
+    }
+    
+    .btn:hover::before {
+      left: 100%;
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(145deg, #6c7b95, #5a6b85);
+      box-shadow: 0 10px 30px rgba(108, 123, 149, 0.3);
+    }
+    
+    .btn-secondary:hover {
+      box-shadow: 0 15px 40px rgba(108, 123, 149, 0.4);
+    }
+    
+    .btn-hint {
+      background: linear-gradient(145deg, #f59e0b, #d97706);
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      margin: 0 10px;
+    }
+    
+    /* Pantalla de resultados */
+    .results-screen {
+      display: none;
+      text-align: center;
+      background: var(--grad-panel);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .results-screen.active {
+      display: block;
+      animation: slideIn 0.5s ease;
+    }
+    
+    .results-screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--grad-primary);
+      border-radius: 24px 24px 0 0;
+    }
+    
+    .final-score {
+      font: 900 4rem 'JetBrains Mono', monospace;
+      background: var(--grad-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 20px 0;
+      animation: scoreGlow 2s ease-in-out infinite alternate;
+    }
+    
+    @keyframes scoreGlow {
+      from { filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.5)); }
+      to { filter: drop-shadow(0 0 40px rgba(245, 158, 11, 0.7)); }
+    }
+    
+    .results-message {
+      font: 600 1.5rem 'Inter', sans-serif;
+      color: var(--ink);
+      margin: 20px 0;
+    }
+    
+    .results-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+    
+    /* Botones de acción */
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+    
+    .hint-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 15px 0;
+      flex-wrap: wrap;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .quiz-container {
+        padding: 10px;
+      }
+      
+      .quiz-header, .question-screen, .results-screen {
+        padding: 20px;
+        border-radius: 16px;
+      }
+      
+      .options-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      
+      .option {
+        padding: 15px;
+        min-height: 60px;
+        font-size: 1rem;
+      }
+      
+      .quiz-stats {
+        gap: 15px;
+      }
+      
+      .stat-box {
+        min-width: 100px;
+        padding: 10px 15px;
+      }
+      
+      .question-info {
+        justify-content: center;
+        text-align: center;
+      }
+      
+      .action-buttons, .hint-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .btn {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+    
+    /* Theme toggle */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--panel);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 50px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink);
+      z-index: 100;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+    }
+    
+    .theme-toggle:hover {
+      background: var(--primary);
+      color: white;
+    }
+    
+    /* Certificado Mejora Continua styling */
+    .improvement-badge {
+      display: inline-block;
+      background: linear-gradient(145deg, #10b981, #059669);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-left: 10px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="theme-toggle" onclick="toggleTheme()">🌙 Tema</div>
+  
+  <div class="quiz-container">
+    <!-- Pantalla de inicio -->
+    <div class="quiz-header" id="startScreen">
+      <h1 class="quiz-title">🔄 Quiz Unidad II</h1>
+      <p class="quiz-subtitle">Modelos de Gestión de Calidad y Mejora Continua <span class="improvement-badge">PDCA + Kaizen</span></p>
+      
+      <div class="quiz-stats">
+        <div class="stat-box">
+          <span class="stat-number">20</span>
+          <div class="stat-label">Preguntas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">6</span>
+          <div class="stat-label">Temas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">45s</span>
+          <div class="stat-label">Por pregunta</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">🎯</span>
+          <div class="stat-label">Con pistas</div>
+        </div>
+      </div>
+      
+      <div style="margin: 30px 0;">
+        <p style="color: var(--muted); font-size: 1.1rem; margin-bottom: 20px;">
+          ¿Estás listo para dominar las metodologías de mejora continua? 🚀
+        </p>
+        <p style="color: var(--steel); font-size: 0.95rem;">
+          <strong>Temas:</strong> Círculos de Calidad • PDCA • Kaizen • Seis Sigma • Modelos Excelencia • Premio Nacional México
+        </p>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn" onclick="startQuiz()">🚀 Iniciar Quiz</button>
+        <button class="btn btn-secondary" onclick="showInstructions()">📋 Instrucciones</button>
+      </div>
+    </div>
+    
+    <!-- Pantalla de pregunta -->
+    <div class="question-screen" id="questionScreen">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      
+      <div class="question-info">
+        <div class="question-number" id="questionNumber">Pregunta 1/20</div>
+        <div class="topic-badge" id="topicBadge">Círculos Calidad</div>
+        <div class="timer" id="timer">45s</div>
+      </div>
+      
+      <div class="question-text" id="questionText">
+        ¿Cuál es la definición de círculos de calidad según el material del curso?
+      </div>
+      
+      <div class="options-grid" id="optionsGrid">
+        <div class="option option-a" onclick="selectOption(0)">
+          Grupos grandes obligatorios de supervisores que evalúan la calidad
+        </div>
+        <div class="option option-b" onclick="selectOption(1)">
+          Grupos pequeños y voluntarios de trabajadores que se reúnen para identificar y resolver problemas
+        </div>
+        <div class="option option-c" onclick="selectOption(2)">
+          Comités ejecutivos que toman decisiones estratégicas
+        </div>
+        <div class="option option-d" onclick="selectOption(3)">
+          Equipos de consultores externos especializados en calidad
+        </div>
+      </div>
+      
+      <div class="hint-system" id="hintSystem">
+        <div class="hint-level" id="hint1" style="display:none;">
+          <div class="hint-title">💡 Pista Nivel 1</div>
+          <div class="hint-text">Piensa en las características clave: tamaño del grupo y tipo de participación...</div>
+        </div>
+        <div class="hint-level" id="hint2" style="display:none;">
+          <div class="hint-title">🎯 Pista Nivel 2</div>
+          <div class="hint-text">Los círculos de calidad son grupos 'pequeños' (5-10 personas) y la participación es 'voluntaria'.</div>
+        </div>
+        <div class="hint-level" id="hint3" style="display:none;">
+          <div class="hint-title">🔑 Pista Nivel 3</div>
+          <div class="hint-text">Se reúnen regularmente para 'identificar, analizar y proponer soluciones' a problemas de calidad.</div>
+        </div>
+      </div>
+      
+      <div class="hint-buttons">
+        <button class="btn btn-hint" onclick="showHint(1)">💡 Pista 1</button>
+        <button class="btn btn-hint" onclick="showHint(2)">🎯 Pista 2</button>
+        <button class="btn btn-hint" onclick="showHint(3)">🔑 Pista 3</button>
+      </div>
+      
+      <div class="feedback" id="feedback">
+        <span class="feedback-emoji">🎉</span>
+        <div class="feedback-text">¡Correcto!</div>
+        <div class="feedback-explanation">Exacto, los círculos de calidad son grupos pequeños y voluntarios de trabajadores que se reúnen regularmente para identificar, analizar y proponer soluciones a problemas relacionados con la calidad.</div>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Siguiente Pregunta</button>
+      </div>
+    </div>
+    
+    <!-- Pantalla de resultados -->
+    <div class="results-screen" id="resultsScreen">
+      <h2 style="color: var(--primary); font-family: 'Inter', sans-serif; margin-bottom: 20px;">
+        🏆 ¡Quiz Completado!
+      </h2>
+      
+      <div class="final-score" id="finalScore">17/20</div>
+      
+      <div class="results-message" id="resultsMessage">
+        ¡Excelente! Dominas la mejora continua 🔄
+      </div>
+      
+      <div class="results-details">
+        <div class="stat-box">
+          <span class="stat-number" id="correctAnswers">17</span>
+          <div class="stat-label">Correctas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="incorrectAnswers">3</span>
+          <div class="stat-label">Incorrectas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="accuracy">85%</span>
+          <div class="stat-label">Precisión</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="ranking">Kaizen Master</span>
+          <div class="stat-label">Nivel</div>
+        </div>
+      </div>
+      
+      <div style="margin: 30px 0; padding: 20px; background: rgba(16, 185, 129, 0.1); border-radius: 16px; border: 1px solid rgba(16, 185, 129, 0.3);">
+        <div id="personalizedMessage"></div>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn" onclick="restartQuiz()">🔄 Reintentar</button>
+        <button class="btn btn-secondary" onclick="reviewAnswers()">📊 Revisar Respuestas</button>
+        <button class="btn btn-secondary" onclick="shareResults()">📤 Compartir</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Base de datos de preguntas
+    const questions = [
+      // Círculos de Calidad (3 preguntas)
+      {
+        topic: "Círculos Calidad",
+        question: "¿Cuál es la definición de círculos de calidad según el material del curso?",
+        options: [
+          "Grupos grandes obligatorios de supervisores que evalúan la calidad",
+          "Grupos pequeños y voluntarios de trabajadores que se reúnen para identificar y resolver problemas",
+          "Comités ejecutivos que toman decisiones estratégicas",
+          "Equipos de consultores externos especializados en calidad"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! Los círculos de calidad son grupos pequeños y voluntarios de trabajadores que se reúnen regularmente para identificar, analizar y proponer soluciones a problemas relacionados con la calidad.",
+        hints: [
+          "Piensa en las características clave: tamaño del grupo y tipo de participación...",
+          "Los círculos de calidad son grupos 'pequeños' (5-10 personas) y la participación es 'voluntaria'.",
+          "Se reúnen regularmente para 'identificar, analizar y proponer soluciones' a problemas de calidad."
+        ]
+      },
+      {
+        topic: "Círculos Calidad",
+        question: "¿En qué década y país nacieron los círculos de calidad?",
+        options: [
+          "Estados Unidos en los años 50",
+          "Japón en los años 60",
+          "Alemania en los años 70",
+          "Francia en los años 80"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! Los círculos de calidad nacieron en Japón en los años 60, como parte de su filosofía de mejora continua y participación de los trabajadores.",
+        hints: [
+          "Es un país asiático conocido por sus metodologías de calidad...",
+          "Se originaron en el mismo país que desarrolló Kaizen y TPS.",
+          "Japón en los años 60 fue cuando se desarrollaron estas herramientas."
+        ]
+      },
+      {
+        topic: "Círculos Calidad",
+        question: "¿Cuál NO es una herramienta típicamente utilizada por los círculos de calidad?",
+        options: [
+          "Análisis de Pareto",
+          "Diagrama causa-efecto (Ishikawa)",
+          "Análisis financiero de ROI",
+          "Hojas de control"
+        ],
+        correct: 2,
+        explanation: "¡Correcto! El análisis financiero de ROI no es una herramienta típica de círculos de calidad. Estas utilizan herramientas de calidad como Pareto, Ishikawa, hojas de control y brainstorming.",
+        hints: [
+          "Los círculos de calidad usan herramientas de calidad, no financieras...",
+          "Las herramientas son para identificar problemas y causas, no para análisis económico.",
+          "ROI es un análisis financiero, no una herramienta de calidad típica."
+        ]
+      },
+      
+      // Ciclo PDCA (3 preguntas)
+      {
+        topic: "PDCA",
+        question: "¿Qué significan las siglas PDCA en el ciclo de mejora continua?",
+        options: [
+          "Plan-Develop-Control-Assess",
+          "Plan-Do-Check-Act",
+          "Prepare-Deploy-Confirm-Adjust",
+          "Process-Design-Create-Apply"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! PDCA significa Plan-Do-Check-Act. Es el ciclo de mejora continua también conocido como Ciclo de Deming.",
+        hints: [
+          "Es un ciclo de 4 pasos muy conocido en calidad...",
+          "Incluye 'Plan' para planificar y 'Check' para verificar.",
+          "Las siglas son: Plan-Do-Check-Act (Planificar-Hacer-Verificar-Actuar)."
+        ]
+      },
+      {
+        topic: "PDCA",
+        question: "Según el material del curso, ¿qué se debe hacer en la fase 'Check' del ciclo PDCA?",
+        options: [
+          "Implementar la solución a gran escala",
+          "Identificar el problema y establecer objetivos",
+          "Evaluar los resultados y compararlos con los objetivos esperados",
+          "Ejecutar el plan a pequeña escala"
+        ],
+        correct: 2,
+        explanation: "¡Exacto! En la fase 'Check' (Verificar) se evalúan los resultados obtenidos y se comparan con los objetivos esperados para determinar si la solución funcionó.",
+        hints: [
+          "La fase 'Check' es de verificación y evaluación...",
+          "Se trata de 'evaluar resultados' y hacer comparaciones.",
+          "Comparar los resultados obtenidos con los objetivos esperados."
+        ]
+      },
+      {
+        topic: "PDCA",
+        question: "En el ejemplo práctico de educación mencionado en el curso, ¿cuál fue el resultado del programa de lectura semanal guiada?",
+        options: [
+          "Mejora del 15% en comprensión lectora",
+          "Mejora del 20% en comprensión lectora",
+          "Mejora del 25% en comprensión lectora",
+          "Mejora del 30% en comprensión lectora"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! En el ejemplo de la escuela secundaria, el programa de lectura semanal guiada aplicado a un grupo piloto resultó en una mejora del 20% en comprensión lectora.",
+        hints: [
+          "El porcentaje está entre 15% y 25%...",
+          "Es un resultado significativo pero realista para un mes de implementación.",
+          "La mejora fue del 20% según el ejemplo del material."
+        ]
+      },
+      
+      // Kaizen (4 preguntas)
+      {
+        topic: "Kaizen",
+        question: "¿Qué significa literalmente la palabra 'Kaizen'?",
+        options: [
+          "Trabajo en equipo",
+          "Mejora continua",
+          "Calidad total",
+          "Eliminación de desperdicios"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! Kaizen es un término japonés que significa literalmente 'mejora continua'. 'Kai' significa cambio y 'Zen' significa para mejor.",
+        hints: [
+          "Es un término japonés con significado directo...",
+          "Se refiere a mejoras constantes y progresivas.",
+          "Kaizen significa literalmente 'mejora continua'."
+        ]
+      },
+      {
+        topic: "Kaizen",
+        question: "¿Quién publicó el libro 'Kaizen: The Key to Japan's Competitive Success' en 1986?",
+        options: [
+          "W. Edwards Deming",
+          "Joseph Juran",
+          "Masaaki Imai",
+          "Taiichi Ohno"
+        ],
+        correct: 2,
+        explanation: "¡Exacto! Masaaki Imai publicó 'Kaizen: The Key to Japan's Competitive Success' en 1986, libro que difundió el concepto Kaizen en Occidente.",
+        hints: [
+          "Es un consultor japonés que popularizó el concepto en Occidente...",
+          "Su apellido suena similar a la palabra 'I'm I' en inglés.",
+          "Masaaki Imai es quien escribió el libro clave sobre Kaizen en 1986."
+        ]
+      },
+      {
+        topic: "Kaizen",
+        question: "¿Cuál NO es uno de los principios fundamentales del Kaizen según el material?",
+        options: [
+          "Mejoras continuas día a día, sin grandes inversiones",
+          "Participación de todos, desde operarios hasta directivos",
+          "Implementación de tecnología avanzada costosa",
+          "Identificación y eliminación de desperdicios (muda)"
+        ],
+        correct: 2,
+        explanation: "¡Correcto! La implementación de tecnología avanzada costosa NO es un principio del Kaizen. Por el contrario, Kaizen enfatiza mejoras sin grandes inversiones, usando recursos existentes.",
+        hints: [
+          "Kaizen se caracteriza por mejoras 'sin grandes inversiones'...",
+          "Busca la opción que contradice el enfoque de bajo costo del Kaizen.",
+          "Kaizen evita las grandes inversiones, prefiere mejoras incrementales."
+        ]
+      },
+      {
+        topic: "Kaizen",
+        question: "En el ejemplo industrial mencionado en el curso, ¿de cuánto a cuánto se redujo el tiempo de cambio de herramientas?",
+        options: [
+          "De 50 a 30 minutos",
+          "De 40 a 25 minutos",
+          "De 45 a 20 minutos",
+          "De 35 a 15 minutos"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! En el ejemplo industrial, una fábrica redujo el tiempo de cambio de herramientas de 40 a 25 minutos mediante pequeñas sugerencias del personal usando Kaizen.",
+        hints: [
+          "La reducción fue significativa pero no extrema...",
+          "Empezó en 40 minutos y se redujo a 25 minutos.",
+          "De 40 a 25 minutos usando plantillas, organización y capacitación."
+        ]
+      },
+      
+      // Seis Sigma (4 preguntas)
+      {
+        topic: "Seis Sigma",
+        question: "¿Cuál es el objetivo principal de la metodología Seis Sigma?",
+        options: [
+          "Aumentar las ventas de la empresa",
+          "Reducir la variabilidad y eliminar defectos a 3.4 por millón de oportunidades",
+          "Implementar nuevas tecnologías",
+          "Mejorar únicamente la satisfacción del cliente"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! Seis Sigma busca reducir la variabilidad en los procesos y eliminar defectos, con el objetivo de alcanzar una calidad de 3.4 defectos por millón de oportunidades.",
+        hints: [
+          "Se enfoca en la calidad casi perfecta mediante reducción de defectos...",
+          "El número '3.4 por millón' es característico de Seis Sigma.",
+          "Busca reducir variabilidad y lograr 3.4 defectos por millón de oportunidades."
+        ]
+      },
+      {
+        topic: "Seis Sigma",
+        question: "¿Qué empresa popularizó la metodología Seis Sigma en la década de 1980?",
+        options: [
+          "General Electric",
+          "Motorola",
+          "Toyota",
+          "Ford"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! Motorola popularizó Seis Sigma en la década de 1980, aunque posteriormente fue adoptada por muchas otras organizaciones como General Electric.",
+        hints: [
+          "Es una empresa estadounidense de telecomunicaciones...",
+          "Fue la empresa pionera, no la que lo adoptó después.",
+          "Motorola fue quien desarrolló y popularizó inicialmente Seis Sigma."
+        ]
+      },
+      {
+        topic: "Seis Sigma",
+        question: "¿Qué significa la 'I' en el ciclo DMAIC de Seis Sigma?",
+        options: [
+          "Identify (Identificar)",
+          "Implement (Implementar)",
+          "Improve (Mejorar)",
+          "Inspect (Inspeccionar)"
+        ],
+        correct: 2,
+        explanation: "¡Correcto! En DMAIC, la 'I' significa 'Improve' (Mejorar). El ciclo completo es: Define-Measure-Analyze-Improve-Control.",
+        hints: [
+          "DMAIC es: Definir, Medir, Analizar, Mejorar y Controlar...",
+          "La 'I' corresponde a la fase donde se implementan mejoras.",
+          "Improve (Mejorar) es la 'I' en DMAIC."
+        ]
+      },
+      {
+        topic: "Seis Sigma",
+        question: "¿Cuáles son los roles principales mencionados en la estructura de Seis Sigma?",
+        options: [
+          "Manager, Supervisor, Operator",
+          "Director, Coordinator, Assistant",
+          "Master Black Belt, Black Belt, Green Belt",
+          "Leader, Analyst, Technician"
+        ],
+        correct: 2,
+        explanation: "¡Exacto! Los roles principales en Seis Sigma son Master Black Belt, Black Belt y Green Belt, cada uno con diferentes niveles de capacitación y responsabilidad en proyectos de mejora.",
+        hints: [
+          "Los nombres están relacionados con artes marciales...",
+          "Incluyen diferentes niveles de 'Belt' (cinturón).",
+          "Master Black Belt, Black Belt y Green Belt son los roles de Seis Sigma."
+        ]
+      },
+      
+      // Modelos de Excelencia (3 preguntas)
+      {
+        topic: "Modelos Excelencia",
+        question: "¿Cuántos criterios principales tiene el Modelo Baldrige?",
+        options: [
+          "5 criterios",
+          "7 criterios",
+          "9 criterios",
+          "12 criterios"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! El Modelo Baldrige tiene 7 criterios principales: Liderazgo, Estrategia, Clientes, Medición/análisis/conocimiento, Fuerza laboral, Operaciones y Resultados.",
+        hints: [
+          "Es un número impar entre 5 y 10...",
+          "Incluye criterios como Liderazgo, Estrategia, Clientes, etc.",
+          "El Modelo Baldrige tiene exactamente 7 criterios principales."
+        ]
+      },
+      {
+        topic: "Modelos Excelencia",
+        question: "¿Qué significa el acrónimo RADAR en el Modelo EFQM?",
+        options: [
+          "Results, Approaches, Data, Analysis, Review",
+          "Results, Approaches, Deployment, Assessment, Review",
+          "Reliability, Analysis, Deployment, Action, Results",
+          "Resources, Activities, Development, Assessment, Revision"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! RADAR en el Modelo EFQM significa: Results (Resultados), Approaches (Enfoques), Deployment (Despliegue), Assessment (Evaluación) y Review (Revisión).",
+        hints: [
+          "Incluye 'Results' y 'Review' en los extremos...",
+          "Tiene 'Deployment' (despliegue) y 'Assessment' (evaluación).",
+          "Results-Approaches-Deployment-Assessment-Review es el orden correcto."
+        ]
+      },
+      {
+        topic: "Modelos Excelencia",
+        question: "¿Cuál es la característica distintiva del Modelo Iberoamericano de Excelencia?",
+        options: [
+          "Se enfoca únicamente en resultados financieros",
+          "Está adaptado al contexto sociocultural iberoamericano",
+          "Solo se aplica a empresas manufactureras",
+          "Elimina los criterios de liderazgo"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! El Modelo Iberoamericano está inspirado en Baldrige y EFQM, pero adaptado a las realidades socioculturales de Iberoamérica como su principal fortaleza distintiva.",
+        hints: [
+          "Su principal diferencia es la adaptación cultural y regional...",
+          "Está diseñado específicamente para el contexto de Iberoamérica.",
+          "La adaptación sociocultural iberoamericana es su característica distintiva."
+        ]
+      },
+      
+      // Premio Nacional de Calidad México (3 preguntas)
+      {
+        topic: "Premio Nacional MX",
+        question: "¿En qué año fue creado el Premio Nacional de Calidad en México?",
+        options: [
+          "1985",
+          "1989",
+          "1992",
+          "1995"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! El Premio Nacional de Calidad fue creado en 1989 y actualmente es promovido por el Instituto para el Fomento a la Calidad.",
+        hints: [
+          "Es un año de finales de la década de los 80...",
+          "Fue establecido poco antes de los años 90.",
+          "1989 es cuando se creó el Premio Nacional de Calidad mexicano."
+        ]
+      },
+      {
+        topic: "Premio Nacional MX",
+        question: "¿Cuántos componentes tiene el Modelo Mexicano para la Competitividad (MMC)?",
+        options: [
+          "5 componentes",
+          "7 componentes",
+          "9 componentes",
+          "10 componentes"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! El Modelo Mexicano para la Competitividad (MMC) tiene 7 componentes: Liderazgo transformador, Orientación al cliente, Responsabilidad social, etc.",
+        hints: [
+          "Es el mismo número que los criterios Baldrige...",
+          "Incluye liderazgo transformador, orientación al cliente, etc.",
+          "Son 7 componentes en el Modelo Mexicano para la Competitividad."
+        ]
+      },
+      {
+        topic: "Premio Nacional MX",
+        question: "¿Cuál de estas organizaciones NO fue mencionada como ganadora del Premio Nacional de Calidad?",
+        options: [
+          "Universidad de Monterrey (UDEM)",
+          "Cemex México",
+          "Coca-Cola México",
+          "Vitro Envases Norte"
+        ],
+        correct: 2,
+        explanation: "¡Correcto! Coca-Cola México no fue mencionada como ganadora. Las organizaciones mencionadas fueron: Vitro Envases Norte, UDEM, ITESM Campus Monterrey, Seguros Monterrey New York Life y Cemex México.",
+        hints: [
+          "Busca la empresa que no aparece en la lista del material...",
+          "Las mencionadas incluyen universidades, cementeras y vidrieras.",
+          "Coca-Cola México no fue mencionada en los ejemplos de ganadoras."
+        ]
+      }
+    ];
+
+    // Variables del quiz
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedAnswer = -1;
+    let timeLeft = 45;
+    let timer = null;
+    let userAnswers = [];
+    let currentHintLevel = 0;
+    let hintsUsed = 0;
+    
+    // Elementos del DOM
+    const startScreen = document.getElementById('startScreen');
+    const questionScreen = document.getElementById('questionScreen');
+    const resultsScreen = document.getElementById('resultsScreen');
+    const progressFill = document.getElementById('progressFill');
+    const questionNumber = document.getElementById('questionNumber');
+    const topicBadge = document.getElementById('topicBadge');
+    const timerDisplay = document.getElementById('timer');
+    const questionText = document.getElementById('questionText');
+    const optionsGrid = document.getElementById('optionsGrid');
+    const hintSystem = document.getElementById('hintSystem');
+    const feedback = document.getElementById('feedback');
+    const nextBtn = document.getElementById('nextBtn');
+
+    // Iniciar quiz
+    function startQuiz() {
+      startScreen.style.display = 'none';
+      questionScreen.classList.add('active');
+      loadQuestion();
+      startTimer();
+    }
+
+    // Cargar pregunta actual
+    function loadQuestion() {
+      const question = questions[currentQuestionIndex];
+      
+      // Actualizar información
+      questionNumber.textContent = `Pregunta ${currentQuestionIndex + 1}/${questions.length}`;
+      topicBadge.textContent = question.topic;
+      questionText.textContent = question.question;
+      
+      // Actualizar progreso
+      const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+      progressFill.style.width = `${progress}%`;
+      
+      // Cargar opciones
+      optionsGrid.innerHTML = '';
+      question.options.forEach((option, index) => {
+        const optionElement = document.createElement('div');
+        optionElement.className = `option option-${String.fromCharCode(97 + index)}`;
+        optionElement.textContent = option;
+        optionElement.onclick = () => selectOption(index);
+        optionsGrid.appendChild(optionElement);
+      });
+      
+      // Reset estado
+      selectedAnswer = -1;
+      currentHintLevel = 0;
+      feedback.classList.remove('show', 'correct', 'incorrect');
+      hintSystem.classList.remove('show');
+      nextBtn.disabled = true;
+      timeLeft = 45;
+      
+      // Reset hints
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById(`hint${i}`).style.display = 'none';
+      }
+    }
+
+    // Mostrar pista
+    function showHint(level) {
+      const question = questions[currentQuestionIndex];
+      if (level <= question.hints.length) {
+        currentHintLevel = Math.max(currentHintLevel, level);
+        hintsUsed++;
+        
+        // Mostrar el sistema de pistas si no está visible
+        hintSystem.classList.add('show');
+        
+        // Mostrar la pista específica
+        const hintElement = document.getElementById(`hint${level}`);
+        hintElement.style.display = 'block';
+        hintElement.querySelector('.hint-text').textContent = question.hints[level - 1];
+        
+        // Animación de aparición
+        hintElement.style.animation = 'none';
+        hintElement.offsetHeight; // Trigger reflow
+        hintElement.style.animation = 'slideIn 0.5s ease';
+      }
+    }
+
+    // Seleccionar opción
+    function selectOption(index) {
+      if (selectedAnswer !== -1) return; // Ya seleccionó
+      
+      selectedAnswer = index;
+      const question = questions[currentQuestionIndex];
+      const options = optionsGrid.children;
+      
+      // Detener timer
+      clearInterval(timer);
+      
+      // Marcar opción seleccionada
+      options[index].classList.add('selected');
+      
+      setTimeout(() => {
+        // Mostrar respuesta correcta/incorrecta
+        const isCorrect = index === question.correct;
+        
+        if (isCorrect) {
+          options[index].classList.add('correct');
+          score++;
+          showFeedback(true, question.explanation);
+        } else {
+          options[index].classList.add('incorrect');
+          options[question.correct].classList.add('correct');
+          showFeedback(false, question.explanation);
+        }
+        
+        userAnswers.push({
+          question: question.question,
+          selectedIndex: index,
+          correctIndex: question.correct,
+          isCorrect: isCorrect,
+          hintsUsed: currentHintLevel
+        });
+        
+        nextBtn.disabled = false;
+      }, 1000);
+    }
+
+    // Mostrar feedback
+    function showFeedback(isCorrect, message) {
+      const feedbackEmoji = feedback.querySelector('.feedback-emoji');
+      const feedbackText = feedback.querySelector('.feedback-text');
+      const feedbackExplanation = feedback.querySelector('.feedback-explanation');
+      
+      if (isCorrect) {
+        feedback.className = 'feedback show correct';
+        feedbackEmoji.textContent = ['🎉', '🔄', '⚡', '⭐', '🚀'][Math.floor(Math.random() * 5)];
+        feedbackText.textContent = ['¡Correcto!', '¡Excelente!', '¡Genial!', '¡Perfecto!'][Math.floor(Math.random() * 4)];
+      } else {
+        feedback.className = 'feedback show incorrect';
+        feedbackEmoji.textContent = ['🤔', '📚', '💭', '🎯', '📈'][Math.floor(Math.random() * 5)];
+        feedbackText.textContent = ['¡Aprende más!', '¡Casi!', '¡Sigue mejorando!', '¡Continúa creciendo!'][Math.floor(Math.random() * 4)];
+      }
+      
+      feedbackExplanation.textContent = message;
+    }
+
+    // Siguiente pregunta
+    function nextQuestion() {
+      currentQuestionIndex++;
+      
+      if (currentQuestionIndex >= questions.length) {
+        showResults();
+      } else {
+        loadQuestion();
+        startTimer();
+      }
+    }
+
+    // Timer
+    function startTimer() {
+      timerDisplay.textContent = `${timeLeft}s`;
+      
+      timer = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = `${timeLeft}s`;
+        
+        if (timeLeft <= 10) {
+          timerDisplay.style.color = 'var(--danger)';
+          timerDisplay.style.animation = 'timerPulse 0.5s ease-in-out infinite';
+        }
+        
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          if (selectedAnswer === -1) {
+            // Tiempo agotado, mostrar respuesta correcta
+            const question = questions[currentQuestionIndex];
+            const options = optionsGrid.children;
+            
+            options[question.correct].classList.add('correct');
+            showFeedback(false, "⏰ Tiempo agotado. " + question.explanation);
+            
+            userAnswers.push({
+              question: question.question,
+              selectedIndex: -1,
+              correctIndex: question.correct,
+              isCorrect: false,
+              hintsUsed: currentHintLevel
+            });
+            
+            nextBtn.disabled = false;
+          }
+        }
+      }, 1000);
+    }
+
+    // Mostrar resultados
+    function showResults() {
+      questionScreen.classList.remove('active');
+      resultsScreen.classList.add('active');
+      
+      const accuracy = Math.round((score / questions.length) * 100);
+      const incorrect = questions.length - score;
+      
+      document.getElementById('finalScore').textContent = `${score}/${questions.length}`;
+      document.getElementById('correctAnswers').textContent = score;
+      document.getElementById('incorrectAnswers').textContent = incorrect;
+      document.getElementById('accuracy').textContent = `${accuracy}%`;
+      
+      // Determinar nivel y mensaje
+      let level, message;
+      if (accuracy >= 95) {
+        level = "🏆 Sensei Mejora Continua";
+        message = "¡Impresionante! Eres un maestro de la mejora continua. Podrías liderar transformaciones organizacionales 🚀";
+      } else if (accuracy >= 85) {
+        level = "⭐ Kaizen Master";
+        message = "¡Excelente! Dominas las metodologías de mejora continua. Las organizaciones necesitan expertos como tú 🔄";
+      } else if (accuracy >= 75) {
+        level = "🎯 Six Sigma Green Belt";
+        message = "¡Muy bien! Tienes una comprensión sólida de los modelos de calidad. Con más práctica serás un experto 📈";
+      } else if (accuracy >= 65) {
+        level = "📊 Quality Analyst";
+        message = "¡Buen trabajo! Entiendes los conceptos básicos. Sigue estudiando las metodologías para dominarlas 📚";
+      } else {
+        level = "🎓 Improvement Trainee";
+        message = "¡Sigue adelante! Los modelos de mejora continua son complejos, pero con dedicación los dominarás 💪";
+      }
+      
+      document.getElementById('ranking').textContent = level;
+      document.getElementById('resultsMessage').textContent = message;
+      
+      // Mensaje personalizado
+      const personalizedMsg = generatePersonalizedMessage(accuracy);
+      document.getElementById('personalizedMessage').innerHTML = personalizedMsg;
+    }
+
+    // Generar mensaje personalizado
+    function generatePersonalizedMessage(accuracy) {
+      const topicStats = {};
+      questions.forEach((q, i) => {
+        if (!topicStats[q.topic]) {
+          topicStats[q.topic] = { correct: 0, total: 0 };
+        }
+        topicStats[q.topic].total++;
+        if (userAnswers[i] && userAnswers[i].isCorrect) {
+          topicStats[q.topic].correct++;
+        }
+      });
+      
+      let message = '<h4 style="color: var(--primary); margin-bottom: 15px;">🔄 Análisis de Mejora Continua</h4>';
+      
+      // Mejor tema
+      let bestTopic = '', bestScore = 0;
+      let worstTopic = '', worstScore = 100;
+      
+      for (const [topic, stats] of Object.entries(topicStats)) {
+        const percentage = (stats.correct / stats.total) * 100;
+        if (percentage > bestScore) {
+          bestScore = percentage;
+          bestTopic = topic;
+        }
+        if (percentage < worstScore) {
+          worstScore = percentage;
+          worstTopic = topic;
+        }
+      }
+      
+      if (bestScore === 100) {
+        message += `<p>🏆 <strong>Dominio perfecto en:</strong> ${bestTopic}. ¡Podrías entrenar a otros en esta metodología!</p>`;
+      } else if (bestScore >= 75) {
+        message += `<p>⭐ <strong>Tu fortaleza es:</strong> ${bestTopic} (${bestScore.toFixed(0)}%). ¡Excelente comprensión de esta metodología!</p>`;
+      }
+      
+      if (worstScore < 50 && worstTopic !== bestTopic) {
+        message += `<p>📚 <strong>Área de mejora:</strong> ${worstTopic}. ¡Practica más esta metodología para dominar la mejora continua!</p>`;
+      }
+      
+      // Estadísticas de pistas
+      const avgHints = hintsUsed / questions.length;
+      if (avgHints < 0.5) {
+        message += `<p>🧠 <strong>Aprendizaje autónomo:</strong> Usaste pocas pistas. ¡Tienes gran confianza en tu conocimiento!</p>`;
+      } else if (avgHints > 2) {
+        message += `<p>💡 <strong>Aprendizaje guiado:</strong> Las pistas te ayudaron mucho. ¡Excelente uso de los recursos disponibles!</p>`;
+      }
+      
+      // Análisis por precisión
+      if (accuracy >= 85) {
+        message += `<p>🔄 <strong>Mentalidad de mejora:</strong> Tienes las competencias para implementar mejora continua en organizaciones reales.</p>`;
+      } else if (accuracy >= 70) {
+        message += `<p>📈 <strong>En desarrollo:</strong> Estás desarrollando una buena comprensión de las metodologías de calidad. ¡Sigue así!</p>`;
+      }
+      
+      return message;
+    }
+
+    // Funciones adicionales
+    function restartQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      userAnswers = [];
+      hintsUsed = 0;
+      resultsScreen.classList.remove('active');
+      startScreen.style.display = 'block';
+    }
+
+    function showInstructions() {
+      alert(`🔄 INSTRUCCIONES DEL QUIZ UNIDAD II:
+
+📚 20 preguntas sobre Modelos de Gestión de Calidad y Mejora Continua
+⏰ 45 segundos por pregunta
+💡 Sistema de 3 niveles de pistas inteligentes
+📊 Análisis detallado por metodología al final
+🏆 Certificación virtual de competencias
+
+📖 METODOLOGÍAS EVALUADAS:
+• Círculos de Calidad (participación voluntaria, herramientas)
+• Ciclo PDCA (Plan-Do-Check-Act de Deming)
+• Kaizen (mejora continua japonesa, principios)
+• Seis Sigma (DMAIC, roles, 3.4 defectos/millón)
+• Modelos de Excelencia (Baldrige, EFQM, Iberoamericano)
+• Premio Nacional de Calidad México (MMC, componentes)
+
+💡 SISTEMA DE PISTAS:
+• Pista 1: Orientación conceptual general
+• Pista 2: Contexto específico y claves importantes
+• Pista 3: Respuesta prácticamente directa
+
+🔄 ¡Demuestra tu dominio de las metodologías que transforman organizaciones! 🚀`);
+    }
+
+    function reviewAnswers() {
+      let review = "🔄 REVISIÓN DE RESPUESTAS - MEJORA CONTINUA:\n\n";
+      userAnswers.forEach((answer, index) => {
+        const question = questions[index];
+        const status = answer.isCorrect ? "✅" : "❌";
+        const hints = answer.hintsUsed > 0 ? ` (${answer.hintsUsed} pistas)` : "";
+        review += `${status} P${index + 1}: ${question.topic}${hints}\n`;
+        if (answer.selectedIndex === -1) {
+          review += `⏰ Tiempo agotado\n`;
+        } else {
+          review += `Tu respuesta: ${question.options[answer.selectedIndex]}\n`;
+        }
+        if (!answer.isCorrect) {
+          review += `✓ Correcta: ${question.options[answer.correctIndex]}\n`;
+        }
+        review += "\n";
+      });
+      
+      // Crear modal personalizado
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.8); display: flex; align-items: center;
+        justify-content: center; z-index: 1000; padding: 20px;
+      `;
+      
+      modal.innerHTML = `
+        <div style="background: var(--grad-panel); border: 1px solid var(--primary);
+                    border-radius: 20px; padding: 30px; max-width: 600px;
+                    max-height: 80vh; overflow-y: auto; color: var(--ink);">
+          <h3 style="color: var(--primary); margin-bottom: 20px;">🔄 Revisión Mejora Continua</h3>
+          <pre style="white-space: pre-wrap; font-family: 'Inter', sans-serif;
+                      line-height: 1.6;">${review}</pre>
+          <button onclick="this.parentNode.parentNode.remove()" 
+                  style="background: var(--grad-primary); color: white; border: none;
+                         padding: 10px 20px; border-radius: 15px; cursor: pointer;
+                         margin-top: 20px;">Cerrar</button>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+    }
+
+    function shareResults() {
+      const accuracy = Math.round((score / questions.length) * 100);
+      const text = `🔄 ¡Completé el Quiz de Modelos de Gestión de Calidad!
+      
+📊 Resultado: ${score}/${questions.length} (${accuracy}%)
+📚 Metodologías: Círculos Calidad, PDCA, Kaizen, Seis Sigma, Modelos Excelencia
+💡 Con sistema de pistas inteligente y análisis personalizado
+
+${accuracy >= 85 ? '🏆 ¡Soy un experto en mejora continua y modelos de calidad!' : '📈 ¡Desarrollando competencias en metodologías de calidad!'}
+
+#MejoraContinua #PDCA #Kaizen #SeisSigma #CalidadTotal #Baldrige`;
+
+      if (navigator.share) {
+        navigator.share({
+          title: 'Quiz Unidad II - Resultados Mejora Continua',
+          text: text
+        });
+      } else {
+        navigator.clipboard.writeText(text).then(() => {
+          alert('📋 ¡Resultados copiados! Comparte tu dominio de la mejora continua 🔄');
+        });
+      }
+    }
+
+    // Theme toggle
+    function toggleTheme() {
+      const body = document.documentElement;
+      const currentTheme = body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme-improvement', newTheme);
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (questionScreen.classList.contains('active')) {
+        if (e.key >= '1' && e.key <= '4') {
+          const index = parseInt(e.key) - 1;
+          if (index < optionsGrid.children.length) {
+            selectOption(index);
+          }
+        } else if (e.key === 'Enter' && !nextBtn.disabled) {
+          nextQuestion();
+        } else if (e.key === 'h' || e.key === 'H') {
+          // Mostrar siguiente pista disponible
+          if (currentHintLevel < 3) {
+            showHint(currentHintLevel + 1);
+          }
+        }
+      }
+    });
+
+    // Initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      // Load saved theme
+      const savedTheme = localStorage.getItem('theme-improvement') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      
+      // Kaizen Easter egg
+      let kaizenSequence = [];
+      const kaizenCode = [75, 65, 73, 90]; // K-A-I-Z
+      
+      document.addEventListener('keydown', (e) => {
+        kaizenSequence.push(e.keyCode);
+        if (kaizenSequence.length > kaizenCode.length) {
+          kaizenSequence.shift();
+        }
+        
+        if (kaizenSequence.toString() === kaizenCode.toString()) {
+          alert('🔄 ¡Código KAIZ activado! Eres oficialmente un maestro de la mejora continua 🏆🚀');
+          score += 3; // Bonus points
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🌱 Quiz ISO 14000 - Gestión Medio Ambiental</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+    
+    :root {
+      --bg: #f0f9ff;
+      --panel: #ffffff;
+      --ink: #1a1a1a;
+      --muted: #6b7280;
+      --primary: #059669;
+      --secondary: #10b981;
+      --accent: #0d9488;
+      --success: #16a34a;
+      --warn: #f59e0b;
+      --danger: #dc2626;
+      --steel: #475569;
+      --grad-primary: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      --grad-panel: linear-gradient(180deg, #ffffff, #f0fdf4);
+      --shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --panel: #1e293b;
+      --ink: #f1f5f9;
+      --muted: #94a3b8;
+      --grad-panel: linear-gradient(180deg, #1e293b, #0f172a);
+      --shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      font: 16px/1.6 'Inter', system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+    
+    /* Patrón de fondo ambiental */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(90deg, rgba(5, 150, 105, 0.02) 1px, transparent 1px),
+        linear-gradient(rgba(16, 185, 129, 0.02) 1px, transparent 1px),
+        radial-gradient(circle at 25% 75%, rgba(5, 150, 105, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 75% 25%, rgba(13, 148, 136, 0.05) 0%, transparent 50%);
+      background-size: 40px 40px, 40px 40px, 200px 200px, 200px 200px;
+      opacity: 0.4;
+      animation: ecoFlow 30s linear infinite;
+      z-index: 0;
+    }
+    
+    @keyframes ecoFlow {
+      from { transform: translate(0, 0); }
+      to { transform: translate(-40px, -40px); }
+    }
+    
+    /* Contenedor principal */
+    .quiz-container {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    /* Header del quiz */
+    .quiz-header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 30px;
+      background: var(--grad-panel);
+      border: 1px solid rgba(5, 150, 105, 0.2);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .quiz-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--grad-primary);
+      border-radius: 24px 24px 0 0;
+    }
+    
+    .quiz-title {
+      font: 900 clamp(2rem, 6vw, 3.5rem)/1.1 'Inter', sans-serif;
+      background: var(--grad-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 15px;
+      animation: titleGlow 3s ease-in-out infinite alternate;
+    }
+    
+    @keyframes titleGlow {
+      from { filter: drop-shadow(0 0 20px rgba(5, 150, 105, 0.3)); }
+      to { filter: drop-shadow(0 0 30px rgba(16, 185, 129, 0.4)); }
+    }
+    
+    .quiz-subtitle {
+      font: 600 1.3rem 'Inter', sans-serif;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    
+    /* Stats del quiz */
+    .quiz-stats {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    
+    .stat-box {
+      background: var(--panel);
+      border: 1px solid rgba(5, 150, 105, 0.2);
+      border-radius: 16px;
+      padding: 15px 20px;
+      text-align: center;
+      min-width: 120px;
+      box-shadow: var(--shadow);
+    }
+    
+    .stat-number {
+      font: 700 1.8rem 'JetBrains Mono', monospace;
+      color: var(--primary);
+      display: block;
+      text-shadow: 0 0 15px rgba(5, 150, 105, 0.5);
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+    }
+    
+    /* Pantalla de pregunta */
+    .question-screen {
+      display: none;
+      background: var(--grad-panel);
+      border: 1px solid rgba(5, 150, 105, 0.2);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      animation: slideIn 0.5s ease;
+    }
+    
+    .question-screen.active {
+      display: block;
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    
+    .question-screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--grad-primary);
+      border-radius: 24px 24px 0 0;
+    }
+    
+    /* Barra de progreso */
+    .progress-bar {
+      background: rgba(0,0,0,0.1);
+      border-radius: 999px;
+      height: 12px;
+      margin-bottom: 30px;
+      overflow: hidden;
+      border: 1px solid rgba(5, 150, 105, 0.2);
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--grad-primary);
+      width: 0;
+      transition: width 0.5s ease;
+      border-radius: inherit;
+      position: relative;
+    }
+    
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: -20px;
+      width: 20px;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
+      animation: progressGlow 2s ease-in-out infinite;
+    }
+    
+    @keyframes progressGlow {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 1; }
+    }
+    
+    /* Información de la pregunta */
+    .question-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .question-number {
+      font: 700 1.1rem 'JetBrains Mono', monospace;
+      color: var(--primary);
+      background: rgba(5, 150, 105, 0.1);
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(5, 150, 105, 0.3);
+    }
+    
+    .topic-badge {
+      font: 600 0.9rem 'JetBrains Mono', monospace;
+      color: var(--secondary);
+      background: rgba(16, 185, 129, 0.1);
+      padding: 6px 12px;
+      border-radius: 15px;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .timer {
+      font: 700 1.2rem 'JetBrains Mono', monospace;
+      color: var(--warn);
+      background: rgba(245, 158, 11, 0.1);
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      animation: timerPulse 1s ease-in-out infinite;
+    }
+    
+    @keyframes timerPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    /* Pregunta */
+    .question-text {
+      font: 600 clamp(1.3rem, 3vw, 1.8rem)/1.4 'Inter', sans-serif;
+      color: var(--ink);
+      text-align: center;
+      margin-bottom: 35px;
+      padding: 20px;
+      background: rgba(5, 150, 105, 0.05);
+      border-radius: 16px;
+      border-left: 4px solid var(--primary);
+    }
+    
+    /* Opciones de respuesta */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .option {
+      background: var(--panel);
+      border: 2px solid rgba(5, 150, 105, 0.2);
+      border-radius: 16px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      font: 600 1.1rem 'Inter', sans-serif;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow);
+    }
+    
+    .option::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(5, 150, 105, 0.1), transparent);
+      transition: 0.5s;
+    }
+    
+    .option:hover {
+      transform: translateY(-5px) scale(1.02);
+      border-color: var(--primary);
+      box-shadow: 0 15px 40px rgba(5, 150, 105, 0.3);
+      background: rgba(5, 150, 105, 0.05);
+    }
+    
+    .option:hover::before {
+      left: 100%;
+    }
+    
+    .option.selected {
+      border-color: var(--warn);
+      background: rgba(245, 158, 11, 0.1);
+      animation: optionSelected 0.5s ease;
+    }
+    
+    .option.correct {
+      border-color: var(--success);
+      background: rgba(22, 163, 74, 0.1);
+      animation: correctAnswer 0.6s ease;
+    }
+    
+    .option.incorrect {
+      border-color: var(--danger);
+      background: rgba(220, 38, 38, 0.1);
+      animation: incorrectAnswer 0.6s ease;
+    }
+    
+    @keyframes optionSelected {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes correctAnswer {
+      0% { transform: scale(1); }
+      25% { transform: scale(1.1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes incorrectAnswer {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      50% { transform: translateX(10px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+    
+    /* Colores neutrales para opciones */
+    .option.option-a { background: linear-gradient(145deg, #f8f9fa, #ffffff); border-color: #6c757d; }
+    .option.option-b { background: linear-gradient(145deg, #f1f3f4, #ffffff); border-color: #6c757d; }
+    .option.option-c { background: linear-gradient(145deg, #f3f4f6, #ffffff); border-color: #6c757d; }
+    .option.option-d { background: linear-gradient(145deg, #f9fafb, #ffffff); border-color: #6c757d; }
+    
+    .option.option-a:hover { background: linear-gradient(145deg, #e9ecef, #f8f9fa); border-color: var(--primary); }
+    .option.option-b:hover { background: linear-gradient(145deg, #e9ecef, #f8f9fa); border-color: var(--primary); }
+    .option.option-c:hover { background: linear-gradient(145deg, #e9ecef, #f8f9fa); border-color: var(--primary); }
+    .option.option-d:hover { background: linear-gradient(145deg, #e9ecef, #f8f9fa); border-color: var(--primary); }
+    
+    /* Sistema de pistas */
+    .hint-system {
+      background: var(--panel);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+      display: none;
+      animation: hintSlide 0.5s ease;
+      box-shadow: var(--shadow);
+    }
+    
+    .hint-system.show {
+      display: block;
+    }
+    
+    @keyframes hintSlide {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .hint-level {
+      margin-bottom: 15px;
+      padding: 10px;
+      background: rgba(245, 158, 11, 0.1);
+      border-radius: 8px;
+      border-left: 3px solid var(--warn);
+    }
+    
+    .hint-title {
+      font-weight: 700;
+      color: var(--warn);
+      margin-bottom: 5px;
+    }
+    
+    .hint-text {
+      color: var(--ink);
+      line-height: 1.4;
+    }
+    
+    /* Feedback */
+    .feedback {
+      background: var(--panel);
+      border: 1px solid rgba(5, 150, 105, 0.3);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+      display: none;
+      animation: feedbackSlide 0.5s ease;
+      box-shadow: var(--shadow);
+    }
+    
+    .feedback.show {
+      display: block;
+    }
+    
+    @keyframes feedbackSlide {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .feedback.correct {
+      border-color: var(--success);
+      background: rgba(22, 163, 74, 0.05);
+    }
+    
+    .feedback.incorrect {
+      border-color: var(--danger);
+      background: rgba(220, 38, 38, 0.05);
+    }
+    
+    .feedback-emoji {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      display: block;
+      animation: bounce 0.6s ease;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .feedback-text {
+      font: 600 1.2rem 'Inter', sans-serif;
+      margin-bottom: 10px;
+    }
+    
+    .feedback-explanation {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    
+    /* Botones */
+    .btn {
+      background: var(--grad-primary);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font: 600 1.1rem 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      box-shadow: 0 10px 30px rgba(5, 150, 105, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(5, 150, 105, 0.4);
+    }
+    
+    .btn:hover::before {
+      left: 100%;
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(145deg, #6c757d, #5a6268);
+      box-shadow: 0 10px 30px rgba(108, 117, 125, 0.3);
+    }
+    
+    .btn-secondary:hover {
+      box-shadow: 0 15px 40px rgba(108, 117, 125, 0.4);
+    }
+    
+    .btn-hint {
+      background: linear-gradient(145deg, #f59e0b, #e0a800);
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      margin: 0 10px;
+    }
+    
+    /* Pantalla de resultados */
+    .results-screen {
+      display: none;
+      text-align: center;
+      background: var(--grad-panel);
+      border: 1px solid rgba(5, 150, 105, 0.2);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .results-screen.active {
+      display: block;
+      animation: slideIn 0.5s ease;
+    }
+    
+    .results-screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--grad-primary);
+      border-radius: 24px 24px 0 0;
+    }
+    
+    .final-score {
+      font: 900 4rem 'JetBrains Mono', monospace;
+      background: var(--grad-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 20px 0;
+      animation: scoreGlow 2s ease-in-out infinite alternate;
+    }
+    
+    @keyframes scoreGlow {
+      from { filter: drop-shadow(0 0 20px rgba(5, 150, 105, 0.5)); }
+      to { filter: drop-shadow(0 0 40px rgba(16, 185, 129, 0.7)); }
+    }
+    
+    .results-message {
+      font: 600 1.5rem 'Inter', sans-serif;
+      color: var(--ink);
+      margin: 20px 0;
+    }
+    
+    .results-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+    
+    /* Botones de acción */
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+    
+    .hint-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 15px 0;
+      flex-wrap: wrap;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .quiz-container {
+        padding: 10px;
+      }
+      
+      .quiz-header, .question-screen, .results-screen {
+        padding: 20px;
+        border-radius: 16px;
+      }
+      
+      .options-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      
+      .option {
+        padding: 15px;
+        min-height: 60px;
+        font-size: 1rem;
+      }
+      
+      .quiz-stats {
+        gap: 15px;
+      }
+      
+      .stat-box {
+        min-width: 100px;
+        padding: 10px 15px;
+      }
+      
+      .question-info {
+        justify-content: center;
+        text-align: center;
+      }
+      
+      .action-buttons, .hint-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .btn {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+    
+    /* Theme toggle */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--panel);
+      border: 1px solid rgba(5, 150, 105, 0.2);
+      border-radius: 50px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink);
+      z-index: 100;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+    }
+    
+    .theme-toggle:hover {
+      background: var(--primary);
+      color: white;
+    }
+    
+    /* Certificado EMS styling */
+    .ems-badge {
+      display: inline-block;
+      background: linear-gradient(145deg, #059669, #047857);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-left: 10px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="theme-toggle" onclick="toggleTheme()">🌓 Tema</div>
+  
+  <div class="quiz-container">
+    <!-- Pantalla de inicio -->
+    <div class="quiz-header" id="startScreen">
+      <h1 class="quiz-title">🌱 Quiz ISO 14000</h1>
+      <p class="quiz-subtitle">Unidad V - Sistema de Gestión Medio Ambiental (SGMA) <span class="ems-badge">ISO 14001:2015</span></p>
+      
+      <div class="quiz-stats">
+        <div class="stat-box">
+          <span class="stat-number">20</span>
+          <div class="stat-label">Preguntas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">4</span>
+          <div class="stat-label">Temas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">45s</span>
+          <div class="stat-label">Por pregunta</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">🎯</span>
+          <div class="stat-label">Con pistas</div>
+        </div>
+      </div>
+      
+      <div style="margin: 30px 0;">
+        <p style="color: var(--muted); font-size: 1.1rem; margin-bottom: 20px;">
+          ¿Estás listo para demostrar tu capacidad de implementar sistemas ambientales sostenibles? 🌍
+        </p>
+        <p style="color: var(--steel); font-size: 0.95rem;">
+          <strong>Temas:</strong> Normas 14000/14001/14004 • SGMA • Criterios de Implementación • Directrices y Técnicas • ODS y Sostenibilidad
+        </p>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn" onclick="startQuiz()">🚀 Iniciar Quiz</button>
+        <button class="btn btn-secondary" onclick="showInstructions()">📋 Instrucciones</button>
+      </div>
+    </div>
+    
+    <!-- Pantalla de pregunta -->
+    <div class="question-screen" id="questionScreen">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      
+      <div class="question-info">
+        <div class="question-number" id="questionNumber">Pregunta 1/20</div>
+        <div class="topic-badge" id="topicBadge">Normas 14000</div>
+        <div class="timer" id="timer">45s</div>
+      </div>
+      
+      <div class="question-text" id="questionText">
+        ¿Cuál es el propósito principal de ISO 14001:2015?
+      </div>
+      
+      <div class="options-grid" id="optionsGrid">
+        <div class="option option-a" onclick="selectOption(0)">
+          Proporcionar fundamentos y vocabulario ambiental
+        </div>
+        <div class="option option-b" onclick="selectOption(1)">
+          Establecer requisitos para sistemas de gestión ambiental
+        </div>
+        <div class="option option-c" onclick="selectOption(2)">
+          Ofrecer directrices generales de implementación
+        </div>
+        <div class="option option-d" onclick="selectOption(3)">
+          Definir metodologías de evaluación del desempeño
+        </div>
+      </div>
+      
+      <div class="hint-system" id="hintSystem">
+        <div class="hint-level" id="hint1" style="display:none;">
+          <div class="hint-title">💡 Pista Nivel 1</div>
+          <div class="hint-text">Piensa en cuál norma es la certificable de la familia 14000...</div>
+        </div>
+        <div class="hint-level" id="hint2" style="display:none;">
+          <div class="hint-title">🎯 Pista Nivel 2</div>
+          <div class="hint-text">ISO 14001 es la única norma certificable, mientras 14004 son directrices.</div>
+        </div>
+        <div class="hint-level" id="hint3" style="display:none;">
+          <div class="hint-title">🔑 Pista Nivel 3</div>
+          <div class="hint-text">ISO 14001:2015 especifica los 'requisitos' para implementar un SGA certificable.</div>
+        </div>
+      </div>
+      
+      <div class="hint-buttons">
+        <button class="btn btn-hint" onclick="showHint(1)">💡 Pista 1</button>
+        <button class="btn btn-hint" onclick="showHint(2)">🎯 Pista 2</button>
+        <button class="btn btn-hint" onclick="showHint(3)">🔑 Pista 3</button>
+      </div>
+      
+      <div class="feedback" id="feedback">
+        <span class="feedback-emoji">🌱</span>
+        <div class="feedback-text">¡Correcto!</div>
+        <div class="feedback-explanation">Exacto, ISO 14001:2015 establece los requisitos para sistemas de gestión ambiental certificables.</div>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Siguiente Pregunta</button>
+      </div>
+    </div>
+    
+    <!-- Pantalla de resultados -->
+    <div class="results-screen" id="resultsScreen">
+      <h2 style="color: var(--primary); font-family: 'Inter', sans-serif; margin-bottom: 20px;">
+        🏆 ¡Quiz Completado!
+      </h2>
+      
+      <div class="final-score" id="finalScore">17/20</div>
+      
+      <div class="results-message" id="resultsMessage">
+        ¡Excelente! Eres un experto en gestión ambiental 🌍
+      </div>
+      
+      <div class="results-details">
+        <div class="stat-box">
+          <span class="stat-number" id="correctAnswers">17</span>
+          <div class="stat-label">Correctas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="incorrectAnswers">3</span>
+          <div class="stat-label">Incorrectas</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="accuracy">85%</span>
+          <div class="stat-label">Precisión</div>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number" id="ranking">EMS Manager</span>
+          <div class="stat-label">Nivel</div>
+        </div>
+      </div>
+      
+      <div style="margin: 30px 0; padding: 20px; background: rgba(5, 150, 105, 0.1); border-radius: 16px; border: 1px solid rgba(5, 150, 105, 0.3);">
+        <div id="personalizedMessage"></div>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn" onclick="restartQuiz()">🔄 Reintentar</button>
+        <button class="btn btn-secondary" onclick="reviewAnswers()">📊 Revisar Respuestas</button>
+        <button class="btn btn-secondary" onclick="shareResults()">📤 Compartir</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Base de datos de preguntas
+    const questions = [
+      // Definición de las normas 14000, 14001, 14004 (5 preguntas)
+      {
+        topic: "Normas 14000",
+        question: "¿Cuál es el propósito principal de ISO 14001:2015?",
+        options: [
+          "Proporcionar fundamentos y vocabulario ambiental",
+          "Establecer requisitos para sistemas de gestión ambiental",
+          "Ofrecer directrices generales de implementación",
+          "Definir metodologías de evaluación del desempeño"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! ISO 14001:2015 especifica los requisitos para un sistema de gestión ambiental certificable, es la única norma certificable de la familia.",
+        hints: [
+          "Piensa en cuál norma es la certificable de la familia 14000...",
+          "ISO 14001 es la única norma certificable, mientras 14004 son directrices.",
+          "ISO 14001:2015 especifica los 'requisitos' para implementar un SGA certificable."
+        ]
+      },
+      {
+        topic: "Normas 14000",
+        question: "Según el material, ¿qué estructura sigue ISO 14001:2015?",
+        options: [
+          "Estructura tradicional de ISO",
+          "Estructura de Alto Nivel (HLS)",
+          "Estructura específica para medio ambiente",
+          "Estructura basada en PDCA únicamente"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! ISO 14001:2015 sigue la Estructura de Alto Nivel (HLS), facilitando la integración con otras normas como ISO 9001 e ISO 45001.",
+        hints: [
+          "Es la misma estructura que usan las normas modernas de gestión...",
+          "HLS facilita la integración entre diferentes sistemas de gestión.",
+          "Estructura de Alto Nivel permite combinar ISO 14001 con ISO 9001 y 45001."
+        ]
+      },
+      {
+        topic: "Normas 14000",
+        question: "¿Cuál de estos períodos se caracteriza por el enfoque en 'economía circular y regeneratividad' según la tabla de evolución?",
+        options: [
+          "1996-2005",
+          "2006-2015",
+          "2016-2024",
+          "2025-2030"
+        ],
+        correct: 3,
+        explanation: "¡Correcto! El período 2025-2030 se caracteriza por economía circular, regeneratividad y tecnologías como gemelos digitales según la evolución presentada.",
+        hints: [
+          "Es el período futuro mencionado en la tabla...",
+          "Este período incluye tecnologías muy avanzadas como gemelos digitales.",
+          "2025-2030 es la proyección futura con economía circular."
+        ]
+      },
+      {
+        topic: "Normas 14000",
+        question: "¿Qué significa 'aspecto ambiental' según ISO 14001?",
+        options: [
+          "Cambio en el medio ambiente, adverso o beneficioso",
+          "Elemento que puede interactuar con el medio ambiente",
+          "Impacto negativo sobre el ecosistema",
+          "Requisito legal ambiental específico"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! Aspecto ambiental es 'elemento de las actividades, productos o servicios que puede interactuar con el medio ambiente' según ISO 14001.",
+        hints: [
+          "No es el cambio mismo, sino el 'elemento' que puede causarlo...",
+          "Se refiere a actividades, productos o servicios de la organización.",
+          "Es lo que 'puede interactuar' con el medio ambiente."
+        ]
+      },
+      {
+        topic: "Normas 14000",
+        question: "Según el caso de Unilever, ¿cuál fue su objetivo cuantificado para 2030?",
+        options: [
+          "30% reducción en huella ambiental",
+          "50% reducción en huella ambiental",
+          "65% reducción en CO2",
+          "100% eliminación de residuos"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! Unilever estableció como objetivo 50% reducción en huella ambiental para 2030 en su Sustainable Living Plan.",
+        hints: [
+          "Es un porcentaje de reducción significativo pero realista...",
+          "El objetivo específico para 2030 mencionado en el caso es del 50%.",
+          "50% de reducción es el objetivo específico para la huella ambiental."
+        ]
+      },
+      
+      // Sistema de Gestión Medio Ambiental (SGMA) (5 preguntas)
+      {
+        topic: "SGMA",
+        question: "¿Cómo se define un Sistema de Gestión Ambiental según ISO 14001:2015?",
+        options: [
+          "Conjunto de procedimientos para cumplir regulaciones",
+          "Parte del sistema de gestión para desarrollar política ambiental",
+          "Software especializado en monitoreo ambiental",
+          "Departamento encargado de temas ambientales"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! SGA es 'parte del sistema de gestión empleada para desarrollar e implementar política ambiental y gestionar aspectos ambientales'.",
+        hints: [
+          "No es solo procedimientos o un departamento, es más integral...",
+          "Es 'parte del sistema de gestión' de la organización completa.",
+          "Se enfoca en desarrollar 'política ambiental' y gestionar aspectos."
+        ]
+      },
+      {
+        topic: "SGMA",
+        question: "¿Cuál es una característica de la 'perspectiva de ciclo de vida' en ISO 14001?",
+        options: [
+          "Solo considerar la fase de producción",
+          "Controlar/influir en todas las etapas del ciclo",
+          "Enfocarse únicamente en el fin de vida útil",
+          "Limitar el análisis a materias primas"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! La perspectiva de ciclo de vida requiere considerar control/influencia en todas las etapas del ciclo de vida del producto o servicio.",
+        hints: [
+          "La palabra clave es 'ciclo' completo, no solo una etapa...",
+          "ISO 14001 requiere considerar 'todas las etapas' del ciclo de vida.",
+          "Se trata de controlar o influir en todo el ciclo, no solo partes."
+        ]
+      },
+      {
+        topic: "SGMA",
+        question: "¿Qué incluye el concepto de 'Scope 3 emissions' según la terminología emergente?",
+        options: [
+          "Emisiones directas de la organización",
+          "Emisiones de electricidad comprada",
+          "Emisiones indirectas en cadena de valor",
+          "Emisiones de transporte interno únicamente"
+        ],
+        correct: 2,
+        explanation: "¡Correcto! Scope 3 emissions son 'emisiones indirectas en cadena de valor', que incluyen proveedores, distribución, uso del producto, etc.",
+        hints: [
+          "Scope 1 son directas, Scope 2 son de electricidad, Scope 3 son...",
+          "Son las emisiones más difíciles de medir porque están en la 'cadena de valor'.",
+          "Incluye proveedores, distribuidores, clientes - toda la cadena."
+        ]
+      },
+      {
+        topic: "SGMA",
+        question: "¿Cuál es una tecnología mencionada para 'gestión inteligente de agua'?",
+        options: [
+          "Medición manual mensual",
+          "Sensores de flujo en tiempo real",
+          "Reportes trimestrales de consumo",
+          "Inspecciones visuales regulares"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! Los sensores de flujo permiten medición en tiempo real del consumo de agua como parte de la gestión inteligente.",
+        hints: [
+          "La palabra clave es 'inteligente', lo que implica tecnología avanzada...",
+          "Se trata de monitoreo 'en tiempo real', no mediciones periódicas.",
+          "Los sensores IoT son fundamentales para gestión inteligente."
+        ]
+      },
+      {
+        topic: "SGMA",
+        question: "¿Qué representa 'Nature-positive impact' en la terminología emergente?",
+        options: [
+          "Impacto neutro sobre la naturaleza",
+          "Reducción mínima de impactos negativos",
+          "Actividades que generan beneficio neto para la naturaleza",
+          "Compensación de daños ambientales causados"
+        ],
+        correct: 2,
+        explanation: "¡Correcto! Nature-positive impact son 'actividades que generan beneficio neto para la naturaleza', más allá de solo reducir daño.",
+        hints: [
+          "No es neutro ni mínimo, es 'positivo'...",
+          "Va más allá de compensar, genera 'beneficio neto'.",
+          "Es sobre crear beneficio positivo real para la naturaleza."
+        ]
+      },
+      
+      // Criterios necesarios para cumplir con un SGMA (5 preguntas)
+      {
+        topic: "Criterios SGMA",
+        question: "¿Qué requiere la Cláusula 5 (Liderazgo) de ISO 14001:2015?",
+        options: [
+          "Solo designar un coordinador ambiental",
+          "CEO y C-Suite con responsabilidad ambiental explícita",
+          "Contratar consultores externos especializados",
+          "Implementar software de gestión ambiental"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! La Cláusula 5 requiere CEO y C-Suite con responsabilidad ambiental explícita, no solo designar coordinadores.",
+        hints: [
+          "No es solo designar a alguien más, es responsabilidad de la alta dirección...",
+          "CEO y C-Suite deben tener responsabilidad 'explícita' y directa.",
+          "El liderazgo debe venir desde el nivel más alto de la organización."
+        ]
+      },
+      {
+        topic: "Criterios SGMA",
+        question: "¿Qué metodología se menciona para identificar aspectos ambientales en la Cláusula 6?",
+        options: [
+          "Análisis FODA ambiental",
+          "Metodologías de LCA (Life Cycle Assessment)",
+          "Matrices de riesgo tradicionales",
+          "Auditorías internas únicamente"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! La Cláusula 6 menciona el uso de metodologías de LCA (Life Cycle Assessment) para identificación de aspectos ambientales.",
+        hints: [
+          "LCA es específico para análisis ambiental de ciclo de vida...",
+          "Life Cycle Assessment es la metodología específica mencionada.",
+          "LCA permite identificar aspectos en todas las etapas del ciclo de vida."
+        ]
+      },
+      {
+        topic: "Criterios SGMA",
+        question: "¿Con qué deben estar alineados los objetivos ambientales según el material?",
+        options: [
+          "Solo con regulaciones locales",
+          "KPIs SMART alineados con ODS y targets corporativos",
+          "Únicamente con reducción de costos",
+          "Solo con certificaciones ISO"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! Los objetivos deben ser KPIs SMART alineados con ODS (Objetivos de Desarrollo Sostenible) y targets corporativos.",
+        hints: [
+          "No es solo cumplimiento local, es más estratégico y global...",
+          "SMART + ODS indican alineación con sostenibilidad global.",
+          "Los ODS son los Objetivos de Desarrollo Sostenible de la ONU."
+        ]
+      },
+      {
+        topic: "Criterios SGMA",
+        question: "¿Qué tipos de riesgos climáticos debe integrar el 'pensamiento basado en riesgos'?",
+        options: [
+          "Solo riesgos regulatorios",
+          "Solo riesgos de imagen corporativa",
+          "Riesgos climáticos físicos y de transición",
+          "Solo riesgos operacionales básicos"
+        ],
+        correct: 2,
+        explanation: "¡Exacto! Debe integrar riesgos climáticos físicos (eventos extremos) y de transición (cambios hacia economía baja en carbono).",
+        hints: [
+          "Son dos tipos específicos de riesgos climáticos...",
+          "Físicos se refiere a eventos climáticos reales, transición a cambios económicos.",
+          "Ambos tipos de riesgos climáticos deben considerarse según el material."
+        ]
+      },
+      {
+        topic: "Criterios SGMA",
+        question: "¿Cuáles son las 4 fases de implementación mencionadas en ISO 14004?",
+        options: [
+          "Planificar, Hacer, Verificar, Actuar",
+          "Compromiso, Planificación, Implementación, Verificación",
+          "Diagnóstico, Diseño, Ejecución, Control",
+          "Inicio, Desarrollo, Madurez, Optimización"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! Las 4 fases son: Compromiso y preparación, Planificación estratégica, Implementación operacional, Verificación y mejora.",
+        hints: [
+          "Empiezan con 'Compromiso' y terminan con 'Verificación'...",
+          "Son más específicas que el PDCA tradicional.",
+          "La secuencia es: Compromiso → Planificación → Implementación → Verificación."
+        ]
+      },
+      
+      // Directrices generales sobre principios, sistemas y técnicas de apoyo (5 preguntas)
+      {
+        topic: "Directrices Técnicas",
+        question: "¿Cuál es una plataforma EHS mencionada con capacidades de IA?",
+        options: [
+          "Microsoft Excel con macros ambientales",
+          "Enablon con análisis predictivo",
+          "Google Sheets para ambiente",
+          "PowerPoint para reportes"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! Enablon (Wolters Kluwer) se menciona específicamente con capacidades de AI para análisis predictivo de riesgos ambientales.",
+        hints: [
+          "Enablon es una plataforma especializada en EHS...",
+          "Tiene capacidades específicas de 'análisis predictivo' con IA.",
+          "Enablon (Wolters Kluwer) es la plataforma EHS mencionada con IA."
+        ]
+      },
+      {
+        topic: "Directrices Técnicas",
+        question: "¿Qué framework se menciona para disclosure de riesgos climáticos?",
+        options: [
+          "GRI Standards",
+          "TCFD (Task Force on Climate-related Financial Disclosures)",
+          "CDP Carbon Disclosure",
+          "UN Global Compact"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! TCFD (Task Force on Climate-related Financial Disclosures) es el marco específico para disclosure de riesgos climáticos.",
+        hints: [
+          "TCFD se enfoca específicamente en 'riesgos climáticos'...",
+          "Es el Task Force para disclosures financieros relacionados con clima.",
+          "TCFD es específicamente para riesgos climáticos, no solo sostenibilidad general."
+        ]
+      },
+      {
+        topic: "Directrices Técnicas",
+        question: "¿Cuál es el costo aproximado de Sphera SpheraCloud mencionado?",
+        options: [
+          "$100-200/usuario/mes",
+          "$200-400/usuario/mes",
+          "$400-600/usuario/mes",
+          "$50-100/usuario/mes"
+        ],
+        correct: 1,
+        explanation: "¡Correcto! Sphera SpheraCloud tiene un precio estimado de $200-400/usuario/mes según la información proporcionada.",
+        hints: [
+          "Es una plataforma premium, más cara que herramientas básicas...",
+          "El rango mencionado está entre 200 y 400 dólares.",
+          "SpheraCloud está en el rango de $200-400 por usuario mensual."
+        ]
+      },
+      {
+        topic: "Directrices Técnicas",
+        question: "¿Qué tecnología se usa en el ejemplo de smart contract para trazabilidad?",
+        options: [
+          "Python para análisis de datos",
+          "Solidity para blockchain",
+          "JavaScript para web apps",
+          "SQL para bases de datos"
+        ],
+        correct: 1,
+        explanation: "¡Exacto! El ejemplo de smart contract para trazabilidad de carbono está escrito en Solidity para blockchain.",
+        hints: [
+          "Los smart contracts se escriben en un lenguaje específico para blockchain...",
+          "Solidity es el lenguaje estándar para contratos inteligentes en blockchain.",
+          "El ejemplo de código usa Solidity (pragma solidity ^0.8.0)."
+        ]
+      },
+      {
+        topic: "Directrices Técnicas",
+        question: "¿Cuál es uno de los ODS primarios alineados con 'Aspectos ambientales' según la tabla?",
+        options: [
+          "ODS 6 (Agua limpia)",
+          "ODS 12 (Consumo responsable)",
+          "ODS 13 (Acción climática)",
+          "ODS 15 (Vida terrestre)"
+        ],
+        correct: 2,
+        explanation: "¡Correcto! Según la Tabla 15, los aspectos ambientales (6.1) se alinean principalmente con ODS 13 (Acción climática).",
+        hints: [
+          "Los aspectos ambientales están más relacionados con clima que con agua específicamente...",
+          "ODS 13 es específicamente sobre 'Acción climática'.",
+          "La tabla muestra ODS 13 como primario para aspectos ambientales."
+        ]
+      }
+    ];
+
+    // Variables del quiz
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedAnswer = -1;
+    let timeLeft = 45;
+    let timer = null;
+    let userAnswers = [];
+    let currentHintLevel = 0;
+    let hintsUsed = 0;
+    
+    // Elementos del DOM
+    const startScreen = document.getElementById('startScreen');
+    const questionScreen = document.getElementById('questionScreen');
+    const resultsScreen = document.getElementById('resultsScreen');
+    const progressFill = document.getElementById('progressFill');
+    const questionNumber = document.getElementById('questionNumber');
+    const topicBadge = document.getElementById('topicBadge');
+    const timerDisplay = document.getElementById('timer');
+    const questionText = document.getElementById('questionText');
+    const optionsGrid = document.getElementById('optionsGrid');
+    const hintSystem = document.getElementById('hintSystem');
+    const feedback = document.getElementById('feedback');
+    const nextBtn = document.getElementById('nextBtn');
+
+    // Iniciar quiz
+    function startQuiz() {
+      startScreen.style.display = 'none';
+      questionScreen.classList.add('active');
+      loadQuestion();
+      startTimer();
+    }
+
+    // Cargar pregunta actual
+    function loadQuestion() {
+      const question = questions[currentQuestionIndex];
+      
+      // Actualizar información
+      questionNumber.textContent = `Pregunta ${currentQuestionIndex + 1}/${questions.length}`;
+      topicBadge.textContent = question.topic;
+      questionText.textContent = question.question;
+      
+      // Actualizar progreso
+      const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+      progressFill.style.width = `${progress}%`;
+      
+      // Cargar opciones
+      optionsGrid.innerHTML = '';
+      question.options.forEach((option, index) => {
+        const optionElement = document.createElement('div');
+        optionElement.className = `option option-${String.fromCharCode(97 + index)}`;
+        optionElement.textContent = option;
+        optionElement.onclick = () => selectOption(index);
+        optionsGrid.appendChild(optionElement);
+      });
+      
+      // Reset estado
+      selectedAnswer = -1;
+      currentHintLevel = 0;
+      feedback.classList.remove('show', 'correct', 'incorrect');
+      hintSystem.classList.remove('show');
+      nextBtn.disabled = true;
+      timeLeft = 45;
+      
+      // Reset hints
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById(`hint${i}`).style.display = 'none';
+      }
+    }
+
+    // Mostrar pista
+    function showHint(level) {
+      const question = questions[currentQuestionIndex];
+      if (level <= question.hints.length) {
+        currentHintLevel = Math.max(currentHintLevel, level);
+        hintsUsed++;
+        
+        // Mostrar el sistema de pistas si no está visible
+        hintSystem.classList.add('show');
+        
+        // Mostrar la pista específica
+        const hintElement = document.getElementById(`hint${level}`);
+        hintElement.style.display = 'block';
+        hintElement.querySelector('.hint-text').textContent = question.hints[level - 1];
+        
+        // Animación de aparición
+        hintElement.style.animation = 'none';
+        hintElement.offsetHeight; // Trigger reflow
+        hintElement.style.animation = 'slideIn 0.5s ease';
+      }
+    }
+
+    // Seleccionar opción
+    function selectOption(index) {
+      if (selectedAnswer !== -1) return; // Ya seleccionó
+      
+      selectedAnswer = index;
+      const question = questions[currentQuestionIndex];
+      const options = optionsGrid.children;
+      
+      // Detener timer
+      clearInterval(timer);
+      
+      // Marcar opción seleccionada
+      options[index].classList.add('selected');
+      
+      setTimeout(() => {
+        // Mostrar respuesta correcta/incorrecta
+        const isCorrect = index === question.correct;
+        
+        if (isCorrect) {
+          options[index].classList.add('correct');
+          score++;
+          showFeedback(true, question.explanation);
+        } else {
+          options[index].classList.add('incorrect');
+          options[question.correct].classList.add('correct');
+          showFeedback(false, question.explanation);
+        }
+        
+        userAnswers.push({
+          question: question.question,
+          selectedIndex: index,
+          correctIndex: question.correct,
+          isCorrect: isCorrect,
+          hintsUsed: currentHintLevel
+        });
+        
+        nextBtn.disabled = false;
+      }, 1000);
+    }
+
+    // Mostrar feedback
+    function showFeedback(isCorrect, message) {
+      const feedbackEmoji = feedback.querySelector('.feedback-emoji');
+      const feedbackText = feedback.querySelector('.feedback-text');
+      const feedbackExplanation = feedback.querySelector('.feedback-explanation');
+      
+      if (isCorrect) {
+        feedback.className = 'feedback show correct';
+        feedbackEmoji.textContent = ['🌱', '🌍', '♻️', '⭐', '🌿'][Math.floor(Math.random() * 5)];
+        feedbackText.textContent = ['¡Correcto!', '¡Excelente!', '¡Genial!', '¡Perfecto!'][Math.floor(Math.random() * 4)];
+      } else {
+        feedback.className = 'feedback show incorrect';
+        feedbackEmoji.textContent = ['🤔', '📚', '🌱', '🎯', '📈'][Math.floor(Math.random() * 5)];
+        feedbackText.textContent = ['¡Aprende más!', '¡Casi!', '¡Sigue creciendo!', '¡Continúa mejorando!'][Math.floor(Math.random() * 4)];
+      }
+      
+      feedbackExplanation.textContent = message;
+    }
+
+    // Siguiente pregunta
+    function nextQuestion() {
+      currentQuestionIndex++;
+      
+      if (currentQuestionIndex >= questions.length) {
+        showResults();
+      } else {
+        loadQuestion();
+        startTimer();
+      }
+    }
+
+    // Timer
+    function startTimer() {
+      timerDisplay.textContent = `${timeLeft}s`;
+      
+      timer = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = `${timeLeft}s`;
+        
+        if (timeLeft <= 10) {
+          timerDisplay.style.color = 'var(--danger)';
+          timerDisplay.style.animation = 'timerPulse 0.5s ease-in-out infinite';
+        }
+        
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          if (selectedAnswer === -1) {
+            // Tiempo agotado, mostrar respuesta correcta
+            const question = questions[currentQuestionIndex];
+            const options = optionsGrid.children;
+            
+            options[question.correct].classList.add('correct');
+            showFeedback(false, "⏰ Tiempo agotado. " + question.explanation);
+            
+            userAnswers.push({
+              question: question.question,
+              selectedIndex: -1,
+              correctIndex: question.correct,
+              isCorrect: false,
+              hintsUsed: currentHintLevel
+            });
+            
+            nextBtn.disabled = false;
+          }
+        }
+      }, 1000);
+    }
+
+    // Mostrar resultados
+    function showResults() {
+      questionScreen.classList.remove('active');
+      resultsScreen.classList.add('active');
+      
+      const accuracy = Math.round((score / questions.length) * 100);
+      const incorrect = questions.length - score;
+      
+      document.getElementById('finalScore').textContent = `${score}/${questions.length}`;
+      document.getElementById('correctAnswers').textContent = score;
+      document.getElementById('incorrectAnswers').textContent = incorrect;
+      document.getElementById('accuracy').textContent = `${accuracy}%`;
+      
+      // Determinar nivel y mensaje
+      let level, message;
+      if (accuracy >= 95) {
+        level = "🏆 Chief Sustainability Officer";
+        message = "¡Impresionante! Podrías liderar la transición hacia la sostenibilidad en cualquier organización 🌍";
+      } else if (accuracy >= 85) {
+        level = "🌱 Environmental Manager";
+        message = "¡Excelente! Tienes el conocimiento para implementar sistemas ambientales exitosos ♻️";
+      } else if (accuracy >= 75) {
+        level = "🌿 EMS Coordinator";
+        message = "¡Muy bien! Comprendes los fundamentos y puedes contribuir significativamente a la gestión ambiental 📈";
+      } else if (accuracy >= 65) {
+        level = "📋 Sustainability Analyst";
+        message = "¡Buen trabajo! Tienes una base sólida en gestión ambiental. Con más estudio serás un experto 📚";
+      } else {
+        level = "🎓 Environmental Trainee";
+        message = "¡Sigue adelante! La gestión ambiental es compleja, pero estás en el camino hacia la sostenibilidad 💪";
+      }
+      
+      document.getElementById('ranking').textContent = level;
+      document.getElementById('resultsMessage').textContent = message;
+      
+      // Mensaje personalizado
+      const personalizedMsg = generatePersonalizedMessage(accuracy);
+      document.getElementById('personalizedMessage').innerHTML = personalizedMsg;
+    }
+
+    // Generar mensaje personalizado
+    function generatePersonalizedMessage(accuracy) {
+      const topicStats = {};
+      questions.forEach((q, i) => {
+        if (!topicStats[q.topic]) {
+          topicStats[q.topic] = { correct: 0, total: 0 };
+        }
+        topicStats[q.topic].total++;
+        if (userAnswers[i] && userAnswers[i].isCorrect) {
+          topicStats[q.topic].correct++;
+        }
+      });
+      
+      let message = '<h4 style="color: var(--primary); margin-bottom: 15px;">🌍 Análisis de Gestión Ambiental</h4>';
+      
+      // Mejor tema
+      let bestTopic = '', bestScore = 0;
+      let worstTopic = '', worstScore = 100;
+      
+      for (const [topic, stats] of Object.entries(topicStats)) {
+        const percentage = (stats.correct / stats.total) * 100;
+        if (percentage > bestScore) {
+          bestScore = percentage;
+          bestTopic = topic;
+        }
+        if (percentage < worstScore) {
+          worstScore = percentage;
+          worstTopic = topic;
+        }
+      }
+      
+      if (bestScore === 100) {
+        message += `<p>🏆 <strong>Dominio perfecto en:</strong> ${bestTopic}. ¡Podrías enseñar este tema a otros profesionales!</p>`;
+      } else if (bestScore >= 80) {
+        message += `<p>⭐ <strong>Tu fortaleza es:</strong> ${bestTopic} (${bestScore.toFixed(0)}%). ¡Excelente comprensión!</p>`;
+      }
+      
+      if (worstScore < 60 && worstTopic !== bestTopic) {
+        message += `<p>📚 <strong>Área de crecimiento:</strong> ${worstTopic}. ¡Con más estudio dominarás este tema también!</p>`;
+      }
+      
+      // Estadísticas de pistas
+      const avgHints = hintsUsed / questions.length;
+      if (avgHints < 0.5) {
+        message += `<p>🧠 <strong>Aprendizaje autónomo:</strong> Usaste pocas pistas. ¡Excelente confianza en tu conocimiento!</p>`;
+      } else if (avgHints > 2) {
+        message += `<p>💡 <strong>Aprendizaje guiado:</strong> Las pistas te fueron muy útiles. ¡Aprovechaste bien los recursos!</p>`;
+      }
+      
+      // Análisis por precisión
+      if (accuracy >= 85) {
+        message += `<p>🌱 <strong>Impacto sostenible:</strong> Tu conocimiento puede contribuir significativamente a la protección ambiental.</p>`;
+      } else if (accuracy >= 70) {
+        message += `<p>♻️ <strong>En crecimiento:</strong> Estás desarrollando las competencias necesarias para la gestión ambiental moderna.</p>`;
+      }
+      
+      return message;
+    }
+
+    // Funciones adicionales
+    function restartQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      userAnswers = [];
+      hintsUsed = 0;
+      resultsScreen.classList.remove('active');
+      startScreen.style.display = 'block';
+    }
+
+    function showInstructions() {
+      alert(`🌍 INSTRUCCIONES DEL QUIZ ISO 14000:
+
+🎯 20 preguntas sobre Sistemas de Gestión Medio Ambiental
+⏰ 45 segundos por pregunta
+💡 Sistema de 3 niveles de pistas inteligentes
+📊 Análisis detallado por tema al final
+🏆 Certificación virtual de competencias ambientales
+
+📚 TEMAS EVALUADOS:
+• Definición normas ISO 14000/14001/14004
+• Sistema de Gestión Medio Ambiental (SGMA)
+• Criterios necesarios para cumplir con SGMA
+• Directrices, técnicas y tecnologías de apoyo
+• Integración con ODS y marcos de sostenibilidad
+
+💡 SISTEMA DE PISTAS:
+• Pista 1: Orientación conceptual general
+• Pista 2: Contexto específico y claves importantes
+• Pista 3: Respuesta prácticamente directa
+
+🌱 ¡Demuestra tu capacidad para reducir el impacto ambiental y cumplir regulaciones internacionales! 🌿`);
+    }
+
+    function reviewAnswers() {
+      let review = "🌍 REVISIÓN DE RESPUESTAS - ISO 14000 SGMA:\n\n";
+      userAnswers.forEach((answer, index) => {
+        const question = questions[index];
+        const status = answer.isCorrect ? "✅" : "❌";
+        const hints = answer.hintsUsed > 0 ? ` (${answer.hintsUsed} pistas)` : "";
+        review += `${status} P${index + 1}: ${question.topic}${hints}\n`;
+        if (answer.selectedIndex === -1) {
+          review += `⏰ Tiempo agotado\n`;
+        } else {
+          review += `Tu respuesta: ${question.options[answer.selectedIndex]}\n`;
+        }
+        if (!answer.isCorrect) {
+          review += `✓ Correcta: ${question.options[answer.correctIndex]}\n`;
+        }
+        review += "\n";
+      });
+      
+      // Crear modal personalizado
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.8); display: flex; align-items: center;
+        justify-content: center; z-index: 1000; padding: 20px;
+      `;
+      
+      modal.innerHTML = `
+        <div style="background: var(--grad-panel); border: 1px solid var(--primary);
+                    border-radius: 20px; padding: 30px; max-width: 600px;
+                    max-height: 80vh; overflow-y: auto; color: var(--ink);">
+          <h3 style="color: var(--primary); margin-bottom: 20px;">🌍 Revisión Gestión Ambiental</h3>
+          <pre style="white-space: pre-wrap; font-family: 'Inter', sans-serif;
+                      line-height: 1.6;">${review}</pre>
+          <button onclick="this.parentNode.parentNode.remove()" 
+                  style="background: var(--grad-primary); color: white; border: none;
+                         padding: 10px 20px; border-radius: 15px; cursor: pointer;
+                         margin-top: 20px;">Cerrar</button>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+    }
+
+    function shareResults() {
+      const accuracy = Math.round((score / questions.length) * 100);
+      const text = `🌍 ¡Completé el Quiz ISO 14000 - SGMA!
+      
+🎯 Resultado: ${score}/${questions.length} (${accuracy}%)
+📚 Temas: ISO 14001:2015, SGMA, ODS, Sostenibilidad
+🌱 Con sistema de pistas inteligente y análisis ambiental
+
+${accuracy >= 85 ? '🏆 ¡Soy un experto en Sistemas de Gestión Medio Ambiental!' : '🌱 ¡Desarrollando competencias en sostenibilidad empresarial!'}
+
+#ISO14001 #SGMA #GestionAmbiental #Sostenibilidad #ODS`;
+
+      if (navigator.share) {
+        navigator.share({
+          title: 'Quiz ISO 14000 - Resultados SGMA',
+          text: text
+        });
+      } else {
+        navigator.clipboard.writeText(text).then(() => {
+          alert('📋 ¡Resultados copiados! Comparte tu compromiso con la sostenibilidad 🌍');
+        });
+      }
+    }
+
+    // Theme toggle
+    function toggleTheme() {
+      const body = document.documentElement;
+      const currentTheme = body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme-iso14000', newTheme);
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (questionScreen.classList.contains('active')) {
+        if (e.key >= '1' && e.key <= '4') {
+          const index = parseInt(e.key) - 1;
+          if (index < optionsGrid.children.length) {
+            selectOption(index);
+          }
+        } else if (e.key === 'Enter' && !nextBtn.disabled) {
+          nextQuestion();
+        } else if (e.key === 'h' || e.key === 'H') {
+          // Mostrar siguiente pista disponible
+          if (currentHintLevel < 3) {
+            showHint(currentHintLevel + 1);
+          }
+        }
+      }
+    });
+
+    // Initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      // Load saved theme
+      const savedTheme = localStorage.getItem('theme-iso14000') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      
+      // Environmental Easter egg
+      let ecoSequence = [];
+      const ecoCode = [69, 67, 79]; // E-C-O
+      
+      document.addEventListener('keydown', (e) => {
+        ecoSequence.push(e.keyCode);
+        if (ecoSequence.length > ecoCode.length) {
+          ecoSequence.shift();
+        }
+        
+        if (ecoSequence.toString() === ecoCode.toString()) {
+          alert('🌍 ¡Código ECO activado! Eres oficialmente un guardián del medio ambiente 🌱🏢');
+          score += 3; // Bonus points
+        }
+      });
+    });
+  </script>
+</body>
+</html>
