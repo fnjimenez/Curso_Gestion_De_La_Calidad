@@ -1,5 +1,5 @@
 <h1 id="gestión-de-la-calidad-—-contenido-temático-de-la-sesión-10-semana-10">Gestión de la Calidad — Contenido temático de la Sesión 10 (Semana 10)</h1>
-<p><strong>Tema (programa oficial, Unidad IV: Gestión de riesgos):</strong> 4.4 Criterios necesarios para cumplir con un sistema de gestión de riesgos; 4.5 Directrices generales sobre principios, sistemas y técnicas de apoyo al sistema de gestión de riesgos. Se atiende también <strong>3.5 Desarrollo de un Sistema Integrado de Gestión</strong> (Unidad III, contenido de la Semana 8, que no tuvo sesión presencial). <strong>Fecha:</strong> 10 al 17 de noviembre de 2026 (sesión presencial: sábado 14 de noviembre) <strong>Actividades de la semana:</strong> <strong>Actividad 4. Gestión de riesgos</strong> (10 puntos, vence el <strong>17 de noviembre</strong>) y <strong>Foro 10</strong> (actividad en aula con <strong>exposición individual de 2 minutos</strong>, dentro de los 8 puntos de actividades en aula de esta semana). <strong>Propósito de la sesión:</strong> Que el estudiante explique qué necesita una organización para gestionar riesgos (4.4), conozca los principios, el marco y las técnicas de apoyo de ISO 31000 (4.5), entienda cómo se integran varios sistemas de gestión en uno (3.5) y <strong>construya, con el caso que trabajó en la Actividad 3, el análisis de riesgos que entregará</strong> en la Actividad 4.</p>
+<p><strong>Tema (programa oficial, Unidad IV: Gestión de riesgos):</strong> 4.4 Criterios necesarios para cumplir con un sistema de gestión de riesgos; 4.5 Directrices generales sobre principios, sistemas y técnicas de apoyo al sistema de gestión de riesgos. Se atiende también <strong>3.5 Desarrollo de un Sistema Integrado de Gestión</strong> (Unidad III, contenido de la Semana 8, que no tuvo sesión presencial). <strong>Fecha:</strong> 10 al 17 de noviembre de 2026 (sesión presencial: sábado 14 de noviembre) <strong>Actividades de la semana:</strong> <strong>Actividad 4. Gestión de riesgos</strong> (10 puntos, vence el <strong>17 de noviembre</strong>) y la <strong>actividad en aula</strong> (<strong>exposición individual de 2 minutos</strong>, dentro de los 8 puntos de actividades en aula de esta semana). <strong>Propósito de la sesión:</strong> Que el estudiante explique qué necesita una organización para gestionar riesgos (4.4), conozca los principios, el marco y las técnicas de apoyo de ISO 31000 (4.5), entienda cómo se integran varios sistemas de gestión en uno (3.5) y <strong>construya, con el caso que trabajó en la Actividad 3, el análisis de riesgos que entregará</strong> en la Actividad 4.</p>
 <p><strong>Itinerario de la sesión presencial (sábado 14 de noviembre):</strong></p>
 <ul>
 <li><strong>13:00 a 13:10.</strong> Repaso del curso a <strong>paso veloz</strong>: un quiz por unidad (I a IV), contestado <strong>de memoria, sin consultar</strong> apuntes, videos ni compañeros.</li>
@@ -19,7 +19,7 @@
 <p><strong>Unidad I. Sistema de gestión de la calidad (semanas 1 y 2).</strong> Video: <a href="https://sabesedu.sharepoint.com/:v:/s/PLAN2025/IQCX8Gj8Nu75S5lvU5RT5Os7AatVLu_3zT9xhxcQjkBZDv0?e=ML2idb">UNIDAD 1 SISTEMA DE GESTION DE CALIDAD.mp4</a> Es la base del curso. Vimos la teoría general de sistemas (una organización es un conjunto de partes que se relacionan para un fin), la estandarización de procesos, la evolución histórica de la gestión de la calidad, los principios de gestión de la calidad, la gestión del cambio organizacional y la calidad total y competitividad. La idea central: la calidad no es un departamento, es una forma de organizar a toda la empresa. <strong>Actividad 1:</strong> Sistemas de gestión de calidad.</p>
 <p><strong>Unidad II. Modelos de gestión de la calidad y mejora continua (semanas 3 a 5).</strong> Video: <a href="https://sabesedu.sharepoint.com/:v:/s/PLAN2025/IQDgObE8usOYTLQcvuO637MtAX_IZ5-BmsvagUgrf4_evLk?e=NlsfI8">UNIDAD 2 MODELOS DE GESTIÓN.mp4</a> Aquí pasamos de entender el sistema a <strong>mejorarlo</strong>: círculos de calidad, el ciclo PDCA (planear, hacer, verificar, actuar), Kaizen, Seis Sigma, los modelos de excelencia (Baldrige, EFQM, Iberoamericano) y el Modelo Mexicano del Premio Nacional de Calidad. La idea central: mejorar es un ciclo que se repite, con método y con datos. <strong>Actividad 2:</strong> Modelos de gestión de mejora continua.</p>
 <p><strong>Unidad III. Familia de normas ISO 9000 (semanas 6 a 8).</strong> Video: <a href="https://sabesedu.sharepoint.com/:v:/s/PLAN2025/IQCcv25P9hwNQoSpiZGp5SmGAU9GW-1nvb3vzCiWaT_vOxM?e=vGHJ8H">UNIDAD 3 FAMILIA DE NORMAS ISO 9000.mp4</a> Conocimos qué son las normas ISO 9000, 9001 y 9004, los términos y definiciones de ISO 9000, la estructura de ISO 9001 (cláusulas 4 a 10), cómo se implementa un sistema de gestión de la calidad y cómo se integra con otros (tema 3.5, que hoy completamos). La idea central: la norma convierte las buenas prácticas en requisitos que se pueden verificar. <strong>Actividad 3:</strong> Foro de la familia de normas ISO 9000, de donde sale el caso que ahora analizas.</p>
-<p><strong>Unidad IV. Gestión de riesgos (semanas 9 y 10).</strong> Video: <a href="https://sabesedu.sharepoint.com/:v:/s/PLAN2025/IQDYmFIEVxMrR6QwXeVjaH3CAeGZOZEikz-jJsLZiNtWSIs?e=0wafl6">UNIDAD 4 GESTION DE RIESGOS.mp4</a> Es la unidad de esta semana: definición de riesgo y sus tipos, pensamiento basado en riesgos, el proceso de gestión de riesgos, los criterios para un sistema de gestión de riesgos (4.4) y las directrices y técnicas de apoyo (4.5). La idea central: un sistema de gestión que no anticipa lo que puede salir mal depende de la suerte. <strong>Actividad 4:</strong> Gestión de riesgos, con exposición en el Foro 10.</p>
+<p><strong>Unidad IV. Gestión de riesgos (semanas 9 y 10).</strong> Video: <a href="https://sabesedu.sharepoint.com/:v:/s/PLAN2025/IQDYmFIEVxMrR6QwXeVjaH3CAeGZOZEikz-jJsLZiNtWSIs?e=0wafl6">UNIDAD 4 GESTION DE RIESGOS.mp4</a> Es la unidad de esta semana: definición de riesgo y sus tipos, pensamiento basado en riesgos, el proceso de gestión de riesgos, los criterios para un sistema de gestión de riesgos (4.4) y las directrices y técnicas de apoyo (4.5). La idea central: un sistema de gestión que no anticipa lo que puede salir mal depende de la suerte. <strong>Actividad 4:</strong> Gestión de riesgos, con exposición individual en el aula.</p>
 <p><strong>Lo que sigue: Unidad V. Familia de normas ISO 14000 (semanas 11 y 12).</strong> Sistema de gestión ambiental con ISO 14001 y 14004. La extensión ambiental opcional de tu Actividad 4 es un adelanto.</p>
 <hr>
 <h2 id="índice">Índice</h2>
@@ -62,7 +62,7 @@
 </li>
 <li>
 <ol start="7">
-<li>Foro 10 y calendario de la semana</li>
+<li>Calendario de la semana</li>
 </ol>
 </li>
 <li>
@@ -204,7 +204,6 @@
 </ul>
 <p><strong>Criterio argumentado:</strong> el impacto pesa más cuando hay <strong>seguridad del producto o paro total</strong>; la probabilidad se apoya en datos de la planta (cambios de iluminación frecuentes, un incidente de correo sospechoso el año anterior).</p>
 <p><strong>Tres críticos:</strong> R2 (16), R1 (15) y, como solo hay dos con nivel crítico, se completa con el siguiente más alto, <strong>R4 (12)</strong>; se dice así en el documento.</p>
-<p><strong>Comentarios de compañeros (Foro 10).</strong> Un compañero sugiere separar R2 en dos riesgos (falsos negativos y falsos positivos); el autor decide mantenerlo junto y lo argumenta. Otro propone subir la probabilidad de R5; el autor revisa y la sube de 2 a 3. Lo registra en la Parte 3.4.</p>
 <h3 id="parte-4-controles-kpis-y-kris-valores-de-ejemplo">5.4 Parte 4: controles, KPIs y KRIs (valores de ejemplo)</h3>
 <p><strong>R2 (falla de la IA al inspeccionar).</strong></p>
 <ul>
@@ -251,15 +250,12 @@
 <li><strong>Copiar de la norma o de otro compañero.</strong> Parafrasea, cita la edición y usa tu caso.</li>
 </ul>
 <hr>
-<h2 id="foro-10-y-calendario-de-la-semana">7. Foro 10 y calendario de la semana</h2>
-<p>El trabajo se hace <strong>en casa antes de la sesión</strong> y se presenta en el aula.</p>
+<h2 id="calendario-de-la-semana">7. Calendario de la semana</h2>
+<p>El análisis de riesgos se desarrolla <strong>en casa</strong> con el caso de la Actividad 3 y se presenta en el aula.</p>
 <ul>
-<li><strong>Viernes 13 de noviembre, 23:59:</strong> publica en el <strong>Foro 10</strong> tu <strong>lista de al menos 8 riesgos clasificados</strong> (puede ser el registro de la Parte 2) y tu <strong>matriz</strong> si ya la tienes.</li>
 <li><strong>Sábado 14 de noviembre (sesión presencial, 13:00 a 14:20):</strong> quizzes de repaso (13:00 a 13:10), gestión de riesgos (13:10 a 13:30) y exposición <strong>individual de 2 minutos</strong> con tu matriz y tus tres riesgos críticos (13:30 a 14:20).</li>
-<li><strong>Lunes 16 de noviembre, 23:59:</strong> <strong>comenta en el Foro 10 la lista de dos compañeros</strong> (verificación, algo positivo y una sugerencia).</li>
-<li><strong>Martes 17 de noviembre:</strong> entrega del <strong>PDF de la Actividad 4</strong> en la plataforma.</li>
+<li><strong>Martes 17 de noviembre:</strong> entrega del <strong>PDF de la Actividad 4</strong> en la plataforma (Partes 1 a 5).</li>
 </ul>
-<p>Las instrucciones detalladas y la lista de cotejo del Foro 10 están en el documento de <strong>Instrucciones del Foro 10</strong>.</p>
 <hr>
 <h2 id="cierre-y-vínculo-con-lo-que-sigue">8. Cierre y vínculo con lo que sigue</h2>
 <ul>
@@ -276,7 +272,4 @@
 <p>International Electrotechnical Commission. (2019). <em>Risk management — Risk assessment techniques</em> (IEC 31010:2019).</p>
 <p>International Organization for Standardization. (2026a). <em>Quality management systems — Requirements</em> (ISO 9001:2026). <a href="https://www.iso.org/standard/9001">https://www.iso.org/standard/9001</a></p>
 <p>International Organization for Standardization. (2026b, septiembre). <em>ISO launches update to world’s most widely used quality management standard for a new era of business</em> [Comunicado de prensa]. <a href="https://www.iso.org/news/2026/09/ISO9001-2026">https://www.iso.org/news/2026/09/ISO9001-2026</a></p>
-<blockquote>
-<p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p>
-</blockquote>
 
